@@ -1,0 +1,121 @@
+{
+  "siteId": "benton-main",
+  "name": "Benton Permaculture Site",
+  "description": "Primary homestead development site - Year 0 start",
+  "created": "2026-04-09",
+  
+  "location": {
+    "address": "PLACEHOLDER: Full mailing address",
+    "coordinates": {
+      "latitude": "PLACEHOLDER",
+      "longitude": "PLACEHOLDER",
+      "elevation_ft": "PLACEHOLDER"
+    },
+    "climate": {
+      "hardinessZone": "PLACEHOLDER",
+      "avgAnnualTemp": "PLACEHOLDER",
+      "lastFrostDate": "PLACEHOLDER",
+      "firstFrostDate": "PLACEHOLDER",
+      "growingSeasonDays": "PLACEHOLDER"
+    }
+  },
+  
+  "soil": {
+    "testDate": "PLACEHOLDER",
+    "lab": "PLACEHOLDER",
+    "texture": "PLACEHOLDER",
+    "drainage": "PLACEHOLDER",
+    "ph": "PLACEHOLDER",
+    "organicMatter": "PLACEHOLDER",
+    "minerals": {
+      "phosphate_ppm": "PLACEHOLDER",
+      "potassium_ppm": "PLACEHOLDER",
+      "calcium_ppm": "PLACEHOLDER",
+      "magnesium_ppm": "PLACEHOLDER",
+      "sulfur_ppm": "PLACEHOLDER",
+      "boron_ppm": "PLACEHOLDER",
+      "zinc_ppm": "PLACEHOLDER",
+      "manganese_ppm": "PLACEHOLDER",
+      "copper_ppm": "PLACEHOLDER",
+      "iron_ppm": "PLACEHOLDER"
+    },
+    "biological": {
+      "bacteriaFungiRatio": "PLACEHOLDER",
+      "nematodeProfile": "PLACEHOLDER",
+      "microarthropods": "PLACEHOLDER"
+    },
+    "amendmentsNeeded": [
+      "PLACEHOLDER: List specific amendments based on soil test"
+    ]
+  },
+  
+  "siteAnalysis": {
+    "aspect": "PLACEHOLDER",
+    "slope": "PLACEHOLDER",
+    "waterFeatures": "PLACEHOLDER",
+    "windExposure": "PLACEHOLDER",
+    "microclimates": "PLACEHOLDER",
+    "existingVegetation": "PLACEHOLDER",
+    "wildlifePressure": "PLACEHOLDER",
+    "infrastructure": {
+      "waterAccess": "PLACEHOLDER",
+      "electricity": "PLACEHOLDER",
+      "roadAccess": "PLACEHOLDER",
+      "structures": "PLACEHOLDER"
+    }
+  },
+  
+  "designerProfile": {
+    "bloodType": "PLACEHOLDER",
+    "sunSign": "PLACEHOLDER",
+    "mineralAffinity": "PLACEHOLDER",
+    "plantingFocus": "PLACEHOLDER",
+    "constraints": "PLACEHOLDER"
+  },
+  
+  "implementationPlan": {
+    "year0": {
+      "status": "planned",
+      "startDate": "PLACEHOLDER",
+      "milestones": [
+        "Biochar application at 5-10% by volume",
+        "Establish cover crop cocktail (cereal rye + crimson clover)",
+        "Monthly compost tea applications",
+        "Soil biology re-test",
+        "SITE COMPLETE: Benton ready for Year 1 planting"
+      ]
+    },
+    "year1": {
+      "status": "pending",
+      "startDate": "PLACEHOLDER",
+      "milestones": [
+        "Plant support species (autumn olive, comfrey, yarrow)",
+        "Establish berry rows",
+        "Jerusalem artichoke propagation",
+        "Cover crop rotation"
+      ]
+    },
+    "year2": {
+      "status": "pending",
+      "startDate": "PLACEHOLDER",
+      "milestones": [
+        "Install trellis systems for vines",
+        "Expand berry production",
+        "Begin coppice management",
+        "First berry harvest (fall bearing)"
+      ]
+    },
+    "year3": {
+      "status": "pending",
+      "startDate": "PLACEHOLDER",
+      "milestones": [
+        "Plant main canopy trees (black walnut, chestnut, pear)",
+        "Establish asparagus beds",
+        "Begin nut production timeline",
+        "Full guild establishment"
+      ]
+    }
+  },
+  
+  "notes": "PLACEHOLDER: Site-specific observations, lessons learned, adjustments made"
+}

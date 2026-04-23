@@ -1,0 +1,483 @@
+// Client-side Permaculture App Logic
+let familyMemberCount = 0;
+let generatedPlan = null;
+
+function goToStep2() {
+  const address = document.getElementById('address').value;
+  const sunSign = document.getElementById('sunSign').value;
+  const scale = document.getElementById('scale').value;
+
+  if (!address || !sunSign || !scale) {
+    alert('Please fill in all required fields');
+    return;
+  }
+
+  document.getElementById('step1').classList.add('hidden');
+  document.getElementById('step2').classList.remove('hidden');
+}
+
+function goToStep1() {
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step1').classList.remove('hidden');
+}
+
+function addFamilyMember() {
+  familyMemberCount++;
+  const container = document.getElementById('familyMembers');
+  
+  const memberDiv = document.createElement('div');
+  memberDiv.className = 'family-member';
+  memberDiv.innerHTML = `
+    <input type="text" placeholder="Name (optional)" class="member-name">
+    <select class="member-sign" required>
+      <option value="">Select sun sign...</option>
+      <option value="aries">♈ Aries</option>
+      <option value="taurus">♉ Taurus</option>
+      <option value="gemini">♊ Gemini</option>
+      <option value="cancer">♋ Cancer</option>
+      <option value="leo">♌ Leo</option>
+      <option value="virgo">♍ Virgo</option>
+      <option value="libra">♎ Libra</option>
+      <option value="scorpio">♏ Scorpio</option>
+      <option value="sagittarius">♐ Sagittarius</option>
+      <option value="capricorn">♑ Capricorn</option>
+      <option value="aquarius">♒ Aquarius</option>
+      <option value="pisces">♓ Pisces</option>
+    </select>
+    <button class="remove-btn" onclick="removeFamilyMember(this)">Remove</button>
+  `;
+  
+  container.appendChild(memberDiv);
+}
+
+function removeFamilyMember(btn) {
+  btn.parentElement.remove();
+  familyMemberCount--;
+}
+
+// Toggle soil test form
+document.getElementById('hasSoilTest').addEventListener('change', function() {
+  const form = document.getElementById('soilTestForm');
+  if (this.checked) {
+    form.classList.remove('hidden');
+  } else {
+    form.classList.add('hidden');
+  }
+});
+
+async function generatePlan() {
+  // Gather all data
+  const userData = {
+    address: document.getElementById('address').value,
+    sunSign: document.getElementById('sunSign').value,
+    scale: document.getElementById('scale').value,
+    familyMembers: []
+  };
+
+  // Get family members
+  document.querySelectorAll('.family-member').forEach(member => {
+    const name = member.querySelector('.member-name').value;
+    const sign = member.querySelector('.member-sign').value;
+    if (sign) {
+      userData.familyMembers.push({ name, sunSign: sign });
+    }
+  });
+
+  // Get soil test if provided
+  if (document.getElementById('hasSoilTest').checked) {
+    userData.soilTest = {
+      ph: parseFloat(document.getElementById('soilPH').value) || null,
+      nitrogen: parseInt(document.getElementById('soilNitrogen').value) || null,
+      phosphorus: parseInt(document.getElementById('soilPhosphorus').value) || null,
+      potassium: parseInt(document.getElementById('soilPotassium').value) || null
+    };
+  }
+
+  // Show loading
+  document.getElementById('step2').innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <h3>Generating your permaculture plan...</h3>
+      <p>Analyzing location, cell salts, and planting schedules</p>
+    </div>
+  `;
+
+  try {
+    // Call API
+    const response = await fetch('/api/generate-plan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+
+    if (!response.ok) throw new Error('Failed to generate plan');
+
+    generatedPlan = await response.json();
+
+    // Display results
+    displayResults(generatedPlan);
+
+  } catch (error) {
+    alert('Error generating plan: ' + error.message);
+    location.reload();
+  }
+}
+
+function displayResults(plan) {
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
+
+  // Site Info
+  const loc = plan.locationData || {};
+  const geoFailed = loc.error; // Server now returns error instead of fallback coordinates
+  
+  document.getElementById('siteInfo').innerHTML = `
+    <p><strong>Address:</strong> ${plan.siteInfo.address}</p>
+    <p><strong>Scale:</strong> ${plan.siteInfo.scale}</p>
+    <p><strong>Primary Sun Sign:</strong> ${plan.siteInfo.sunSign}</p>
+    ${plan.siteInfo.familyMembers.length > 0 ? 
+      `<p><strong>Family Members:</strong> ${plan.siteInfo.familyMembers.map(m => m.sunSign).join(', ')}</p>` : ''}
+    ${loc.latitude ? `<p><strong>Coordinates:</strong> ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°W</p>` : ''}
+    ${loc.formattedAddress ? `<p><strong>Geocoded:</strong> ${loc.formattedAddress}</p>` : ''}
+    ${geoFailed ? `<p class="note" style="background:#ffebee;border-color:#ef5350;">⚠️ <strong>Location warning:</strong> ${loc.error}</p>` : ''}
+  `;
+
+  // Render map and sun analysis
+  if (loc.latitude && loc.longitude) {
+    renderMap(loc.latitude, loc.longitude, plan.siteInfo.address);
+    drawPlantSunAnalysis(loc.latitude, loc.longitude);
+  } else {
+    document.getElementById('siteMap').innerHTML = '<p class="note">Location map unavailable</p>';
+  }
+
+  // AI Guilds
+  if (plan.aiGenerated) {
+    document.getElementById('aiGuildsCard').style.display = 'block';
+    renderAIGuilds(plan.aiGenerated);
+  } else {
+    document.getElementById('aiGuildsCard').style.display = 'none';
+  }
+
+  // Cell Salts
+  document.getElementById('cellSalts').innerHTML = `
+    <p>${plan.cellSalts.explanation}</p>
+    <div class="plant-list">
+      ${plan.cellSalts.deficient.map(salt => `
+        <div class="plant-item">
+          <h4>${salt.sign}</h4>
+          <p><strong>${salt.cell_salt}</strong></p>
+          <p>${salt.function}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Recommended Plants
+  document.getElementById('recommendedPlants').innerHTML = `
+    <div class="plant-list">
+      ${plan.recommendedPlants.slice(0, 12).map(plant => `
+        <div class="plant-item">
+          <h4>${plant.plant.replace(/_/g, ' ')}</h4>
+          <p><strong>Rich in:</strong> ${plant.minerals.join(', ')}</p>
+        </div>
+      `).join('')}
+    </div>
+    ${plan.recommendedPlants.length > 12 ? 
+      `<p class="note">Showing 12 of ${plan.recommendedPlants.length} recommended plants. Full list in downloadable plan.</p>` : ''}
+  `;
+
+  // 3-Year Plan
+  const planData = plan.threeYearPlan;
+  document.getElementById('threeYearPlan').innerHTML = `
+    <div class="plan-timeline">
+      <div class="year-section">
+        <h4>${planData.year0.title}</h4>
+        <p><em>${planData.year0.duration}</em></p>
+        <p>${planData.year0.focus}</p>
+        <div style="margin-top: 15px">
+          ${planData.year0.tasks.map(task => `
+            <div class="task-item">
+              <strong>${task.task} - ${task.timing}</strong>
+              ${task.plants ? `<p>Plants: ${task.plants.join(', ')}</p>` : ''}
+              <p>${task.details}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="year-section">
+        <h4>${planData.year1.title}</h4>
+        <p><em>${planData.year1.duration}</em></p>
+        <p>${planData.year1.focus}</p>
+        <div style="margin-top: 15px">
+          ${planData.year1.tasks.map(task => `
+            <div class="task-item">
+              <strong>${task.task} - ${task.timing}</strong>
+              ${task.plants ? `<p>Plants: ${task.plants.join(', ')}</p>` : ''}
+              <p>${task.details}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="year-section">
+        <h4>${planData.year2.title}</h4>
+        <p><em>${planData.year2.duration}</em></p>
+        <p>${planData.year2.focus}</p>
+        <div style="margin-top: 15px">
+          ${planData.year2.tasks.map(task => `
+            <div class="task-item">
+              <strong>${task.task} - ${task.timing}</strong>
+              ${task.plants ? `<p>Plants: ${task.plants.join(', ')}</p>` : ''}
+              <p>${task.details}</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Moon Calendar
+  const moon = plan.moonCalendar;
+  document.getElementById('moonCalendar').innerHTML = `
+    <div class="moon-phase">
+      <div class="moon-card">
+        <h4>🌒 Waxing Moon</h4>
+        <p><em>${moon.waxingMoon.phase}</em></p>
+        <p><strong>Action:</strong> ${moon.waxingMoon.action}</p>
+        <ul>
+          ${moon.waxingMoon.plant.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="moon-card">
+        <h4>🌗 Waning Moon</h4>
+        <p><em>${moon.waningMoon.phase}</em></p>
+        <p><strong>Action:</strong> ${moon.waningMoon.action}</p>
+        <ul>
+          ${moon.waningMoon.plant.map(p => `<li>${p}</li>`).join('')}
+          ${moon.waningMoon.tasks.map(t => `<li>${t}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="moon-card">
+        <h4>🌑 New Moon</h4>
+        <p><strong>Action:</strong> ${moon.newMoon.action}</p>
+        <ul>
+          ${moon.newMoon.plant.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="moon-card">
+        <h4>🌕 Full Moon</h4>
+        <p><strong>Action:</strong> ${moon.fullMoon.action}</p>
+        <ul>
+          ${moon.fullMoon.plant.map(p => `<li>${p}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+function renderMap(lat, lon, address) {
+  const mapDiv = document.getElementById('siteMap');
+  // Use address string for Google Maps search (better than coords for specific addresses)
+  const searchQuery = encodeURIComponent(address);
+  
+  mapDiv.innerHTML = `
+    <div class="map-wrapper">
+      <iframe
+        src="https://www.google.com/maps?q=${searchQuery}&z=17&output=embed"
+        style="border: none; width: 100%; height: 400px;"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+    </div>
+  `;
+}
+
+function formatTime(date) {
+  if (!date || isNaN(date)) return 'N/A';
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
+
+function getCompassDirection(azimuth) {
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  const index = Math.round(azimuth / 45) % 8;
+  return directions[index] + ` (${Math.round(azimuth)}°)`;
+}
+
+function getSunDesignTip(altitude, direction) {
+  if (altitude < 15) {
+    return 'Low sun angle creates long shadows. Place tall structures (trees, trellises) on the north side to avoid shading sun-loving plants.';
+  } else if (altitude < 45) {
+    return 'Moderate sun angle. Consider east-west rows for maximum light exposure on both sides.';
+  } else {
+    return 'High sun angle provides intense direct light. Ensure adequate spacing between plants to prevent overheating and maintain airflow.';
+  }
+}
+
+function renderAIGuilds(aiData) {
+  const guildsDiv = document.getElementById('aiGuilds');
+  if (!aiData.guilds || aiData.guilds.length === 0) {
+    guildsDiv.innerHTML = '<p>No AI guilds generated.</p>';
+    return;
+  }
+
+  guildsDiv.innerHTML = `
+    ${aiData.summary ? `<div class="note" style="margin-bottom:20px">
+      <strong>AI Summary:</strong> ${aiData.summary}
+    </div>` : ''}
+    <div class="plant-list">
+      ${aiData.guilds.map(guild => `
+        <div class="plant-item" style="border-left:4px solid #4caf50">
+          <h4>🌳 ${guild.name}</h4>
+          <p><strong>Central:</strong> ${guild.central}</p>
+          <p><strong>Supporting:</strong> ${guild.supporting.join(', ')}</p>
+          <p><strong>Function:</strong> ${guild.function}</p>
+        </div>
+      `).join('')}
+    </div>
+    
+    ${aiData.companionPlanting && aiData.companionPlanting.length > 0 ? `
+      <h4 style="margin-top:20px;color:var(--primary)">🌱 Companion Planting</h4>
+      <ul style="margin-left:20px">
+        ${aiData.companionPlanting.map(pair => `<li>${Array.isArray(pair) ? pair.join(' + ') : pair}</li>`).join('')}
+      </ul>
+    ` : ''}
+    
+    ${aiData.timingAdvice ? `
+      <h4 style="margin-top:20px;color:var(--primary)">📅 Timing Advice</h4>
+      <div class="note">${aiData.timingAdvice}</div>
+    ` : ''}
+    
+    ${aiData.soilAmendments && aiData.soilAmendments.length > 0 ? `
+      <h4 style="margin-top:20px;color:var(--primary)">🧪 Soil Amendments</h4>
+      <ul style="margin-left:20px">
+        ${aiData.soilAmendments.map(amend => `<li>${typeof amend === 'object' ? `${amend.issue}: ${amend.solution}` : amend}</li>`).join('')}
+      </ul>
+    ` : ''}
+    
+    ${aiData.waterManagement ? `
+      <h4 style="margin-top:20px;color:var(--primary)">💧 Water Management</h4>
+      <div class="note">${aiData.waterManagement}</div>
+    ` : ''}
+    
+    ${aiData.pestControl ? `
+      <h4 style="margin-top:20px;color:var(--primary)">🐛 Natural Pest Control</h4>
+      <div class="note">${aiData.pestControl}</div>
+    ` : ''}
+  `;
+}
+
+function startOver() {
+  location.reload();
+}
+
+function saveSite() {
+  if (!generatedPlan) {
+    alert('No plan to save. Generate a plan first.');
+    return;
+  }
+
+  const siteId = prompt('Enter a name for this site:', generatedPlan.siteInfo.address.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase());
+  if (!siteId) return;
+
+  const siteData = {
+    name: generatedPlan.siteInfo.address,
+    description: `Permaculture plan for ${generatedPlan.siteInfo.scale} scale`,
+    location: {
+      address: generatedPlan.siteInfo.address,
+      latitude: generatedPlan.locationData?.latitude,
+      longitude: generatedPlan.locationData?.longitude
+    },
+    designerProfile: {
+      sunSign: generatedPlan.siteInfo.sunSign,
+      familyMembers: generatedPlan.siteInfo.familyMembers
+    },
+    plan: generatedPlan,
+    created: new Date().toISOString()
+  };
+
+  fetch(`/api/sites/${encodeURIComponent(siteId)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(siteData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Site saved successfully!');
+    } else {
+      alert('Error: ' + data.error);
+    }
+  })
+  .catch(err => alert('Error saving site: ' + err.message));
+}
+
+function downloadPlan() {
+  // For now, just show alert - will implement PDF generation
+  alert('PDF download coming soon! For now, you can screenshot or print this page (Ctrl+P / Cmd+P)');
+}
+
+
+function drawPlantSunAnalysis(lat, lon) {
+  const container = document.getElementById('plantSunAnalysis');
+  if (!container) return;
+
+  // Manual solar altitude calculation for solstices at solar noon
+  // Formula: altitude = 90° - |latitude - declination|
+  const toRad = Math.PI / 180;
+  const absLat = Math.abs(lat);
+  
+  // Summer solstice: sun declination = +23.44°
+  const summerAlt = (90 - Math.abs(absLat - 23.44)).toFixed(1);
+  
+  // Winter solstice: sun declination = -23.44°
+  const winterAlt = (90 - Math.abs(absLat + 23.44)).toFixed(1);
+  
+  // Equinox: sun declination = 0°
+  const equinoxAlt = (90 - absLat).toFixed(1);
+
+  // Shadow length for a 10ft tree
+  function shadowLength(sunAltDeg) {
+    if (sunAltDeg <= 0) return '∞';
+    return (10 / Math.tan(sunAltDeg * toRad)).toFixed(1) + ' ft';
+  }
+
+  container.innerHTML = `
+    <div class="sun-analysis-grid">
+      <div class="sun-card sun-summer">
+        <h4>☀️ Summer Peak (Jun 21)</h4>
+        <p><strong>Sun Angle:</strong> ${summerAlt}° above horizon</p>
+        <p><strong>Shadow:</strong> ${shadowLength(summerAlt)} for 10ft tree</p>
+        <p><strong>Impact:</strong> Intense overhead light. High evaporation, short shadows. Fruit trees and canopy plants thrive.</p>
+      </div>
+
+      <div class="sun-card sun-equinox">
+        <h4>🌿 Equinox (Mar/Sept)</h4>
+        <p><strong>Sun Angle:</strong> ${equinoxAlt}° above horizon</p>
+        <p><strong>Shadow:</strong> ${shadowLength(equinoxAlt)} for 10ft tree</p>
+        <p><strong>Impact:</strong> Balanced light. Moderate shadows. Ideal for most vegetables and understory plants.</p>
+      </div>
+
+      <div class="sun-card sun-winter">
+        <h4>❄️ Winter Low (Dec 21)</h4>
+        <p><strong>Sun Angle:</strong> ${winterAlt}° above horizon</p>
+        <p><strong>Shadow:</strong> ${shadowLength(winterAlt)} for 10ft tree</p>
+        <p><strong>Impact:</strong> Low-angle light, long shadows. Southern exposure critical. Protect tender plants from frost.</p>
+      </div>
+    </div>
+
+    <div class="sun-recommendations">
+      <h4>🌱 Planting Recommendations</h4>
+      <ul>
+        <li><strong>South-facing beds:</strong> Sunniest all year. Best for fruit trees, tomatoes, peppers, squash.</li>
+        <li><strong>East-facing beds:</strong> Morning sun, afternoon shade. Good for leafy greens, herbs, strawberries.</li>
+        <li><strong>West-facing beds:</strong> Hot afternoon sun. Good for Mediterranean herbs, drought-tolerant perennials.</li>
+        <li><strong>North-facing beds:</strong> Coolest, most shade. Best for shade-tolerant plants: hostas, ferns, mushrooms.</li>
+        <li><strong>Under deciduous trees:</strong> Full sun in winter (when bare), dappled shade in summer. Perfect for shade-loving understory.</li>
+      </ul>
+    </div>
+  `;
+}

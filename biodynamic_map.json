@@ -1,0 +1,162 @@
+{
+  "version": "2.0.0",
+  "description": "Cell Salts + Plant recommendations based on Zodiac signs",
+  
+  "zodiac_cell_salts": {
+    "aries": {
+      "name": "Aries",
+      "symbol": "♈",
+      "element": "Fire",
+      "cell_salt": "Potassium Phosphate",
+      "function": "Nerve force, circulation, metabolism",
+      "deficiency_symptoms": "Fatigue, poor circulation, sluggish metabolism"
+    },
+    "taurus": {
+      "name": "Taurus", 
+      "symbol": "♉",
+      "element": "Earth",
+      "cell_salt": "Sodium Sulphate",
+      "function": "Fluid regulation, elimination, detoxification",
+      "deficiency_symptoms": "Water retention, sluggish bowels, toxins"
+    },
+    "gemini": {
+      "name": "Gemini",
+      "symbol": "♊", 
+      "element": "Air",
+      "cell_salt": "Potassium Chloride",
+      "function": "Mucous membranes, skin, respiratory",
+      "deficiency_symptoms": "Catarrh, skin issues, respiratory weakness"
+    },
+    "cancer": {
+      "name": "Cancer",
+      "symbol": "♋",
+      "element": "Water",
+      "cell_salt": "Calcium Fluoride",
+      "function": "Elasticity, connective tissue, teeth",
+      "deficiency_symptoms": "Loose teeth, varicose veins, hardened arteries"
+    },
+    "leo": {
+      "name": "Leo",
+      "symbol": "♌",
+      "element": "Fire",
+      "cell_salt": "Magnesium Phosphate",
+      "function": "Nerve pain, muscle cramps, spasms",
+      "deficiency_symptoms": "Cramps, neuralgia, colic, spasms"
+    },
+    "virgo": {
+      "name": "Virgo",
+      "symbol": "♍",
+      "element": "Earth",
+      "cell_salt": "Potassium Phosphate",
+      "function": "Blood cleansing, oxygen transport",
+      "deficiency_symptoms": "Anemia, poor oxygenation, sluggish blood"
+    },
+    "libra": {
+      "name": "Libra",
+      "symbol": "♎",
+      "element": "Air",
+      "cell_salt": "Sodium Phosphate",
+      "function": "Acid/alkaline balance, blood pH",
+      "deficiency_symptoms": "Acidity, rheumatism, gout"
+    },
+    "scorpio": {
+      "name": "Scorpio",
+      "symbol": "♏",
+      "element": "Water",
+      "cell_salt": "Calcium Sulphate",
+      "function": "Tissue regeneration, skin health",
+      "deficiency_symptoms": "Skin diseases, slow healing, abscesses"
+    },
+    "sagittarius": {
+      "name": "Sagittarius",
+      "symbol": "♐",
+      "element": "Fire",
+      "cell_salt": "Silica",
+      "function": "Connective tissue, nails, hair, assimilation",
+      "deficiency_symptoms": "Brittle nails, hair loss, poor assimilation"
+    },
+    "capricorn": {
+      "name": "Capricorn",
+      "symbol": "♑",
+      "element": "Earth",
+      "cell_salt": "Calcium Phosphate",
+      "function": "Bone structure, teeth, cell formation",
+      "deficiency_symptoms": "Weak bones, poor teeth, delayed growth"
+    },
+    "aquarius": {
+      "name": "Aquarius",
+      "symbol": "♒",
+      "element": "Air",
+      "cell_salt": "Sodium Chloride",
+      "function": "Moisture balance, tears, saliva, digestion",
+      "deficiency_symptoms": "Dry eyes, poor digestion, water imbalance"
+    },
+    "pisces": {
+      "name": "Pisces",
+      "symbol": "♓",
+      "element": "Water",
+      "cell_salt": "Iron Phosphate",
+      "function": "Inflammation, fever, acute conditions",
+      "deficiency_symptoms": "Frequent fevers, inflammation, anemia"
+    }
+  },
+
+  "mineral_to_plants": {
+    "potassium_phosphate": {
+      "plants": ["comfrey", "nettle", "dandelion_green", "spinach", "kale", "almond", "sunflower_seeds", "pumpkin_seeds", "avocado"]
+    },
+    "sodium_sulphate": {
+      "plants": ["celery", "cucumber", "lettuce", "zucchini", "watermelon", "coconut_water", "asparagus", "rhubarb"]
+    },
+    "potassium_chloride": {
+      "plants": ["horseradish", "radish", "turnip", "cabbage", "brussels_sprouts", "apricot", "peach", "sour_cherry"]
+    },
+    "calcium_fluoride": {
+      "plants": ["oats", "barley", "rye", "quinoa", "amaranth", "fig", "mulberry", "blackberry"]
+    },
+    "magnesium_phosphate": {
+      "plants": ["chamomile", "lemon_balm", "catnip", "valerian", "passionflower", "cacao", "dark_chocolate", "cashew"]
+    },
+    "sodium_phosphate": {
+      "plants": ["lemon", "lime", "grapefruit", "orange", "apple_cider_vinegar", "fermented_foods", "sauerkraut", "kimchi"]
+    },
+    "calcium_sulphate": {
+      "plants": ["broccoli", "cauliflower", "kale", "collard_greens", "bok_choy", "sesame_seeds", "tahini", "almond"]
+    },
+    "silica": {
+      "plants": ["oats", "oat_straw", "horsetail", "nettle", "cucumber_peel", "bell_pepper", "green_beans", "strawberry"]
+    },
+    "calcium_phosphate": {
+      "plants": ["sesame_seeds", "tahini", "almond", "fig", "molasses", "amaranth", "quinoa", "navy_beans"]
+    },
+    "sodium_chloride": {
+      "plants": ["celery", "sea_vegetables", "kelp", "dulse", "nori", "tomato", "lettuce", "swiss_chard"]
+    },
+    "iron_phosphate": {
+      "plants": ["spinach", "swiss_chard", "beet_greens", "lentils", "beans", "quinoa", "pumpkin_seeds", "dark_chocolate"]
+    }
+  },
+
+  "element_preferences": {
+    "fire": {
+      "signs": ["aries", "leo", "sagittarius"],
+      "climate": "warm",
+      "plants": ["tomato", "pepper", "corn", "sunflower", "marigold"]
+    },
+    "earth": {
+      "signs": ["taurus", "virgo", "capricorn"],
+      "climate": "temperate",
+      "plants": ["root_vegetables", "squash", "beans", "oak", "elderberry"]
+    },
+    "air": {
+      "signs": ["gemini", "libra", "aquarius"],
+      "climate": "moderate",
+      "plants": ["herbs", "flowers", "apple", "pear", "lavender"]
+    },
+    "water": {
+      "signs": ["cancer", "scorpio", "pisces"],
+      "climate": "moist",
+      "plants": ["leafy_greens", "cucumber", "melon", "willow", "mint"]
+    }
+  }
+}

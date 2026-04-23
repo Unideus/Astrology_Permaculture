@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permaculture Design Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌱 Permaculture Design Generator</h1>
+      <p class="subtitle">Cell Salt-Based Planting Plans</p>
+    </header>
+
+    <main>
+      <!-- Step 1: Basic Info -->
+      <section class="form-section" id="step1">
+        <h2>Step 1: Location & Sun Sign</h2>
+        
+        <div class="form-group">
+          <label for="address">Property Address *</label>
+          <input type="text" id="address" placeholder="123 Main St, City, State ZIP" required>
+          <small>Used to determine hardiness zone, climate, and frost dates</small>
+        </div>
+
+        <div class="form-group">
+          <label for="sunSign">Your Sun Sign *</label>
+          <select id="sunSign" required>
+            <option value="">Select your sun sign...</option>
+            <option value="aries">♈ Aries (Mar 21 - Apr 19)</option>
+            <option value="taurus">♉ Taurus (Apr 20 - May 20)</option>
+            <option value="gemini">♊ Gemini (May 21 - Jun 20)</option>
+            <option value="cancer">♋ Cancer (Jun 21 - Jul 22)</option>
+            <option value="leo">♌ Leo (Jul 23 - Aug 22)</option>
+            <option value="virgo">♍ Virgo (Aug 23 - Sep 22)</option>
+            <option value="libra">♎ Libra (Sep 23 - Oct 22)</option>
+            <option value="scorpio">♏ Scorpio (Oct 23 - Nov 21)</option>
+            <option value="sagittarius">♐ Sagittarius (Nov 22 - Dec 21)</option>
+            <option value="capricorn">♑ Capricorn (Dec 22 - Jan 19)</option>
+            <option value="aquarius">♒ Aquarius (Jan 20 - Feb 18)</option>
+            <option value="pisces">♓ Pisces (Feb 19 - Mar 20)</option>
+          </select>
+          <small>Determines your deficient cell salts (your sign + next 2)</small>
+        </div>
+
+        <div class="form-group family-section">
+          <label><strong>Family Members (Optional)</strong></label>
+          <p class="family-description">Add sun signs for family members to combine cell salt recommendations</p>
+          <div id="familyMembers"></div>
+          <button type="button" class="btn btn-secondary" onclick="addFamilyMember()">+ Add Family Member</button>
+        </div>
+
+        <div class="form-group">
+          <label for="scale">Project Scale *</label>
+          <select id="scale" required>
+            <option value="">Select scale...</option>
+            <option value="balcony">🏠 Balcony/Container (0-100 sq ft)</option>
+            <option value="backyard">🌿 Backyard Garden (100-1000 sq ft)</option>
+            <option value="homestead" selected>🏡 Homestead (¼-2 acres)</option>
+            <option value="farm">🚜 Farm (2-50 acres)</option>
+            <option value="community">👥 Community/Commercial (50+ acres)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="goToStep2()">Next →</button>
+      </section>
+
+      <!-- Step 2: Soil Test -->
+      <section class="form-section hidden" id="step2">
+        <h2>Step 3: Soil Test (Optional)</h2>
+        <p>Upload or enter soil test data for precise amendment recommendations</p>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="hasSoilTest"> I have soil test data
+          </label>
+        </div>
+
+        <div id="soilTestForm" class="hidden">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="soilPH">pH Level</label>
+              <input type="number" id="soilPH" step="0.1" min="3" max="10" placeholder="e.g., 6.5">
+            </div>
+            <div class="form-group">
+              <label for="soilNitrogen">Nitrogen (ppm)</label>
+              <input type="number" id="soilNitrogen" placeholder="e.g., 25">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="soilPhosphorus">Phosphorus (ppm)</label>
+              <input type="number" id="soilPhosphorus" placeholder="e.g., 20">
+            </div>
+            <div class="form-group">
+              <label for="soilPotassium">Potassium (ppm)</label>
+              <input type="number" id="soilPotassium" placeholder="e.g., 150">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn" onclick="goToStep1()">← Back</button>
+          <button class="btn btn-primary" onclick="generatePlan()">🌱 Generate Plan</button>
+        </div>
+      </section>
+
+      <!-- Results -->
+      <section class="results-section hidden" id="results">
+        <h2>Your Permaculture Plan</h2>
+        
+        <div class="result-card">
+          <h3>📍 Site Information</h3>
+          <div id="siteInfo"></div>
+          <div id="siteMap" class="site-map"></div>
+        </div>
+
+        <div class="result-card">
+          <h3>☀️ Sun Analysis for Plants</h3>
+          <div id="plantSunAnalysis"></div>
+        </div>
+
+        <div class="result-card">
+          <h3>🧪 Deficient Cell Salts</h3>
+          <div id="cellSalts"></div>
+          <p class="note">These cell salts are deficient based on your sun sign(s). The recommended plants are rich in these minerals.</p>
+        </div>
+
+        <div class="result-card" id="aiGuildsCard" style="display:none">
+          <h3>🤖 AI-Designed Plant Guilds</h3>
+          <div id="aiGuilds"></div>
+        </div>
+
+        <div class="result-card">
+          <h3>🌿 Recommended Plants</h3>
+          <div id="recommendedPlants"></div>
+        </div>
+
+        <div class="result-card">
+          <h3>📅 3-Year Implementation Plan</h3>
+          <div id="threeYearPlan"></div>
+        </div>
+
+        <div class="result-card">
+          <h3>🌙 Moon Planting Calendar</h3>
+          <div id="moonCalendar"></div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn" onclick="startOver()">Start Over</button>
+          <button class="btn btn-secondary" onclick="saveSite()">💾 Save Site</button>
+          <button class="btn btn-primary" onclick="downloadPlan()">📥 Download PDF</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Based on Schüssler Cell Salts & Biodynamic Agriculture</p>
+    </footer>
+  </div>
+
+  <script src="app.js?v=6"></script>
+</body>
+</html>

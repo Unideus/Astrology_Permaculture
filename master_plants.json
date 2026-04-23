@@ -1,0 +1,204 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Master plant database for 3-year permaculture succession",
+    "lastUpdated": "2026-04-09"
+  },
+  "successionLayers": {
+    "year0": {
+      "name": "Soil Remediation",
+      "description": "Biochar incorporation, compost teas, mineral amendments",
+      "timingRule": "Apply amendments during Waning Moon (sap falling) for root absorption",
+      "plants": [
+        {
+          "id": "biochar_base",
+          "name": "Biochar Application",
+          "type": "amendment",
+          "function": ["carbon_sequestration", "water_retention", "microbiome_habitat"],
+          "applicationRate": "5-10% by volume",
+          "timing": "Month 0-3, Waning Moon",
+          "notes": "Inoculate with compost tea before application"
+        },
+        {
+          "id": "compost_tea",
+          "name": "Compost Tea Brew",
+          "type": "amendment",
+          "function": ["microbial_inoculation", "nutrient_cycling"],
+          "recipe": "PLACEHOLDER: Add specific recipe based on soil biology test",
+          "timing": "Monthly, Waxing Moon for foliar; Waning for soil drench",
+          "notes": "Brew 24-48 hours, apply within 4 hours of completion"
+        },
+        {
+          "id": "cover_cereal_rye",
+          "name": "Cereal Rye (Secale cereale)",
+          "type": "cover_crop",
+          "function": ["biomass", "scavenging_n", "mycorrhizal_support"],
+          "seedingRate": "112 lbs/acre",
+          "timing": "Late fall, before first frost",
+          "termination": "Week before spring planting, before sets seed"
+        },
+        {
+          "id": "cover_crimson_clover",
+          "name": "Crimson Clover (Trifolium incarnatum)",
+          "type": "cover_crop",
+          "function": ["nitrogen_fixation", "pollinator_forage", "biomass"],
+          "seedingRate": "20-30 lbs/acre",
+          "timing": "Early fall or early spring",
+          "termination": "Before 50% bloom for max N retention"
+        }
+      ]
+    },
+    "year1": {
+      "name": "Support Species & Ground Layer",
+      "description": "Nitrogen fixers, dynamic accumulators, herbaceous perennials",
+      "timingRule": "Plant during Waxing Moon (sap rising) for establishment",
+      "plants": [
+        {
+          "id": "eleagnus_umbellata",
+          "name": "Autumn Olive (Elaeagnus umbellata)",
+          "type": "n_fixer_shrub",
+          "function": ["nitrogen_fixation", "pollinator_forage", "berry_production"],
+          "hardiness": "3-8",
+          "spacing": "6-8 feet",
+          "rootType": "actinorhizal_nodules",
+          "companionGuild": ["PLACEHOLDER: Add guild associations"]
+        },
+        {
+          "id": "comfrey_bocking14",
+          "name": "Russian Comfrey (Symphytum x uplandicum 'Bocking 14')",
+          "type": "dynamic_accumulator",
+          "function": ["potassium_mining", "biomass", "pollinator_forage", "chop_and_drop"],
+          "hardiness": "4-8",
+          "spacing": "3 feet",
+          "accumulates": ["K", "Ca", "Fe", "Mg"],
+          "biodynamic": "Calcium Sulphate connection - root crop timing"
+        },
+        {
+          "id": "yarrow_achillea",
+          "name": "Yarrow (Achillea millefolium)",
+          "type": "insectary",
+          "function": ["predatory_insect_habitat", "compost_activator", "medicinal"],
+          "hardiness": "3-9",
+          "spacing": "18 inches",
+          "notes": "BD 502-507 companion plant"
+        },
+        {
+          "id": "jerusalem_artichoke",
+          "name": "Jerusalem Artichoke (Helianthus tuberosus)",
+          "type": "root_crop",
+          "function": ["biomass", "carbohydrate_production", "windbreak_understory"],
+          "hardiness": "3-9",
+          "spacing": "12-18 inches",
+          "biodynamic": "Waning Moon planting for tuber development"
+        }
+      ]
+    },
+    "year2": {
+      "name": "Shrubs, Vines & Berry Layer",
+      "description": "Permanent berry plantings, vine trellises, woody nitrogen fixers",
+      "timingRule": "Dormant season planting (late winter), Waxing Moon preferred",
+      "plants": [
+        {
+          "id": "rubus_idaeus",
+          "name": "Red Raspberry (Rubus idaeus)",
+          "type": "berry_shrub",
+          "function": ["fruit_production", "thorn_security", "pollinator_forage"],
+          "hardiness": "3-8",
+          "spacing": "2-3 feet",
+          "rootType": "fibrous_shallow",
+          "pruning": "Summer bearing: after fruit; Everbearing: March + fall"
+        },
+        {
+          "id": "ribes_nigrum",
+          "name": "Black Currant (Ribes nigrum)",
+          "type": "berry_shrub",
+          "function": ["fruit_production", "shade_tolerance", "high_anthocyanin"],
+          "hardiness": "3-7",
+          "spacing": "4-6 feet",
+          "notes": "WPBR resistant varieties required in some regions"
+        },
+        {
+          "id": "vitis_labrusca",
+          "name": "Fox Grape (Vitis labrusca)",
+          "type": "vine",
+          "function": ["fruit_production", "vertical_growth", "shade_canopy"],
+          "hardiness": "4-8",
+          "spacing": "8-10 feet",
+          "trellis": "High cordon or pergola",
+          "pruning": "Dormant season, spur pruning"
+        },
+        {
+          "id": "clematis_vitalba",
+          "name": "Old Man's Beard (Clematis vitalba)",
+          "type": "vine",
+          "function": ["biomass", "compost_activator", "pollinator_forage"],
+          "hardiness": "4-9",
+          "spacing": "Climbing support",
+          "notes": "BD 502-507 compost preparation plant"
+        }
+      ]
+    },
+    "year3": {
+      "name": "Main Canopy & Long-term Production",
+      "description": "Overstory trees, main crop varieties, perennial staple crops",
+      "timingRule": "Bare root planting in early spring or late fall",
+      "plants": [
+        {
+          "id": "juglans_nigra",
+          "name": "Black Walnut (Juglans nigra)",
+          "type": "nut_tree",
+          "function": ["timber", "nut_production", "alleopathy_management"],
+          "hardiness": "4-9",
+          "spacing": "30-40 feet",
+          "rootType": "taproot_deep",
+          "alleopathic": true,
+          "guildTolerant": ["PLACEHOLDER: Add juglone-tolerant companions"]
+        },
+        {
+          "id": "castanea_dentata",
+          "name": "American Chestnut (Castanea dentata hybrid)",
+          "type": "nut_tree",
+          "function": ["nut_production", "timber", "wildlife_forage"],
+          "hardiness": "4-8",
+          "spacing": "30-40 feet",
+          "notes": "Use blight-resistant hybrids (Dunstan, etc.)"
+        },
+        {
+          "id": "pyrus_communis",
+          "name": "Common Pear (Pyrus communis)",
+          "type": "fruit_tree",
+          "function": ["fruit_production", "firewood", "pollinator_forage"],
+          "hardiness": "4-8",
+          "spacing": "15-20 feet",
+          "rootstock": "PLACEHOLDER: Select based on site drainage"
+        },
+        {
+          "id": "asparagus_officinalis",
+          "name": "Asparagus (Asparagus officinalis)",
+          "type": "perennial_vegetable",
+          "function": ["early_spring_harvest", "permanent_bed", "deep_rooting"],
+          "hardiness": "3-8",
+          "spacing": "12-18 inches",
+          "establishment": "2-3 years before full harvest"
+        }
+      ]
+    }
+  },
+  "biodynamicAssociations": {
+    "zodiacPlanting": {
+      "fireSigns": ["Aries", "Leo", "Sagittarius"],
+      "firePlants": ["fruit_trees", "seed_crops", "annuals"],
+      "earthSigns": ["Taurus", "Virgo", "Capricorn"],
+      "earthPlants": ["root_crops", "perennials"],
+      "airSigns": ["Gemini", "Libra", "Aquarius"],
+      "airPlants": ["flowers", "herbs", "medicinals"],
+      "waterSigns": ["Cancer", "Scorpio", "Pisces"],
+      "waterPlants": ["leafy_greens", "irrigated_crops"]
+    },
+    "preparations": {
+      "BD500": "Horn manure - root stimulation, Waning Moon",
+      "BD501": "Horn silica - foliar spray, Waxing Moon",
+      "BD502-507": "Compost preparations - Yarrow, Chamomile, Nettle, Oak Bark, Dandelion, Valerian"
+    }
+  }
+}
