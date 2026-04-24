@@ -129,7 +129,27 @@ function displayResults(plan) {
 
   // Site Info
   const loc = plan.locationData || {};
-  const geoFailed = loc.error; // Server now returns error instead of fallback coordinates
+  const geoFailed = loc.error;
+  const climate = plan.climateData || {};
+  
+  // Build climate info HTML
+  let climateHTML = '';
+  if (climate.hardinessZone) {
+    climateHTML += `<p><strong>🌡️ USDA Hardiness Zone:</strong> ${climate.hardinessZone}`;
+    if (climate.avgAnnualMinTempF !== null) {
+      climateHTML += ` <small>(avg min ${climate.avgAnnualMinTempF}°F / ${climate.avgAnnualMinTempC}°C)</small>`;
+    }
+    climateHTML += `</p>`;
+  }
+  if (climate.koppenCode) {
+    climateHTML += `<p><strong>🌍 Köppen Climate:</strong> ${climate.koppenCode} — ${climate.koppenDescription || ''}</p>`;
+  }
+  if (climate.growingSeasonDays) {
+    climateHTML += `<p><strong>📅 Est. Growing Season:</strong> ~${climate.growingSeasonDays} days</p>`;
+  }
+  if (climate.source) {
+    climateHTML += `<p class="note" style="font-size:0.85em;color:#666;">Source: ${climate.source}${climate.koppenDistanceKm ? ` (nearest Köppen point ${climate.koppenDistanceKm} km away)` : ''}</p>`;
+  }
   
   document.getElementById('siteInfo').innerHTML = `
     <p><strong>Address:</strong> ${plan.siteInfo.address}</p>
@@ -139,6 +159,7 @@ function displayResults(plan) {
       `<p><strong>Family Members:</strong> ${plan.siteInfo.familyMembers.map(m => m.sunSign).join(', ')}</p>` : ''}
     ${loc.latitude ? `<p><strong>Coordinates:</strong> ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°W</p>` : ''}
     ${loc.formattedAddress ? `<p><strong>Geocoded:</strong> ${loc.formattedAddress}</p>` : ''}
+    ${climateHTML ? `<div class="climate-info" style="margin-top:12px;padding:10px;background:#e8f5e9;border-left:3px solid #4caf50;border-radius:4px;">${climateHTML}</div>` : ''}
     ${geoFailed ? `<p class="note" style="background:#ffebee;border-color:#ef5350;">⚠️ <strong>Location warning:</strong> ${loc.error}</p>` : ''}
   `;
 

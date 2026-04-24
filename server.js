@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs').promises;
 const PermacultureApp = require('./app.js');
+const { KoppenLookup } = require('koppen-climate-lookup');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -151,8 +152,27 @@ app.post('/api/generate-plan', async (req, res) => {
     }
 
     // Add real location data
-    if (locationData) {
+    let climateData = null;
+    if (locationData && locationData.latitude && locationData.longitude) {
+      // Get climate data
+      try {
+        const climateResponse = await fetch(`http://localhost:${PORT}/api/climate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            latitude: locationData.latitude,
+            longitude: locationData.longitude
+          })
+        });
+        if (climateResponse.ok) {
+          climateData = await climateResponse.json();
+        }
+      } catch (climateError) {
+        console.warn('Climate lookup failed:', climateError.message);
+      }
+
       plan.locationData = locationData;
+      plan.climateData = climateData;
     } else {
       plan.locationData = {
         latitude: null,
@@ -350,42 +370,124 @@ app.delete('/api/sites/:siteId', async (req, res) => {
 });
 
 // =========================================================
-// TIER 1: HARDINESS ZONE LOOKUP (via lat/lon)
+// TIER 1: HARDINESS ZONE & KÖPPEN LOOKUP (via lat/lon)
 // =========================================================
 app.post('/api/climate', async (req, res) => {
   try {
     const { latitude, longitude } = req.body;
     
-    if (!latitude || !longitude) {
-      return res.status(400).json({ error: 'Latitude and longitude required' });
+    if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+      return res.status(400).json({ error: 'Latitude and longitude must be numbers' });
     }
 
-    // Use Open-Meteo API for climate data
-    const climateUrl = `https://climate-api.open-meteo.com/v1/climate?latitude=${latitude}&longitude=${longitude}&start_year=1991&end_year=2020`;
-    
-    const response = await fetch(climateUrl);
-    if (!response.ok) throw new Error('Climate API failed');
-    
-    const data = await response.json();
-    
-    // Estimate hardiness zone from average annual minimum temperature
-    // USDA zones: 1=-60°F, 2=-50°F, 3=-40°F, 4=-30°F, 5=-20°F, 6=-10°F, 7=0°F, 8=10°F, 9=20°F, 10=30°F, 11=40°F, 12=50°F, 13=60°F
-    const avgMinTemp = data?.temperature_2m_min?.[0] || 0;
-    const zone = Math.max(1, Math.min(13, Math.floor((avgMinTemp + 60) / 10) + 1));
-    
+    // ── USDA Hardiness Zone from Open-Meteo archive ──
+    let hardinessZone = '7b';
+    let avgAnnualMinC = null;
+    let avgAnnualMinF = null;
+    let growingSeasonDays = 180;
+    let hardinessSource = 'Fallback estimate';
+
+    try {
+      // Fetch 30 years of daily data (1991–2020)
+      const archiveUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=1991-01-01&end_date=2020-12-31&daily=temperature_2m_min&timezone=auto`;
+      const archiveResponse = await fetch(archiveUrl);
+      
+      if (archiveResponse.ok) {
+        const archiveData = await archiveResponse.json();
+        const dailyMin = archiveData.daily?.temperature_2m_min || [];
+        const times = archiveData.daily?.time || [];
+        
+        if (dailyMin.length > 0 && times.length > 0) {
+          // Group by year, find coldest day each year
+          const yearlyMins = {};
+          for (let i = 0; i < times.length; i++) {
+            const year = parseInt(times[i].substring(0, 4));
+            if (!yearlyMins[year]) yearlyMins[year] = [];
+            yearlyMins[year].push(dailyMin[i]);
+          }
+          
+          const annualMins = Object.values(yearlyMins).map(yearTemps => Math.min(...yearTemps));
+          avgAnnualMinC = annualMins.reduce((a, b) => a + b, 0) / annualMins.length;
+          avgAnnualMinF = avgAnnualMinC * 9 / 5 + 32;
+          
+          // USDA zone: zone N spans (-60 + 10N) to (-50 + 10N) °F
+          // e.g. zone 7 = 0°F to 10°F
+          let zone = Math.floor((avgAnnualMinF + 60) / 10) + 1;
+          zone = Math.max(1, Math.min(13, zone));
+          
+          // Sub-zone: a = colder half, b = warmer half of the 10°F range
+          const zoneFloor = -60 + (zone - 1) * 10;
+          const zoneMid = zoneFloor + 5;
+          const subZone = avgAnnualMinF < zoneMid ? 'a' : 'b';
+          hardinessZone = `${zone}${subZone}`;
+          
+          // Growing season estimate: ~365 - (abs avg min in °F / 3.3)
+          growingSeasonDays = Math.round(365 - (Math.abs(avgAnnualMinF) / 3.3));
+          hardinessSource = 'Open-Meteo Climate Archive (1991–2020)';
+        }
+      }
+    } catch (archiveError) {
+      console.warn('Archive API failed:', archiveError.message);
+    }
+
+    // ── Köppen classification ──
+    let koppenCode = null;
+    let koppenDescription = null;
+    let koppenDistance = null;
+    try {
+      const lookup = new KoppenLookup();
+      const nearest = lookup.findNearest(latitude, longitude, 100);
+      if (nearest) {
+        koppenCode = nearest.koppenClass;
+        koppenDistance = Math.round(nearest.distance * 100) / 100;
+        hardinessSource += ` + Köppen lookup`;
+      }
+    } catch (koppenError) {
+      console.warn('Köppen lookup failed:', koppenError.message);
+    }
+
+    // Köppen descriptions
+    const koppenDescriptions = {
+      'Af': 'Tropical rainforest — hot, humid, no dry season',
+      'Am': 'Tropical monsoon — short dry season',
+      'Aw': 'Tropical savanna — distinct wet/dry seasons',
+      'BWh': 'Hot desert — arid, very hot',
+      'BWk': 'Cold desert — arid, cooler',
+      'BSh': 'Hot semi-arid — steppe, hot',
+      'BSk': 'Cold semi-arid — steppe, cooler',
+      'Csa': 'Mediterranean — hot, dry summer; mild, wet winter',
+      'Csb': 'Warm-summer Mediterranean — mild, dry summer',
+      'Cfa': 'Humid subtropical — hot, humid summer; mild winter',
+      'Cfb': 'Oceanic — mild year-round, no dry season',
+      'Cfc': 'Subpolar oceanic — cool, short summer',
+      'Dfa': 'Hot-summer humid continental — hot summer, cold winter',
+      'Dfb': 'Warm-summer humid continental — warm summer, cold winter',
+      'Dfc': 'Subarctic — short, cool summer; very cold winter',
+      'Dfd': 'Extreme subarctic — short, cool summer; extremely cold winter',
+      'ET': 'Tundra — very cold, treeless',
+      'EF': 'Ice cap — permanent ice'
+    };
+    koppenDescription = koppenDescriptions[koppenCode] || 'Temperate climate';
+
     res.json({
-      hardinessZone: `${zone}`,
-      avgMinTemp: avgMinTemp,
-      growingSeasonDays: Math.round(365 - (Math.abs(avgMinTemp) * 3)), // Rough estimate
-      source: 'Open-Meteo Climate API'
+      hardinessZone,
+      avgAnnualMinTempC: avgAnnualMinC !== null ? Math.round(avgAnnualMinC * 10) / 10 : null,
+      avgAnnualMinTempF: avgAnnualMinF !== null ? Math.round(avgAnnualMinF * 10) / 10 : null,
+      growingSeasonDays,
+      koppenCode,
+      koppenDescription,
+      koppenDistanceKm: koppenDistance,
+      source: hardinessSource
     });
   } catch (error) {
     console.error('Climate lookup error:', error);
-    // Return fallback
     res.json({
       hardinessZone: '7b',
-      avgMinTemp: 0,
+      avgAnnualMinTempC: null,
+      avgAnnualMinTempF: null,
       growingSeasonDays: 180,
+      koppenCode: null,
+      koppenDescription: null,
       source: 'Fallback estimate',
       error: error.message
     });

@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
+    "koppen-climate-lookup": "^1.0.3",
     "luxon": "^3.4.4",
     "suncalc": "^1.9.0"
   },
