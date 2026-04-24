@@ -387,6 +387,8 @@ app.post('/api/climate', async (req, res) => {
     let growingSeasonDays = 180;
     let hardinessSource = 'Fallback estimate';
 
+    let frostDates = null;
+
     try {
       // Fetch 30 years of daily data (1991–2020)
       const archiveUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${latitude}&longitude=${longitude}&start_date=1991-01-01&end_date=2020-12-31&daily=temperature_2m_min&timezone=auto`;
@@ -424,6 +426,56 @@ app.post('/api/climate', async (req, res) => {
           // Growing season estimate: ~365 - (abs avg min in °F / 3.3)
           growingSeasonDays = Math.round(365 - (Math.abs(avgAnnualMinF) / 3.3));
           hardinessSource = 'Open-Meteo Climate Archive (1991–2020)';
+
+          // ── Frost Date Analysis ──
+          const dailyData = [];
+          for (let i = 0; i < times.length; i++) {
+            dailyData.push({ date: times[i], temp: dailyMin[i] });
+          }
+
+          const byYear = {};
+          dailyData.forEach(d => {
+            const year = parseInt(d.date.substring(0, 4));
+            if (!byYear[year]) byYear[year] = [];
+            byYear[year].push(d);
+          });
+
+          const frostThresholds = [
+            { tempC: 0, label: 'light', tempF: 32 },
+            { tempC: -2, label: 'hard', tempF: 28 }
+          ];
+
+          frostThresholds.forEach(ft => {
+            const springDates = [];
+            const fallDates = [];
+            const frostFreeDays = [];
+
+            Object.values(byYear).forEach(yearData => {
+              const lastSpring = findLastSpringFrost(yearData, ft.tempC);
+              const firstFall = findFirstFallFrost(yearData, ft.tempC);
+              if (lastSpring && firstFall) {
+                const s = new Date(lastSpring);
+                const f = new Date(firstFall);
+                springDates.push(s);
+                fallDates.push(f);
+                frostFreeDays.push(Math.round((f - s) / (1000 * 60 * 60 * 24)));
+              }
+            });
+
+            if (springDates.length > 0) {
+              const avgSpringDoy = Math.round(springDates.reduce((sum, d) => sum + getDayOfYear(d), 0) / springDates.length);
+              const avgFallDoy = Math.round(fallDates.reduce((sum, d) => sum + getDayOfYear(d), 0) / fallDates.length);
+              ft.avgLastSpringFrost = doyToDate(avgSpringDoy);
+              ft.avgFirstFallFrost = doyToDate(avgFallDoy);
+              ft.avgFrostFreeDays = Math.round(frostFreeDays.reduce((a, b) => a + b, 0) / frostFreeDays.length);
+              ft.dataYears = springDates.length;
+            }
+          });
+
+          frostDates = {
+            light: frostThresholds.find(f => f.label === 'light'),
+            hard: frostThresholds.find(f => f.label === 'hard')
+          };
         }
       }
     } catch (archiveError) {
@@ -474,6 +526,7 @@ app.post('/api/climate', async (req, res) => {
       avgAnnualMinTempC: avgAnnualMinC !== null ? Math.round(avgAnnualMinC * 10) / 10 : null,
       avgAnnualMinTempF: avgAnnualMinF !== null ? Math.round(avgAnnualMinF * 10) / 10 : null,
       growingSeasonDays,
+      frostDates,
       koppenCode,
       koppenDescription,
       koppenDistanceKm: koppenDistance,
@@ -493,6 +546,52 @@ app.post('/api/climate', async (req, res) => {
     });
   }
 });
+
+// Frost date helper functions
+function findLastSpringFrost(yearData, thresholdC) {
+  // Spring window: Feb 15 – Jun 15
+  const springWindow = yearData.filter(d => {
+    const m = parseInt(d.date.substring(5, 7));
+    const day = parseInt(d.date.substring(8, 10));
+    return (m > 2 || (m === 2 && day >= 15)) && (m < 6 || (m === 6 && day <= 15));
+  });
+  for (let i = springWindow.length - 1; i >= 0; i--) {
+    if (springWindow[i].temp <= thresholdC) return springWindow[i].date;
+  }
+  return null;
+}
+
+function findFirstFallFrost(yearData, thresholdC) {
+  // Fall window: Aug 15 – Dec 15
+  const fallWindow = yearData.filter(d => {
+    const m = parseInt(d.date.substring(5, 7));
+    const day = parseInt(d.date.substring(8, 10));
+    return (m > 8 || (m === 8 && day >= 15)) && (m < 12 || (m === 12 && day <= 15));
+  });
+  for (let i = 0; i < fallWindow.length; i++) {
+    if (fallWindow[i].temp <= thresholdC) return fallWindow[i].date;
+  }
+  return null;
+}
+
+function getDayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const diff = date - start;
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
+function doyToDate(doy) {
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  let month = 0;
+  let day = doy;
+  while (day > daysInMonth[month]) {
+    day -= daysInMonth[month];
+    month++;
+  }
+  return `${monthNames[month]} ${day}`;
+}
 
 // Serve index.html for all other routes
 app.get('*', (req, res) => {

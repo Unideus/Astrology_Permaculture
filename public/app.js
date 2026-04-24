@@ -147,6 +147,21 @@ function displayResults(plan) {
   if (climate.growingSeasonDays) {
     climateHTML += `<p><strong>📅 Est. Growing Season:</strong> ~${climate.growingSeasonDays} days</p>`;
   }
+  if (climate.frostDates && climate.frostDates.light) {
+    const fd = climate.frostDates;
+    climateHTML += `<div style="margin-top:10px;"><strong>🧊 Frost Dates (30-yr avg):</strong></div>`;
+    if (fd.light.avgLastSpringFrost) {
+      climateHTML += `<p style="margin-left:8px;margin-top:4px;">🌱 Last spring frost (32°F/0°C): <strong>${fd.light.avgLastSpringFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">🍂 First fall frost (32°F/0°C): <strong>${fd.light.avgFirstFallFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">📊 Frost-free days: ~${fd.light.avgFrostFreeDays} days/year</p>`;
+    }
+    if (fd.hard.avgLastSpringFrost) {
+      climateHTML += `<p style="margin-left:8px;margin-top:6px;">❄️ Last hard frost (28°F/-2°C): <strong>${fd.hard.avgLastSpringFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">❄️ First hard frost (28°F/-2°C): <strong>${fd.hard.avgFirstFallFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">📊 Hard frost-free days: ~${fd.hard.avgFrostFreeDays} days/year</p>`;
+    }
+    climateHTML += `<p class="note" style="margin-left:8px;font-size:0.8em;">Based on ${fd.light.dataYears || 0} years of data (1991–2020)</p>`;
+  }
   if (climate.source) {
     climateHTML += `<p class="note" style="font-size:0.85em;color:#666;">Source: ${climate.source}${climate.koppenDistanceKm ? ` (nearest Köppen point ${climate.koppenDistanceKm} km away)` : ''}</p>`;
   }
