@@ -11,6 +11,7 @@
     <header>
       <h1>🌱 Permaculture Design Generator</h1>
       <p class="subtitle">Cell Salt-Based Planting Plans</p>
+      <button class="btn btn-header" onclick="showSavedSites()">📂 My Saved Sites</button>
     </header>
 
     <main>
@@ -160,6 +161,19 @@
     </footer>
   </div>
 
-  <script src="app.js?v=6"></script>
+  <!-- Saved Sites Modal -->
+  <div id="savedSitesModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📂 My Saved Sites</h2>
+        <button class="btn-close" onclick="closeSavedSites()">&times;</button>
+      </div>
+      <div id="savedSitesList" class="saved-sites-list">
+        <p class="note">Loading saved sites...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=7"></script>
 </body>
 </html>

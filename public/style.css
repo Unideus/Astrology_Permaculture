@@ -608,3 +608,125 @@ footer {
 .sun-recommendations li:last-child {
   border-bottom: none;
 }
+
+/* Saved Sites Modal */
+.btn-header {
+  margin-top: 15px;
+  padding: 8px 20px;
+  font-size: 0.95rem;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  transition: background 0.2s;
+}
+.btn-header:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-overlay.hidden { display: none; }
+
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-header h2 {
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--text-light);
+  cursor: pointer;
+  line-height: 1;
+}
+.btn-close:hover { color: var(--text); }
+
+.saved-sites-list {
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.saved-site-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafafa;
+  transition: box-shadow 0.2s;
+}
+.saved-site-item:hover {
+  box-shadow: var(--shadow);
+  background: #fff;
+}
+
+.saved-site-info h4 {
+  margin: 0 0 4px 0;
+  color: var(--primary-dark);
+  font-size: 1.1rem;
+}
+.saved-site-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+.saved-site-info .site-meta {
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.saved-site-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.saved-site-actions .btn {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-light);
+}
+.empty-state p {
+  margin-bottom: 10px;
+}
+
+.btn-danger {
+  background: #d32f2f;
+  color: white;
+}
+.btn-danger:hover {
+  background: #b71c1c;
+}

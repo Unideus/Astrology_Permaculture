@@ -502,3 +502,120 @@ function drawPlantSunAnalysis(lat, lon) {
     </div>
   `;
 }
+
+// =========================================================
+// SAVED SITES LIST / LOAD UI
+// =========================================================
+
+function showSavedSites() {
+  const modal = document.getElementById('savedSitesModal');
+  const listContainer = document.getElementById('savedSitesList');
+  modal.classList.remove('hidden');
+  listContainer.innerHTML = '<p class="note">Loading saved sites...</p>';
+
+  fetch('/api/sites')
+    .then(res => res.json())
+    .then(sites => {
+      if (!sites || sites.length === 0) {
+        listContainer.innerHTML = `
+          <div class="empty-state">
+            <p><strong>No saved sites yet.</strong></p>
+            <p>Generate a plan and click "💾 Save Site" to store it here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = sites.map(site => `
+        <div class="saved-site-item">
+          <div class="saved-site-info">
+            <h4>${escapeHtml(site.name || 'Unnamed Site')}</h4>
+            <p>${escapeHtml(site.description || 'No description')}</p>
+            <p class="site-meta">${site.created ? 'Created: ' + formatDate(site.created) : ''}</p>
+          </div>
+          <div class="saved-site-actions">
+            <button class="btn btn-primary" onclick="loadSite('${escapeHtml(site.siteId)}')">📂 Open</button>
+            <button class="btn btn-danger" onclick="deleteSite('${escapeHtml(site.siteId)}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    })
+    .catch(err => {
+      listContainer.innerHTML = `<p class="note" style="color:#d32f2f;">Error loading sites: ${escapeHtml(err.message)}</p>`;
+    });
+}
+
+function closeSavedSites() {
+  document.getElementById('savedSitesModal').classList.add('hidden');
+}
+
+function loadSite(siteId) {
+  fetch(`/api/sites/${encodeURIComponent(siteId)}`)
+    .then(res => {
+      if (!res.ok) throw new Error('Site not found');
+      return res.json();
+    })
+    .then(siteData => {
+      const plan = siteData.plan;
+      if (!plan) {
+        alert('Site data is incomplete (no plan found).');
+        return;
+      }
+      generatedPlan = plan;
+
+      // Hide all form sections, show results
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('results').classList.remove('hidden');
+
+      // Render the plan
+      displayResults(plan);
+
+      // Close modal
+      closeSavedSites();
+    })
+    .catch(err => alert('Error loading site: ' + err.message));
+}
+
+function deleteSite(siteId) {
+  if (!confirm(`Delete "${siteId}"? This cannot be undone.`)) return;
+
+  fetch(`/api/sites/${encodeURIComponent(siteId)}`, { method: 'DELETE' })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showSavedSites(); // Refresh list
+      } else {
+        alert('Error: ' + data.error);
+      }
+    })
+    .catch(err => alert('Error deleting site: ' + err.message));
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatDate(isoString) {
+  if (!isoString) return '';
+  try {
+    const d = new Date(isoString);
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  } catch (e) {
+    return isoString;
+  }
+}
+
+// Close modal on click outside
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('savedSitesModal');
+  if (e.target === modal) closeSavedSites();
+});
+
+// Close modal on Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeSavedSites();
+});
