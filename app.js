@@ -5,8 +5,8 @@ const path = require('path');
 class PermacultureApp {
   constructor() {
     this.biodynamicMap = JSON.parse(fs.readFileSync('biodynamic_map.json', 'utf-8'));
-    this.masterPlants = JSON.parse(fs.readFileSync('master_plants.json', 'utf-8'));
-    this.zodiacOrder = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 
+    this.masterRegistry = JSON.parse(fs.readFileSync('master_registry.json', 'utf-8'));
+    this.zodiacOrder = ['aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
                         'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
   }
 
