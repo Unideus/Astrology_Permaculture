@@ -34,7 +34,8 @@
         "chop_and_drop"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "nettle": {
     "id": "nettle",
@@ -75,7 +76,8 @@
         "compost_activator"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "dandelion": {
     "id": "dandelion",
@@ -110,7 +112,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "spinach": {
     "id": "spinach",
@@ -148,7 +151,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "kale": {
     "id": "kale",
@@ -184,7 +188,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "sunflower": {
     "id": "sunflower",
@@ -221,7 +226,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "pumpkin": {
     "id": "pumpkin",
@@ -258,7 +264,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "avocado": {
     "id": "avocado",
@@ -292,7 +299,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "watercress": {
     "id": "watercress",
@@ -326,7 +334,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "mustard_greens": {
     "id": "mustard_greens",
@@ -363,7 +372,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "radish": {
     "id": "radish",
@@ -401,7 +411,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "horseradish": {
     "id": "horseradish",
@@ -436,7 +447,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "onion": {
     "id": "onion",
@@ -470,7 +482,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "garlic": {
     "id": "garlic",
@@ -504,7 +517,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "parsley": {
     "id": "parsley",
@@ -541,7 +555,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "celery": {
     "id": "celery",
@@ -579,7 +594,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "cucumber": {
     "id": "cucumber",
@@ -616,7 +632,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "lettuce": {
     "id": "lettuce",
@@ -654,7 +671,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "zucchini": {
     "id": "zucchini",
@@ -690,7 +708,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "watermelon": {
     "id": "watermelon",
@@ -726,7 +745,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "asparagus": {
     "id": "asparagus",
@@ -763,7 +783,8 @@
         "deep_rooting"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "rhubarb": {
     "id": "rhubarb",
@@ -796,7 +817,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "turnip": {
     "id": "turnip",
@@ -833,7 +855,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "cabbage": {
     "id": "cabbage",
@@ -871,7 +894,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "brussels_sprouts": {
     "id": "brussels_sprouts",
@@ -908,7 +932,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "apricot": {
     "id": "apricot",
@@ -940,7 +965,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "peach": {
     "id": "peach",
@@ -974,7 +1000,8 @@
         "early_bloom_pollinator"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "sour_cherry": {
     "id": "sour_cherry",
@@ -1004,7 +1031,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "oats": {
     "id": "oats",
@@ -1039,7 +1067,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "barley": {
     "id": "barley",
@@ -1072,7 +1101,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "rye": {
     "id": "rye",
@@ -1106,7 +1136,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "quinoa": {
     "id": "quinoa",
@@ -1142,7 +1173,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "amaranth": {
     "id": "amaranth",
@@ -1178,7 +1210,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "fig": {
     "id": "fig",
@@ -1211,7 +1244,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "mulberry": {
     "id": "mulberry",
@@ -1243,7 +1277,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "blackberry": {
     "id": "blackberry",
@@ -1276,7 +1311,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "chamomile": {
     "id": "chamomile",
@@ -1310,7 +1346,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "lemon_balm": {
     "id": "lemon_balm",
@@ -1346,7 +1383,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "catnip": {
     "id": "catnip",
@@ -1380,7 +1418,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "valerian": {
     "id": "valerian",
@@ -1411,7 +1450,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "passionflower": {
     "id": "passionflower",
@@ -1443,7 +1483,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "cashew": {
     "id": "cashew",
@@ -1473,7 +1514,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "lemon": {
     "id": "lemon",
@@ -1507,7 +1549,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "lime": {
     "id": "lime",
@@ -1541,7 +1584,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "grapefruit": {
     "id": "grapefruit",
@@ -1575,7 +1619,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "orange": {
     "id": "orange",
@@ -1609,7 +1654,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "sauerkraut_cabbage": {
     "id": "sauerkraut_cabbage",
@@ -1647,7 +1693,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "kimchi_cabbage": {
     "id": "kimchi_cabbage",
@@ -1685,7 +1732,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "broccoli": {
     "id": "broccoli",
@@ -1720,7 +1768,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "cauliflower": {
     "id": "cauliflower",
@@ -1757,7 +1806,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "collard_greens": {
     "id": "collard_greens",
@@ -1793,7 +1843,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "bok_choy": {
     "id": "bok_choy",
@@ -1827,7 +1878,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "sesame": {
     "id": "sesame",
@@ -1859,7 +1911,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "oat_straw": {
     "id": "oat_straw",
@@ -1893,7 +1946,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "horsetail": {
     "id": "horsetail",
@@ -1928,7 +1982,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "bell_pepper": {
     "id": "bell_pepper",
@@ -1964,7 +2019,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "green_beans": {
     "id": "green_beans",
@@ -2000,7 +2056,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "strawberry": {
     "id": "strawberry",
@@ -2035,7 +2092,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "almond": {
     "id": "almond",
@@ -2065,7 +2123,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "navy_beans": {
     "id": "navy_beans",
@@ -2100,7 +2159,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "tomato": {
     "id": "tomato",
@@ -2136,7 +2196,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "swiss_chard": {
     "id": "swiss_chard",
@@ -2174,7 +2235,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "beet": {
     "id": "beet",
@@ -2211,7 +2273,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "beet_greens": {
     "id": "beet_greens",
@@ -2248,7 +2311,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "lentils": {
     "id": "lentils",
@@ -2282,7 +2346,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "beans": {
     "id": "beans",
@@ -2317,7 +2382,8 @@
     "permaculture_role": {
       "functions": [],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "black_walnut_": {
     "id": "black_walnut_",
@@ -2352,7 +2418,8 @@
         "alleopathy_management"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "american_chestnut_": {
     "id": "american_chestnut_",
@@ -2386,7 +2453,8 @@
         "wildlife_forage"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "pecan_": {
     "id": "pecan_",
@@ -2420,7 +2488,8 @@
         "deep_water_pump"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "american_persimmon_": {
     "id": "american_persimmon_",
@@ -2455,7 +2524,8 @@
         "wildlife_forage"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "apple_": {
     "id": "apple_",
@@ -2490,7 +2560,8 @@
         "firewood"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "pear_": {
     "id": "pear_",
@@ -2524,7 +2595,8 @@
         "pollinator_forage"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "autumn_olive_": {
     "id": "autumn_olive_",
@@ -2559,7 +2631,8 @@
         "berry_production"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "black_currant_": {
     "id": "black_currant_",
@@ -2593,7 +2666,8 @@
         "high_anthocyanin"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "red_raspberry_": {
     "id": "red_raspberry_",
@@ -2628,7 +2702,8 @@
         "pollinator_forage"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "fox_grape_": {
     "id": "fox_grape_",
@@ -2662,7 +2737,8 @@
         "shade_canopy"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "humid"
   },
   "yarrow_": {
     "id": "yarrow_",
@@ -2698,7 +2774,8 @@
         "medicinal"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "jerusalem_artichoke_": {
     "id": "jerusalem_artichoke_",
@@ -2734,7 +2811,8 @@
         "windbreak_understory"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "american_hazelnut_": {
     "id": "american_hazelnut_",
@@ -2769,7 +2847,8 @@
         "pollinator_forage"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "french_sorrel_": {
     "id": "french_sorrel_",
@@ -2805,7 +2884,8 @@
         "ground_cover"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "chives_": {
     "id": "chives_",
@@ -2841,7 +2921,8 @@
         "edible"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "white_clover_": {
     "id": "white_clover_",
@@ -2878,7 +2959,8 @@
         "pollinator_forage"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   },
   "sea_buckthorn_": {
     "id": "sea_buckthorn_",
@@ -2913,7 +2995,8 @@
         "windbreak"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "arid"
   },
   "goumi_": {
     "id": "goumi_",
@@ -2948,6 +3031,7 @@
         "chop_and_drop"
       ],
       "guild_compat": []
-    }
+    },
+    "climate_affinity": "any"
   }
 }
