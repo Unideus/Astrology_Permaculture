@@ -1,0 +1,2953 @@
+{
+  "comfrey": {
+    "id": "comfrey",
+    "common_name": "Comfrey",
+    "botanical_name": "Symphytum x uplandicum 'Bocking 14'",
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "potassium_mining",
+        "biomass",
+        "pollinator_forage",
+        "chop_and_drop"
+      ],
+      "guild_compat": []
+    }
+  },
+  "nettle": {
+    "id": "nettle",
+    "common_name": "Nettle",
+    "botanical_name": "Urtica dioica",
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "supportSpecies"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate",
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen",
+        "iron",
+        "magnesium",
+        "compost_activator"
+      ],
+      "guild_compat": []
+    }
+  },
+  "dandelion": {
+    "id": "dandelion",
+    "common_name": "Dandelion",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "spinach": {
+    "id": "spinach",
+    "common_name": "Spinach",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate",
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "kale": {
+    "id": "kale",
+    "common_name": "Kale",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate",
+        "Calcium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "sunflower": {
+    "id": "sunflower",
+    "common_name": "Sunflower",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_flower",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "pumpkin": {
+    "id": "pumpkin",
+    "common_name": "Pumpkin",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_squash",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate",
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "avocado": {
+    "id": "avocado",
+    "common_name": "Avocado",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "subtropical_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [
+        "Cfa",
+        "Aw",
+        "Am"
+      ],
+      "is_perennial": true,
+      "chill_hours_required": "0",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "watercress": {
+    "id": "watercress",
+    "common_name": "Watercress",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "aquatic_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "mustard_greens": {
+    "id": "mustard_greens",
+    "common_name": "Mustard Greens",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "radish": {
+    "id": "radish",
+    "common_name": "Radish",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_root",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate",
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "horseradish": {
+    "id": "horseradish",
+    "common_name": "Horseradish",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_root",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate",
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "onion": {
+    "id": "onion",
+    "common_name": "Onion",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_bulb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "garlic": {
+    "id": "garlic",
+    "common_name": "Garlic",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_bulb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "parsley": {
+    "id": "parsley",
+    "common_name": "Parsley",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "celery": {
+    "id": "celery",
+    "common_name": "Celery",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_stalk",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Sulphate",
+        "Sodium Sulphate",
+        "Sodium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "cucumber": {
+    "id": "cucumber",
+    "common_name": "Cucumber",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_vine",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Sulphate",
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "lettuce": {
+    "id": "lettuce",
+    "common_name": "Lettuce",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Sulphate",
+        "Sodium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "zucchini": {
+    "id": "zucchini",
+    "common_name": "Zucchini",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_squash",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "watermelon": {
+    "id": "watermelon",
+    "common_name": "Watermelon",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_melon",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "asparagus": {
+    "id": "asparagus",
+    "common_name": "Asparagus",
+    "botanical_name": "Asparagus officinalis",
+    "taxonomy": {
+      "type": "perennial_vegetable",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "early_spring_harvest",
+        "permanent_bed",
+        "deep_rooting"
+      ],
+      "guild_compat": []
+    }
+  },
+  "rhubarb": {
+    "id": "rhubarb",
+    "common_name": "Rhubarb",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_vegetable",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "turnip": {
+    "id": "turnip",
+    "common_name": "Turnip",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_root",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "cabbage": {
+    "id": "cabbage",
+    "common_name": "Cabbage",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "brussels_sprouts": {
+    "id": "brussels_sprouts",
+    "common_name": "Brussels Sprouts",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "apricot": {
+    "id": "apricot",
+    "common_name": "Apricot",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "peach": {
+    "id": "peach",
+    "common_name": "Peach",
+    "botanical_name": "Prunus persica",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "early_bloom_pollinator"
+      ],
+      "guild_compat": []
+    }
+  },
+  "sour_cherry": {
+    "id": "sour_cherry",
+    "common_name": "Sour Cherry",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Potassium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "oats": {
+    "id": "oats",
+    "common_name": "Oats",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_grain",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride",
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "barley": {
+    "id": "barley",
+    "common_name": "Barley",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_grain",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "rye": {
+    "id": "rye",
+    "common_name": "Rye",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_grain",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "quinoa": {
+    "id": "quinoa",
+    "common_name": "Quinoa",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_grain",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride",
+        "Calcium Phosphate",
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "amaranth": {
+    "id": "amaranth",
+    "common_name": "Amaranth",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_grain",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride",
+        "Calcium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "fig": {
+    "id": "fig",
+    "common_name": "Fig",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride",
+        "Calcium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "mulberry": {
+    "id": "mulberry",
+    "common_name": "Mulberry",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "blackberry": {
+    "id": "blackberry",
+    "common_name": "Blackberry",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Fluoride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "chamomile": {
+    "id": "chamomile",
+    "common_name": "Chamomile",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Magnesium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "lemon_balm": {
+    "id": "lemon_balm",
+    "common_name": "Lemon Balm",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Magnesium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "koppen": [
+        "Cfa",
+        "Aw",
+        "Am"
+      ],
+      "is_perennial": true,
+      "chill_hours_required": "0",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "catnip": {
+    "id": "catnip",
+    "common_name": "Catnip",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Magnesium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "valerian": {
+    "id": "valerian",
+    "common_name": "Valerian",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Magnesium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "passionflower": {
+    "id": "passionflower",
+    "common_name": "Passionflower",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_vine",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Magnesium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "cashew": {
+    "id": "cashew",
+    "common_name": "Cashew",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "tropical_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Magnesium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "lemon": {
+    "id": "lemon",
+    "common_name": "Lemon",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "subtropical_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [
+        "Cfa",
+        "Aw",
+        "Am"
+      ],
+      "is_perennial": true,
+      "chill_hours_required": "0",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "lime": {
+    "id": "lime",
+    "common_name": "Lime",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "subtropical_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [
+        "Cfa",
+        "Aw",
+        "Am"
+      ],
+      "is_perennial": true,
+      "chill_hours_required": "0",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "grapefruit": {
+    "id": "grapefruit",
+    "common_name": "Grapefruit",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "subtropical_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [
+        "Cfa",
+        "Aw",
+        "Am"
+      ],
+      "is_perennial": true,
+      "chill_hours_required": "0",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "orange": {
+    "id": "orange",
+    "common_name": "Orange",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "subtropical_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [
+        "Cfa",
+        "Aw",
+        "Am"
+      ],
+      "is_perennial": true,
+      "chill_hours_required": "0",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "sauerkraut_cabbage": {
+    "id": "sauerkraut_cabbage",
+    "common_name": "Sauerkraut Cabbage",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "kimchi_cabbage": {
+    "id": "kimchi_cabbage",
+    "common_name": "Kimchi Cabbage",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "broccoli": {
+    "id": "broccoli",
+    "common_name": "Broccoli",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "cauliflower": {
+    "id": "cauliflower",
+    "common_name": "Cauliflower",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "collard_greens": {
+    "id": "collard_greens",
+    "common_name": "Collard Greens",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "biennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "bok_choy": {
+    "id": "bok_choy",
+    "common_name": "Bok Choy",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Sulphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "biennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "sesame": {
+    "id": "sesame",
+    "common_name": "Sesame",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_seed",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Sulphate",
+        "Calcium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "oat_straw": {
+    "id": "oat_straw",
+    "common_name": "Oat Straw",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_grain",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "horsetail": {
+    "id": "horsetail",
+    "common_name": "Horsetail",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "bell_pepper": {
+    "id": "bell_pepper",
+    "common_name": "Bell Pepper",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_vegetable",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "green_beans": {
+    "id": "green_beans",
+    "common_name": "Green Beans",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_vegetable",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "strawberry": {
+    "id": "strawberry",
+    "common_name": "Strawberry",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "perennial_berry",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Silica"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "almond": {
+    "id": "almond",
+    "common_name": "Almond",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "nut_tree",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "navy_beans": {
+    "id": "navy_beans",
+    "common_name": "Navy Beans",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_legume",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Calcium Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "tomato": {
+    "id": "tomato",
+    "common_name": "Tomato",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_vegetable",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "swiss_chard": {
+    "id": "swiss_chard",
+    "common_name": "Swiss Chard",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Chloride",
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "beet": {
+    "id": "beet",
+    "common_name": "Beet",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_root",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Sodium Chloride"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "biennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "beet_greens": {
+    "id": "beet_greens",
+    "common_name": "Beet Greens",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "biennial_green",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "biennial"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "lentils": {
+    "id": "lentils",
+    "common_name": "Lentils",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_legume",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "beans": {
+    "id": "beans",
+    "common_name": "Beans",
+    "botanical_name": null,
+    "taxonomy": {
+      "type": "annual_legume",
+      "layer": "Unknown"
+    },
+    "bio_logic": {
+      "salts": [
+        "Iron Phosphate"
+      ],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual_summer"
+    },
+    "permaculture_role": {
+      "functions": [],
+      "guild_compat": []
+    }
+  },
+  "black_walnut_": {
+    "id": "black_walnut_",
+    "common_name": "Black Walnut",
+    "botanical_name": "Juglans nigra",
+    "taxonomy": {
+      "type": "nut_tree",
+      "layer": "year0"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nut_production",
+        "timber",
+        "alleopathy_management"
+      ],
+      "guild_compat": []
+    }
+  },
+  "american_chestnut_": {
+    "id": "american_chestnut_",
+    "common_name": "American Chestnut",
+    "botanical_name": "Castanea dentata hybrid",
+    "taxonomy": {
+      "type": "nut_tree",
+      "layer": "year0"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nut_production",
+        "timber",
+        "wildlife_forage"
+      ],
+      "guild_compat": []
+    }
+  },
+  "pecan_": {
+    "id": "pecan_",
+    "common_name": "Pecan",
+    "botanical_name": "Carya illinoinensis",
+    "taxonomy": {
+      "type": "nut_tree",
+      "layer": "year0"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nut_production",
+        "shade",
+        "deep_water_pump"
+      ],
+      "guild_compat": []
+    }
+  },
+  "american_persimmon_": {
+    "id": "american_persimmon_",
+    "common_name": "American Persimmon",
+    "botanical_name": "Diospyros virginiana",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "year0"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "timber",
+        "wildlife_forage"
+      ],
+      "guild_compat": []
+    }
+  },
+  "apple_": {
+    "id": "apple_",
+    "common_name": "Apple",
+    "botanical_name": "Malus pumila",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "firewood"
+      ],
+      "guild_compat": []
+    }
+  },
+  "pear_": {
+    "id": "pear_",
+    "common_name": "Pear",
+    "botanical_name": "Pyrus communis",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "firewood",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    }
+  },
+  "autumn_olive_": {
+    "id": "autumn_olive_",
+    "common_name": "Autumn Olive",
+    "botanical_name": "Elaeagnus umbellata",
+    "taxonomy": {
+      "type": "n_fixer_shrub",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "pollinator_forage",
+        "berry_production"
+      ],
+      "guild_compat": []
+    }
+  },
+  "black_currant_": {
+    "id": "black_currant_",
+    "common_name": "Black Currant",
+    "botanical_name": "Ribes nigrum",
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "shade_tolerance",
+        "high_anthocyanin"
+      ],
+      "guild_compat": []
+    }
+  },
+  "red_raspberry_": {
+    "id": "red_raspberry_",
+    "common_name": "Red Raspberry",
+    "botanical_name": "Rubus idaeus",
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "thorn_security",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    }
+  },
+  "fox_grape_": {
+    "id": "fox_grape_",
+    "common_name": "Fox Grape",
+    "botanical_name": "Vitis labrusca",
+    "taxonomy": {
+      "type": "vine",
+      "layer": "year1"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "vertical_growth",
+        "shade_canopy"
+      ],
+      "guild_compat": []
+    }
+  },
+  "yarrow_": {
+    "id": "yarrow_",
+    "common_name": "Yarrow",
+    "botanical_name": "Achillea millefolium",
+    "taxonomy": {
+      "type": "insectary",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "predatory_insect_habitat",
+        "compost_activator",
+        "medicinal"
+      ],
+      "guild_compat": []
+    }
+  },
+  "jerusalem_artichoke_": {
+    "id": "jerusalem_artichoke_",
+    "common_name": "Jerusalem Artichoke",
+    "botanical_name": "Helianthus tuberosus",
+    "taxonomy": {
+      "type": "root_crop",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "biomass",
+        "carbohydrate_production",
+        "windbreak_understory"
+      ],
+      "guild_compat": []
+    }
+  },
+  "american_hazelnut_": {
+    "id": "american_hazelnut_",
+    "common_name": "American Hazelnut",
+    "botanical_name": "Corylus americana",
+    "taxonomy": {
+      "type": "nut_shrub",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nut_production",
+        "windbreak",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    }
+  },
+  "french_sorrel_": {
+    "id": "french_sorrel_",
+    "common_name": "French Sorrel",
+    "botanical_name": "Rumex acetosa",
+    "taxonomy": {
+      "type": "perennial_green",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "leafy_green",
+        "acid_loving",
+        "ground_cover"
+      ],
+      "guild_compat": []
+    }
+  },
+  "chives_": {
+    "id": "chives_",
+    "common_name": "Chives",
+    "botanical_name": "Allium schoenoprasum",
+    "taxonomy": {
+      "type": "herb",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "pest_deterrent",
+        "pollinator_forage",
+        "edible"
+      ],
+      "guild_compat": []
+    }
+  },
+  "white_clover_": {
+    "id": "white_clover_",
+    "common_name": "White Clover",
+    "botanical_name": "Trifolium repens",
+    "taxonomy": {
+      "type": "ground_cover",
+      "layer": "year2"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "living_mulch",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    }
+  },
+  "sea_buckthorn_": {
+    "id": "sea_buckthorn_",
+    "common_name": "Sea Buckthorn",
+    "botanical_name": "Hippophae rhamnoides",
+    "taxonomy": {
+      "type": "n_fixer_shrub",
+      "layer": "supportSpecies"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "berry_production",
+        "windbreak"
+      ],
+      "guild_compat": []
+    }
+  },
+  "goumi_": {
+    "id": "goumi_",
+    "common_name": "Goumi",
+    "botanical_name": "Elaeagnus multiflora",
+    "taxonomy": {
+      "type": "n_fixer_shrub",
+      "layer": "supportSpecies"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "berry_production",
+        "chop_and_drop"
+      ],
+      "guild_compat": []
+    }
+  }
+}

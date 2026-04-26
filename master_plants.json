@@ -1,58 +1,88 @@
 {
   "metadata": {
-    "version": "1.0.0",
-    "description": "Master plant database for 3-year permaculture succession",
-    "lastUpdated": "2026-04-09"
+    "version": "2.0.0",
+    "description": "Master plant database for 3-year food forest succession — canopy first",
+    "lastUpdated": "2026-04-26",
+    "successionPrinciple": "Canopy → Sub-canopy → Shrubs → Herbaceous → Ground cover"
   },
   "successionLayers": {
     "year0": {
-      "name": "Soil Remediation",
-      "description": "Biochar incorporation, compost teas, mineral amendments",
-      "timingRule": "Apply amendments during Waning Moon (sap falling) for root absorption",
+      "name": "Canopy & Infrastructure",
+      "description": "Plant overstory trees immediately. They need 5–15 years to mature. Everything else is designed around them.",
+      "timingRule": "Bare root planting in late winter/early spring dormancy. Waning Moon for root focus.",
       "plants": [
         {
-          "id": "biochar_base",
-          "name": "Biochar Application",
-          "type": "amendment",
-          "function": ["carbon_sequestration", "water_retention", "microbiome_habitat"],
-          "applicationRate": "5-10% by volume",
-          "timing": "Month 0-3, Waning Moon",
-          "notes": "Inoculate with compost tea before application"
+          "id": "juglans_nigra",
+          "name": "Black Walnut (Juglans nigra)",
+          "type": "nut_tree",
+          "function": ["nut_production", "timber", "alleopathy_management"],
+          "hardiness": "4-9",
+          "spacing": "30-40 feet",
+          "rootType": "taproot_deep",
+          "alleopathic": true,
+          "notes": "Juglone-tolerant guild required: elderberry, pawpaw, currants, hazelnuts, raspberries"
         },
         {
-          "id": "compost_tea",
-          "name": "Compost Tea Brew",
-          "type": "amendment",
-          "function": ["microbial_inoculation", "nutrient_cycling"],
-          "recipe": "PLACEHOLDER: Add specific recipe based on soil biology test",
-          "timing": "Monthly, Waxing Moon for foliar; Waning for soil drench",
-          "notes": "Brew 24-48 hours, apply within 4 hours of completion"
+          "id": "castanea_dentata",
+          "name": "American Chestnut (Castanea dentata hybrid)",
+          "type": "nut_tree",
+          "function": ["nut_production", "timber", "wildlife_forage"],
+          "hardiness": "4-8",
+          "spacing": "30-40 feet",
+          "notes": "Use blight-resistant hybrids (Dunstan, Colossal). Starchy staple crop."
         },
         {
-          "id": "cover_cereal_rye",
-          "name": "Cereal Rye (Secale cereale)",
-          "type": "cover_crop",
-          "function": ["biomass", "scavenging_n", "mycorrhizal_support"],
-          "seedingRate": "112 lbs/acre",
-          "timing": "Late fall, before first frost",
-          "termination": "Week before spring planting, before sets seed"
+          "id": "carya_illinoinensis",
+          "name": "Pecan (Carya illinoinensis)",
+          "type": "nut_tree",
+          "function": ["nut_production", "shade", "deep_water_pump"],
+          "hardiness": "5-9",
+          "spacing": "35-50 feet",
+          "notes": "Deep taproot brings up subsoil minerals. Requires pollinator variety."
         },
         {
-          "id": "cover_crimson_clover",
-          "name": "Crimson Clover (Trifolium incarnatum)",
-          "type": "cover_crop",
-          "function": ["nitrogen_fixation", "pollinator_forage", "biomass"],
-          "seedingRate": "20-30 lbs/acre",
-          "timing": "Early fall or early spring",
-          "termination": "Before 50% bloom for max N retention"
+          "id": "diospyros_virginiana",
+          "name": "American Persimmon (Diospyros virginiana)",
+          "type": "fruit_tree",
+          "function": ["fruit_production", "timber", "wildlife_forage"],
+          "hardiness": "4-9",
+          "spacing": "20-30 feet",
+          "notes": "Taprooted, drought-tolerant once established. Male + female required."
         }
       ]
     },
     "year1": {
-      "name": "Support Species & Ground Layer",
-      "description": "Nitrogen fixers, dynamic accumulators, herbaceous perennials",
-      "timingRule": "Plant during Waxing Moon (sap rising) for establishment",
+      "name": "Sub-canopy & Shrubs",
+      "description": "Fruit trees, berry bushes, and woody nitrogen fixers planted into the developing canopy microclimate.",
+      "timingRule": "Dormant season planting. Waxing Moon for establishment vigor.",
       "plants": [
+        {
+          "id": "malus_pumila",
+          "name": "Apple (Malus pumila)",
+          "type": "fruit_tree",
+          "function": ["fruit_production", "pollinator_forage", "firewood"],
+          "hardiness": "3-8",
+          "spacing": "15-25 feet",
+          "notes": "Choose disease-resistant varieties. Guild with comfrey, chives, daffodils, clover."
+        },
+        {
+          "id": "pyrus_communis",
+          "name": "Pear (Pyrus communis)",
+          "type": "fruit_tree",
+          "function": ["fruit_production", "firewood", "pollinator_forage"],
+          "hardiness": "4-8",
+          "spacing": "15-20 feet",
+          "notes": "Fire blight resistant varieties preferred. Partially self-fertile."
+        },
+        {
+          "id": "prunus_persica",
+          "name": "Peach (Prunus persica)",
+          "type": "fruit_tree",
+          "function": ["fruit_production", "early_bloom_pollinator"],
+          "hardiness": "5-8",
+          "spacing": "15-20 feet",
+          "notes": "Short-lived (15-20 yrs). Replace as canopy matures."
+        },
         {
           "id": "eleagnus_umbellata",
           "name": "Autumn Olive (Elaeagnus umbellata)",
@@ -61,52 +91,7 @@
           "hardiness": "3-8",
           "spacing": "6-8 feet",
           "rootType": "actinorhizal_nodules",
-          "companionGuild": ["PLACEHOLDER: Add guild associations"]
-        },
-        {
-          "id": "comfrey_bocking14",
-          "name": "Russian Comfrey (Symphytum x uplandicum 'Bocking 14')",
-          "type": "dynamic_accumulator",
-          "function": ["potassium_mining", "biomass", "pollinator_forage", "chop_and_drop"],
-          "hardiness": "4-8",
-          "spacing": "3 feet",
-          "accumulates": ["K", "Ca", "Fe", "Mg"],
-          "biodynamic": "Calcium Sulphate connection - root crop timing"
-        },
-        {
-          "id": "yarrow_achillea",
-          "name": "Yarrow (Achillea millefolium)",
-          "type": "insectary",
-          "function": ["predatory_insect_habitat", "compost_activator", "medicinal"],
-          "hardiness": "3-9",
-          "spacing": "18 inches",
-          "notes": "BD 502-507 companion plant"
-        },
-        {
-          "id": "jerusalem_artichoke",
-          "name": "Jerusalem Artichoke (Helianthus tuberosus)",
-          "type": "root_crop",
-          "function": ["biomass", "carbohydrate_production", "windbreak_understory"],
-          "hardiness": "3-9",
-          "spacing": "12-18 inches",
-          "biodynamic": "Waning Moon planting for tuber development"
-        }
-      ]
-    },
-    "year2": {
-      "name": "Shrubs, Vines & Berry Layer",
-      "description": "Permanent berry plantings, vine trellises, woody nitrogen fixers",
-      "timingRule": "Dormant season planting (late winter), Waxing Moon preferred",
-      "plants": [
-        {
-          "id": "rubus_idaeus",
-          "name": "Red Raspberry (Rubus idaeus)",
-          "type": "berry_shrub",
-          "function": ["fruit_production", "thorn_security", "pollinator_forage"],
-          "hardiness": "3-8",
-          "spacing": "2-3 feet",
-          "rootType": "fibrous_shallow",
-          "pruning": "Summer bearing: after fruit; Everbearing: March + fall"
+          "notes": "Chop-and-drop biomass producer. Invasive in some regions — check local regs."
         },
         {
           "id": "ribes_nigrum",
@@ -115,7 +100,16 @@
           "function": ["fruit_production", "shade_tolerance", "high_anthocyanin"],
           "hardiness": "3-7",
           "spacing": "4-6 feet",
-          "notes": "WPBR resistant varieties required in some regions"
+          "notes": "WPBR resistant varieties. Shade tolerant — perfect understory."
+        },
+        {
+          "id": "rubus_idaeus",
+          "name": "Red Raspberry (Rubus idaeus)",
+          "type": "berry_shrub",
+          "function": ["fruit_production", "thorn_security", "pollinator_forage"],
+          "hardiness": "3-8",
+          "spacing": "2-3 feet",
+          "notes": "Summer or everbearing. Forms dense thickets."
         },
         {
           "id": "vitis_labrusca",
@@ -125,52 +119,33 @@
           "hardiness": "4-8",
           "spacing": "8-10 feet",
           "trellis": "High cordon or pergola",
-          "pruning": "Dormant season, spur pruning"
-        },
-        {
-          "id": "clematis_vitalba",
-          "name": "Old Man's Beard (Clematis vitalba)",
-          "type": "vine",
-          "function": ["biomass", "compost_activator", "pollinator_forage"],
-          "hardiness": "4-9",
-          "spacing": "Climbing support",
-          "notes": "BD 502-507 compost preparation plant"
+          "notes": "Native alternative to European wine grapes. Muscadine in South."
         }
       ]
     },
-    "year3": {
-      "name": "Main Canopy & Long-term Production",
-      "description": "Overstory trees, main crop varieties, perennial staple crops",
-      "timingRule": "Bare root planting in early spring or late fall",
+    "year2": {
+      "name": "Herbaceous, Ground Cover & Guild Completion",
+      "description": "Fill in between rows and under trees with dynamic accumulators, insectaries, and perennial vegetables.",
+      "timingRule": "Spring after last frost. Waxing Moon for leafy establishment.",
       "plants": [
         {
-          "id": "juglans_nigra",
-          "name": "Black Walnut (Juglans nigra)",
-          "type": "nut_tree",
-          "function": ["timber", "nut_production", "alleopathy_management"],
-          "hardiness": "4-9",
-          "spacing": "30-40 feet",
-          "rootType": "taproot_deep",
-          "alleopathic": true,
-          "guildTolerant": ["PLACEHOLDER: Add juglone-tolerant companions"]
+          "id": "comfrey_bocking14",
+          "name": "Russian Comfrey (Symphytum x uplandicum 'Bocking 14')",
+          "type": "dynamic_accumulator",
+          "function": ["potassium_mining", "biomass", "pollinator_forage", "chop_and_drop"],
+          "hardiness": "4-8",
+          "spacing": "3 feet",
+          "accumulates": ["K", "Ca", "Fe", "Mg"],
+          "notes": "Plant at tree drip lines. Chop 4-5x/season for mulch."
         },
         {
-          "id": "castanea_dentata",
-          "name": "American Chestnut (Castanea dentata hybrid)",
-          "type": "nut_tree",
-          "function": ["nut_production", "timber", "wildlife_forage"],
-          "hardiness": "4-8",
-          "spacing": "30-40 feet",
-          "notes": "Use blight-resistant hybrids (Dunstan, etc.)"
-        },
-        {
-          "id": "pyrus_communis",
-          "name": "Common Pear (Pyrus communis)",
-          "type": "fruit_tree",
-          "function": ["fruit_production", "firewood", "pollinator_forage"],
-          "hardiness": "4-8",
-          "spacing": "15-20 feet",
-          "rootstock": "PLACEHOLDER: Select based on site drainage"
+          "id": "yarrow_achillea",
+          "name": "Yarrow (Achillea millefolium)",
+          "type": "insectary",
+          "function": ["predatory_insect_habitat", "compost_activator", "medicinal"],
+          "hardiness": "3-9",
+          "spacing": "18 inches",
+          "notes": "BD 502-507 compost preparation plant. Drought-tolerant."
         },
         {
           "id": "asparagus_officinalis",
@@ -179,7 +154,86 @@
           "function": ["early_spring_harvest", "permanent_bed", "deep_rooting"],
           "hardiness": "3-8",
           "spacing": "12-18 inches",
-          "establishment": "2-3 years before full harvest"
+          "establishment": "2-3 years before full harvest",
+          "notes": "Plant on berms for drainage. 20+ year lifespan."
+        },
+        {
+          "id": "jerusalem_artichoke",
+          "name": "Jerusalem Artichoke (Helianthus tuberosus)",
+          "type": "root_crop",
+          "function": ["biomass", "carbohydrate_production", "windbreak_understory"],
+          "hardiness": "3-9",
+          "spacing": "12-18 inches",
+          "notes": "Invasive spread — plant in contained beds or mow perimeter."
+        },
+        {
+          "id": "corylus_americana",
+          "name": "American Hazelnut (Corylus americana)",
+          "type": "nut_shrub",
+          "function": ["nut_production", "windbreak", "pollinator_forage"],
+          "hardiness": "4-9",
+          "spacing": "8-12 feet",
+          "notes": "Juglone tolerant — good black walnut companion. 3-5 yrs to production."
+        },
+        {
+          "id": "rumex_acetosa",
+          "name": "French Sorrel (Rumex acetosa)",
+          "type": "perennial_green",
+          "function": ["leafy_green", "acid_loving", "ground_cover"],
+          "hardiness": "3-9",
+          "spacing": "12 inches",
+          "notes": "Lemony perennial spinach. Cut-and-come-again harvest."
+        },
+        {
+          "id": "allium_schoenoprasum",
+          "name": "Chives (Allium schoenoprasum)",
+          "type": "herb",
+          "function": ["pest_deterrent", "pollinator_forage", "edible"],
+          "hardiness": "3-9",
+          "spacing": "6 inches",
+          "notes": "Apple guild standard. Repels apple maggot and scab."
+        },
+        {
+          "id": "trifolium_repens",
+          "name": "White Clover (Trifolium repens)",
+          "type": "ground_cover",
+          "function": ["nitrogen_fixation", "living_mulch", "pollinator_forage"],
+          "hardiness": "3-10",
+          "spacing": "Broadcast",
+          "notes": "Walk-on ground cover between rows. Mow or let flower."
+        }
+      ]
+    },
+    "supportSpecies": {
+      "name": "Nitrogen Fixers & Dynamic Accumulators (Chop-and-Drop)",
+      "description": "These species are planted throughout all years and maintained as biomass producers, not primary harvests.",
+      "plants": [
+        {
+          "id": "seaberry",
+          "name": "Sea Buckthorn (Hippophae rhamnoides)",
+          "type": "n_fixer_shrub",
+          "function": ["nitrogen_fixation", "berry_production", "windbreak"],
+          "hardiness": "3-8",
+          "spacing": "6-8 feet",
+          "notes": "Male + female required for berries. Extremely hardy."
+        },
+        {
+          "id": "goumi",
+          "name": "Goumi (Elaeagnus multiflora)",
+          "type": "n_fixer_shrub",
+          "function": ["nitrogen_fixation", "berry_production", "chop_and_drop"],
+          "hardiness": "4-9",
+          "spacing": "6-8 feet",
+          "notes": "Self-fertile. Red tart berries. Drought-tolerant once established."
+        },
+        {
+          "id": "nettle",
+          "name": "Stinging Nettle (Urtica dioica)",
+          "type": "dynamic_accumulator",
+          "function": ["nitrogen", "iron", "magnesium", "compost_activator"],
+          "hardiness": "3-10",
+          "spacing": "12 inches",
+          "notes": "High protein biomass. Compost activator. Medicinal tea."
         }
       ]
     }

@@ -1,0 +1,78 @@
+{
+  "description": "Cell salt recommendations based on birth month. Maps each month to the zodiac cell salt aligned with that month's dominant zodiac sign.",
+  "logic": "Each birth month maps to its dominant zodiac sign, which determines the recommended cell salt per biodynamic tradition.",
+  "salts_by_month": {
+    "1": {
+      "month": "January",
+      "zodiac_sign": "capricorn",
+      "cell_salt": "Calcium Phosphate",
+      "function": "Bone structure, teeth, cell formation"
+    },
+    "2": {
+      "month": "February",
+      "zodiac_sign": "aquarius",
+      "cell_salt": "Sodium Chloride",
+      "function": "Moisture balance, tears, saliva, digestion"
+    },
+    "3": {
+      "month": "March",
+      "zodiac_sign": "pisces",
+      "cell_salt": "Iron Phosphate",
+      "function": "Inflammation, fever, acute conditions"
+    },
+    "4": {
+      "month": "April",
+      "zodiac_sign": "aries",
+      "cell_salt": "Potassium Phosphate",
+      "function": "Nerve force, circulation, metabolism"
+    },
+    "5": {
+      "month": "May",
+      "zodiac_sign": "taurus",
+      "cell_salt": "Sodium Sulphate",
+      "function": "Fluid regulation, elimination, detoxification"
+    },
+    "6": {
+      "month": "June",
+      "zodiac_sign": "gemini",
+      "cell_salt": "Potassium Chloride",
+      "function": "Mucous membranes, skin, respiratory"
+    },
+    "7": {
+      "month": "July",
+      "zodiac_sign": "cancer",
+      "cell_salt": "Calcium Fluoride",
+      "function": "Elasticity, connective tissue, teeth"
+    },
+    "8": {
+      "month": "August",
+      "zodiac_sign": "leo",
+      "cell_salt": "Magnesium Phosphate",
+      "function": "Nerve pain, muscle cramps, spasms"
+    },
+    "9": {
+      "month": "September",
+      "zodiac_sign": "virgo",
+      "cell_salt": "Potassium Phosphate",
+      "function": "Blood cleansing, oxygen transport"
+    },
+    "10": {
+      "month": "October",
+      "zodiac_sign": "libra",
+      "cell_salt": "Sodium Phosphate",
+      "function": "Acid/alkaline balance, blood pH"
+    },
+    "11": {
+      "month": "November",
+      "zodiac_sign": "scorpio",
+      "cell_salt": "Calcium Sulphate",
+      "function": "Tissue regeneration, skin health"
+    },
+    "12": {
+      "month": "December",
+      "zodiac_sign": "sagittarius",
+      "cell_salt": "Silica",
+      "function": "Connective tissue, nails, hair, assimilation"
+    }
+  }
+}

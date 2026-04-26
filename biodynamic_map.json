@@ -1,19 +1,18 @@
 {
   "version": "2.0.0",
   "description": "Cell Salts + Plant recommendations based on Zodiac signs",
-  
   "zodiac_cell_salts": {
     "aries": {
       "name": "Aries",
-      "symbol": "♈",
+      "symbol": "\u2648",
       "element": "Fire",
       "cell_salt": "Potassium Phosphate",
       "function": "Nerve force, circulation, metabolism",
       "deficiency_symptoms": "Fatigue, poor circulation, sluggish metabolism"
     },
     "taurus": {
-      "name": "Taurus", 
-      "symbol": "♉",
+      "name": "Taurus",
+      "symbol": "\u2649",
       "element": "Earth",
       "cell_salt": "Sodium Sulphate",
       "function": "Fluid regulation, elimination, detoxification",
@@ -21,7 +20,7 @@
     },
     "gemini": {
       "name": "Gemini",
-      "symbol": "♊", 
+      "symbol": "\u264a",
       "element": "Air",
       "cell_salt": "Potassium Chloride",
       "function": "Mucous membranes, skin, respiratory",
@@ -29,7 +28,7 @@
     },
     "cancer": {
       "name": "Cancer",
-      "symbol": "♋",
+      "symbol": "\u264b",
       "element": "Water",
       "cell_salt": "Calcium Fluoride",
       "function": "Elasticity, connective tissue, teeth",
@@ -37,7 +36,7 @@
     },
     "leo": {
       "name": "Leo",
-      "symbol": "♌",
+      "symbol": "\u264c",
       "element": "Fire",
       "cell_salt": "Magnesium Phosphate",
       "function": "Nerve pain, muscle cramps, spasms",
@@ -45,15 +44,15 @@
     },
     "virgo": {
       "name": "Virgo",
-      "symbol": "♍",
+      "symbol": "\u264d",
       "element": "Earth",
-      "cell_salt": "Potassium Phosphate",
-      "function": "Blood cleansing, oxygen transport",
-      "deficiency_symptoms": "Anemia, poor oxygenation, sluggish blood"
+      "cell_salt": "Potassium Sulphate",
+      "function": "Blood cleansing, skin, oxygen transport",
+      "deficiency_symptoms": "Anemia, poor oxygenation, skin issues, sluggish blood"
     },
     "libra": {
       "name": "Libra",
-      "symbol": "♎",
+      "symbol": "\u264e",
       "element": "Air",
       "cell_salt": "Sodium Phosphate",
       "function": "Acid/alkaline balance, blood pH",
@@ -61,7 +60,7 @@
     },
     "scorpio": {
       "name": "Scorpio",
-      "symbol": "♏",
+      "symbol": "\u264f",
       "element": "Water",
       "cell_salt": "Calcium Sulphate",
       "function": "Tissue regeneration, skin health",
@@ -69,7 +68,7 @@
     },
     "sagittarius": {
       "name": "Sagittarius",
-      "symbol": "♐",
+      "symbol": "\u2650",
       "element": "Fire",
       "cell_salt": "Silica",
       "function": "Connective tissue, nails, hair, assimilation",
@@ -77,7 +76,7 @@
     },
     "capricorn": {
       "name": "Capricorn",
-      "symbol": "♑",
+      "symbol": "\u2651",
       "element": "Earth",
       "cell_salt": "Calcium Phosphate",
       "function": "Bone structure, teeth, cell formation",
@@ -85,7 +84,7 @@
     },
     "aquarius": {
       "name": "Aquarius",
-      "symbol": "♒",
+      "symbol": "\u2652",
       "element": "Air",
       "cell_salt": "Sodium Chloride",
       "function": "Moisture balance, tears, saliva, digestion",
@@ -93,70 +92,472 @@
     },
     "pisces": {
       "name": "Pisces",
-      "symbol": "♓",
+      "symbol": "\u2653",
       "element": "Water",
       "cell_salt": "Iron Phosphate",
       "function": "Inflammation, fever, acute conditions",
       "deficiency_symptoms": "Frequent fevers, inflammation, anemia"
     }
   },
-
   "mineral_to_plants": {
     "potassium_phosphate": {
-      "plants": ["comfrey", "nettle", "dandelion_green", "spinach", "kale", "almond", "sunflower_seeds", "pumpkin_seeds", "avocado"]
+      "plants": [
+        "comfrey",
+        "nettle",
+        "dandelion",
+        "spinach",
+        "kale",
+        "sunflower",
+        "pumpkin",
+        "avocado"
+      ]
+    },
+    "potassium_sulphate": {
+      "plants": [
+        "watercress",
+        "mustard_greens",
+        "radish",
+        "horseradish",
+        "onion",
+        "garlic",
+        "parsley",
+        "celery"
+      ]
     },
     "sodium_sulphate": {
-      "plants": ["celery", "cucumber", "lettuce", "zucchini", "watermelon", "coconut_water", "asparagus", "rhubarb"]
+      "plants": [
+        "celery",
+        "cucumber",
+        "lettuce",
+        "zucchini",
+        "watermelon",
+        "asparagus",
+        "rhubarb"
+      ]
     },
     "potassium_chloride": {
-      "plants": ["horseradish", "radish", "turnip", "cabbage", "brussels_sprouts", "apricot", "peach", "sour_cherry"]
+      "plants": [
+        "horseradish",
+        "radish",
+        "turnip",
+        "cabbage",
+        "brussels_sprouts",
+        "apricot",
+        "peach",
+        "sour_cherry"
+      ]
     },
     "calcium_fluoride": {
-      "plants": ["oats", "barley", "rye", "quinoa", "amaranth", "fig", "mulberry", "blackberry"]
+      "plants": [
+        "oats",
+        "barley",
+        "rye",
+        "quinoa",
+        "amaranth",
+        "fig",
+        "mulberry",
+        "blackberry"
+      ]
     },
     "magnesium_phosphate": {
-      "plants": ["chamomile", "lemon_balm", "catnip", "valerian", "passionflower", "cacao", "dark_chocolate", "cashew"]
+      "plants": [
+        "chamomile",
+        "lemon_balm",
+        "catnip",
+        "valerian",
+        "passionflower",
+        "cashew"
+      ]
     },
     "sodium_phosphate": {
-      "plants": ["lemon", "lime", "grapefruit", "orange", "apple_cider_vinegar", "fermented_foods", "sauerkraut", "kimchi"]
+      "plants": [
+        "lemon",
+        "lime",
+        "grapefruit",
+        "orange",
+        "sauerkraut_cabbage",
+        "kimchi_cabbage"
+      ]
     },
     "calcium_sulphate": {
-      "plants": ["broccoli", "cauliflower", "kale", "collard_greens", "bok_choy", "sesame_seeds", "tahini", "almond"]
+      "plants": [
+        "broccoli",
+        "cauliflower",
+        "kale",
+        "collard_greens",
+        "bok_choy",
+        "sesame"
+      ]
     },
     "silica": {
-      "plants": ["oats", "oat_straw", "horsetail", "nettle", "cucumber_peel", "bell_pepper", "green_beans", "strawberry"]
+      "plants": [
+        "oats",
+        "oat_straw",
+        "horsetail",
+        "nettle",
+        "cucumber",
+        "bell_pepper",
+        "green_beans",
+        "strawberry"
+      ]
     },
     "calcium_phosphate": {
-      "plants": ["sesame_seeds", "tahini", "almond", "fig", "molasses", "amaranth", "quinoa", "navy_beans"]
+      "plants": [
+        "sesame",
+        "almond",
+        "fig",
+        "amaranth",
+        "quinoa",
+        "navy_beans"
+      ]
     },
     "sodium_chloride": {
-      "plants": ["celery", "sea_vegetables", "kelp", "dulse", "nori", "tomato", "lettuce", "swiss_chard"]
+      "plants": [
+        "celery",
+        "tomato",
+        "lettuce",
+        "swiss_chard",
+        "beet"
+      ]
     },
     "iron_phosphate": {
-      "plants": ["spinach", "swiss_chard", "beet_greens", "lentils", "beans", "quinoa", "pumpkin_seeds", "dark_chocolate"]
+      "plants": [
+        "spinach",
+        "swiss_chard",
+        "beet_greens",
+        "lentils",
+        "beans",
+        "quinoa",
+        "pumpkin"
+      ]
     }
   },
-
   "element_preferences": {
     "fire": {
-      "signs": ["aries", "leo", "sagittarius"],
+      "signs": [
+        "aries",
+        "leo",
+        "sagittarius"
+      ],
       "climate": "warm",
-      "plants": ["tomato", "pepper", "corn", "sunflower", "marigold"]
+      "plants": [
+        "tomato",
+        "pepper",
+        "corn",
+        "sunflower",
+        "marigold"
+      ]
     },
     "earth": {
-      "signs": ["taurus", "virgo", "capricorn"],
+      "signs": [
+        "taurus",
+        "virgo",
+        "capricorn"
+      ],
       "climate": "temperate",
-      "plants": ["root_vegetables", "squash", "beans", "oak", "elderberry"]
+      "plants": [
+        "root_vegetables",
+        "squash",
+        "beans",
+        "elderberry",
+        "pear"
+      ]
     },
     "air": {
-      "signs": ["gemini", "libra", "aquarius"],
+      "signs": [
+        "gemini",
+        "libra",
+        "aquarius"
+      ],
       "climate": "moderate",
-      "plants": ["herbs", "flowers", "apple", "pear", "lavender"]
+      "plants": [
+        "herbs",
+        "flowers",
+        "apple",
+        "pear",
+        "lavender"
+      ]
     },
     "water": {
-      "signs": ["cancer", "scorpio", "pisces"],
+      "signs": [
+        "cancer",
+        "scorpio",
+        "pisces"
+      ],
       "climate": "moist",
-      "plants": ["leafy_greens", "cucumber", "melon", "willow", "mint"]
+      "plants": [
+        "leafy_greens",
+        "cucumber",
+        "melon",
+        "willow",
+        "mint"
+      ]
+    }
+  },
+  "plant_zones": {
+    "comfrey": {
+      "hardiness": "4-8",
+      "type": "perennial_herb"
+    },
+    "nettle": {
+      "hardiness": "3-10",
+      "type": "perennial_herb"
+    },
+    "dandelion": {
+      "hardiness": "3-10",
+      "type": "perennial_herb"
+    },
+    "spinach": {
+      "hardiness": "2-11",
+      "type": "annual_green"
+    },
+    "kale": {
+      "hardiness": "3-10",
+      "type": "biennial_green"
+    },
+    "sunflower": {
+      "hardiness": "2-11",
+      "type": "annual_flower"
+    },
+    "pumpkin": {
+      "hardiness": "3-11",
+      "type": "annual_squash"
+    },
+    "avocado": {
+      "hardiness": "9-11",
+      "type": "subtropical_tree"
+    },
+    "watercress": {
+      "hardiness": "5-11",
+      "type": "aquatic_green"
+    },
+    "mustard_greens": {
+      "hardiness": "2-11",
+      "type": "annual_green"
+    },
+    "radish": {
+      "hardiness": "2-11",
+      "type": "annual_root"
+    },
+    "horseradish": {
+      "hardiness": "3-9",
+      "type": "perennial_root"
+    },
+    "onion": {
+      "hardiness": "3-9",
+      "type": "biennial_bulb"
+    },
+    "garlic": {
+      "hardiness": "3-9",
+      "type": "biennial_bulb"
+    },
+    "parsley": {
+      "hardiness": "2-11",
+      "type": "biennial_herb"
+    },
+    "celery": {
+      "hardiness": "2-10",
+      "type": "biennial_stalk"
+    },
+    "cucumber": {
+      "hardiness": "4-12",
+      "type": "annual_vine"
+    },
+    "lettuce": {
+      "hardiness": "2-11",
+      "type": "annual_green"
+    },
+    "zucchini": {
+      "hardiness": "3-11",
+      "type": "annual_squash"
+    },
+    "watermelon": {
+      "hardiness": "3-11",
+      "type": "annual_melon"
+    },
+    "asparagus": {
+      "hardiness": "3-8",
+      "type": "perennial_vegetable"
+    },
+    "rhubarb": {
+      "hardiness": "3-8",
+      "type": "perennial_vegetable"
+    },
+    "turnip": {
+      "hardiness": "2-11",
+      "type": "annual_root"
+    },
+    "cabbage": {
+      "hardiness": "1-11",
+      "type": "biennial_green"
+    },
+    "brussels_sprouts": {
+      "hardiness": "2-11",
+      "type": "biennial_green"
+    },
+    "apricot": {
+      "hardiness": "5-9",
+      "type": "fruit_tree"
+    },
+    "peach": {
+      "hardiness": "5-8",
+      "type": "fruit_tree"
+    },
+    "sour_cherry": {
+      "hardiness": "4-6",
+      "type": "fruit_tree"
+    },
+    "oats": {
+      "hardiness": "3-9",
+      "type": "annual_grain"
+    },
+    "barley": {
+      "hardiness": "3-8",
+      "type": "annual_grain"
+    },
+    "rye": {
+      "hardiness": "3-9",
+      "type": "annual_grain"
+    },
+    "quinoa": {
+      "hardiness": "4-10",
+      "type": "annual_grain"
+    },
+    "amaranth": {
+      "hardiness": "4-11",
+      "type": "annual_grain"
+    },
+    "fig": {
+      "hardiness": "6-10",
+      "type": "fruit_tree"
+    },
+    "mulberry": {
+      "hardiness": "5-9",
+      "type": "fruit_tree"
+    },
+    "blackberry": {
+      "hardiness": "4-9",
+      "type": "berry_shrub"
+    },
+    "chamomile": {
+      "hardiness": "2-8",
+      "type": "annual_herb"
+    },
+    "lemon_balm": {
+      "hardiness": "3-7",
+      "type": "perennial_herb"
+    },
+    "catnip": {
+      "hardiness": "3-9",
+      "type": "perennial_herb"
+    },
+    "valerian": {
+      "hardiness": "4-7",
+      "type": "perennial_herb"
+    },
+    "passionflower": {
+      "hardiness": "6-10",
+      "type": "perennial_vine"
+    },
+    "cashew": {
+      "hardiness": "10-12",
+      "type": "tropical_tree"
+    },
+    "lemon": {
+      "hardiness": "9-11",
+      "type": "subtropical_tree"
+    },
+    "lime": {
+      "hardiness": "9-11",
+      "type": "subtropical_tree"
+    },
+    "grapefruit": {
+      "hardiness": "9-11",
+      "type": "subtropical_tree"
+    },
+    "orange": {
+      "hardiness": "9-11",
+      "type": "subtropical_tree"
+    },
+    "sauerkraut_cabbage": {
+      "hardiness": "1-11",
+      "type": "biennial_green"
+    },
+    "kimchi_cabbage": {
+      "hardiness": "1-11",
+      "type": "biennial_green"
+    },
+    "broccoli": {
+      "hardiness": "3-10",
+      "type": "annual_green"
+    },
+    "cauliflower": {
+      "hardiness": "2-11",
+      "type": "annual_green"
+    },
+    "collard_greens": {
+      "hardiness": "3-11",
+      "type": "biennial_green"
+    },
+    "bok_choy": {
+      "hardiness": "4-10",
+      "type": "annual_green"
+    },
+    "sesame": {
+      "hardiness": "8-11",
+      "type": "annual_seed"
+    },
+    "oat_straw": {
+      "hardiness": "3-9",
+      "type": "annual_grain"
+    },
+    "horsetail": {
+      "hardiness": "3-10",
+      "type": "perennial_herb"
+    },
+    "bell_pepper": {
+      "hardiness": "3-11",
+      "type": "annual_vegetable"
+    },
+    "green_beans": {
+      "hardiness": "3-11",
+      "type": "annual_vegetable"
+    },
+    "strawberry": {
+      "hardiness": "3-10",
+      "type": "perennial_berry"
+    },
+    "almond": {
+      "hardiness": "7-9",
+      "type": "nut_tree"
+    },
+    "navy_beans": {
+      "hardiness": "3-10",
+      "type": "annual_legume"
+    },
+    "tomato": {
+      "hardiness": "3-11",
+      "type": "annual_vegetable"
+    },
+    "swiss_chard": {
+      "hardiness": "2-11",
+      "type": "biennial_green"
+    },
+    "beet": {
+      "hardiness": "2-11",
+      "type": "biennial_root"
+    },
+    "beet_greens": {
+      "hardiness": "2-11",
+      "type": "biennial_green"
+    },
+    "lentils": {
+      "hardiness": "3-9",
+      "type": "annual_legume"
+    },
+    "beans": {
+      "hardiness": "3-10",
+      "type": "annual_legume"
     }
   }
 }

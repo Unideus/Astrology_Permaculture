@@ -30,17 +30,36 @@ class PermacultureApp {
     }));
   }
 
-  // Get recommended plants based on deficient salts
-  getRecommendedPlants(deficientSalts) {
+  // Get recommended plants based on deficient salts, filtered by climate zone
+  getRecommendedPlants(deficientSalts, climateData = null) {
     const plantMap = {};
+    
+    // Extract zone number from climate data (e.g., "7b" → 7)
+    let siteZone = null;
+    if (climateData && climateData.hardinessZone) {
+      const zoneMatch = climateData.hardinessZone.match(/^(\d+)/);
+      if (zoneMatch) siteZone = parseInt(zoneMatch[1]);
+    }
     
     deficientSalts.forEach(salt => {
       const saltKey = salt.cell_salt.toLowerCase().replace(/ /g, '_');
       const mineralData = this.biodynamicMap.mineral_to_plants[saltKey];
       
       if (mineralData && mineralData.plants) {
-        const plants = mineralData.plants;
-        plants.forEach(plant => {
+        mineralData.plants.forEach(plant => {
+          // Zone filtering
+          if (siteZone !== null && this.biodynamicMap.plant_zones) {
+            const zoneInfo = this.biodynamicMap.plant_zones[plant];
+            if (zoneInfo && zoneInfo.hardiness) {
+              const range = zoneInfo.hardiness.split('-');
+              const minZone = parseInt(range[0]);
+              const maxZone = parseInt(range[1]);
+              if (siteZone < minZone || siteZone > maxZone) {
+                return; // Skip — plant won't survive here
+              }
+            }
+          }
+          
           if (!plantMap[plant]) {
             plantMap[plant] = {
               plant,
@@ -57,8 +76,8 @@ class PermacultureApp {
     return Object.values(plantMap);
   }
 
-  // Generate complete plan
-  generatePlan(userData) {
+  // Generate complete plan — now accepts climateData for zone filtering
+  generatePlan(userData, climateData = null) {
     const {
       address,
       sunSign,
@@ -76,8 +95,8 @@ class PermacultureApp {
       idx === self.findIndex(s => s.cell_salt === salt.cell_salt)
     );
     
-    // Get recommended plants
-    const recommendedPlants = this.getRecommendedPlants(uniqueSalts);
+    // Get recommended plants, filtered by zone if climate data available
+    const recommendedPlants = this.getRecommendedPlants(uniqueSalts, climateData);
     
     // Generate 3-year plan based on scale
     const plan = this.generateThreeYearPlan(scale, recommendedPlants, soilTest);
@@ -101,7 +120,7 @@ class PermacultureApp {
     };
   }
 
-  // Generate 3-year implementation plan
+  // Generate 3-year implementation plan — CORRECTED: Canopy First Succession
   generateThreeYearPlan(scale, plants, soilTest) {
     const scaleConfig = {
       'balcony': { area: '0-100 sq ft', trees: false, focus: 'containers, herbs' },
@@ -115,94 +134,101 @@ class PermacultureApp {
     
     return {
       year0: {
-        title: 'Soil Remediation & Preparation',
+        title: config.trees ? 'Canopy Trees & Infrastructure' : 'Containers & Infrastructure',
         duration: 'Months 0-12',
-        focus: 'Build soil biology, establish cover crops',
+        focus: config.trees ? 'Establish overstory structure that defines the entire system' : 'Permanent containers, trellises, soil base',
         tasks: [
           {
-            task: 'Soil Testing',
-            timing: 'Month 0',
-            details: soilTest ? 'Use existing test data' : 'Send soil sample to lab'
+            task: 'Soil Testing & Baseline',
+            timing: 'Month 0 (before planting)',
+            details: soilTest ? 'Use existing test data to select trees' : 'Send soil sample; most fruit/nut trees prefer pH 6.0-7.0'
           },
           {
-            task: 'Cover Crop Planting',
+            task: 'Canopy Tree Planting',
+            timing: 'Late winter/early spring (dormant bare root)',
+            plants: config.trees ? ['Black Walnut', 'Chestnut', 'Pecan', 'Persimmon'] : ['Dwarf varieties in containers'],
+            details: '30-50ft spacing. These need 5-15 years to mature. Plant now or wait years for harvest.'
+          },
+          {
+            task: 'Water Infrastructure',
+            timing: 'Month 0-2',
+            details: 'Swales on contour, drip irrigation zones, rain catchment. Design around mature tree canopy spread.'
+          },
+          {
+            task: 'Cover Crops Between Rows',
             timing: 'Month 1-3',
-            plants: ['Cereal Rye', 'Crimson Clover', 'Hairy Vetch'],
-            details: 'Plant during Waning Moon for root establishment'
+            plants: ['Cereal Rye', 'Crimson Clover', 'Hairy Vetch', 'White Clover'],
+            details: 'Protect bare soil, build biology, fix nitrogen. Will be mowed/chopped as guild fills in.'
           },
           {
-            task: 'Compost & Amendments',
-            timing: 'Month 2-4',
-            details: 'Apply compost, biochar, mineral amendments based on soil test'
-          },
-          {
-            task: 'Support Species',
-            timing: 'Month 6-9',
-            plants: ['Autumn Olive', 'Comfrey', 'Yarrow'],
-            details: 'Nitrogen fixers and dynamic accumulators'
+            task: 'Support Species (N-fixers)',
+            timing: 'Month 3-6',
+            plants: ['Autumn Olive', 'Sea Buckthorn', 'Goumi', 'Black Locust'],
+            details: 'Fast-growing nitrogen fixers. Chop-and-drop biomass for canopy trees. Some yield berries as bonus.'
           }
         ]
       },
       
       year1: {
-        title: config.trees ? 'Shrubs & Small Trees' : 'Perennial Herbs & Ground Cover',
+        title: config.trees ? 'Sub-canopy, Fruit Trees & Shrubs' : 'Herbs, Berries & Containers',
         duration: 'Months 12-24',
-        focus: config.focus,
+        focus: 'Fill in the layers beneath developing canopy',
         tasks: [
           {
-            task: 'Berry Plantings',
+            task: 'Fruit Tree Planting',
             timing: 'Early Spring (dormant)',
-            plants: ['Raspberry', 'Black Currant', 'Gooseberry', 'Blueberry'],
-            details: 'Plant during Waxing Moon for establishment'
+            plants: config.trees ? ['Apple', 'Pear', 'Peach', 'Plum', 'Cherry'] : ['Dwarf Citrus', 'Fig (containers)'],
+            details: '15-25ft spacing. Plant into guilds that will support them. Mulch heavily.'
           },
           {
-            task: 'Small Trees',
-            timing: 'Early Spring or Late Fall',
-            plants: config.trees ? ['Dwarf Apple', 'Pear', 'Cherry', 'Peach'] : ['Dwarf Citrus (containers)'],
-            details: 'Bare root preferred, mulch heavily'
-          },
-          {
-            task: 'Herb Spiral/Bed',
-            timing: 'Spring after last frost',
-            plants: ['Comfrey', 'Yarrow', 'Chamomile', 'Lemon Balm', 'Catnip'],
-            details: 'Medicinal herbs matching deficient cell salts'
+            task: 'Berry & Shrub Layer',
+            timing: 'Early Spring',
+            plants: ['Raspberry', 'Black Currant', 'Gooseberry', 'Elderberry', 'Blueberry'],
+            details: 'Juglone-tolerant varieties near black walnut. Shade-tolerant currants on north side of trees.'
           },
           {
             task: 'Vine Trellises',
             timing: 'Spring',
-            plants: ['Grapes', 'Honeysuckle', 'Clematis'],
-            details: 'Install support structures'
+            plants: ['Grapes', 'Hardy Kiwi', 'Passionflower'],
+            details: 'Install on pergolas or between trees. Grapes on south-facing trellises for sun.'
+          },
+          {
+            task: 'Dynamic Accumulators',
+            timing: 'Spring after last frost',
+            plants: ['Comfrey', 'Yarrow', 'Nettle'],
+            details: 'Plant at tree drip lines. Begin chop-and-drop cycles to feed canopy.'
           }
         ]
       },
       
       year2: {
-        title: 'Main Canopy & Production',
+        title: 'Herbaceous, Ground Cover & Production Harvest',
         duration: 'Months 24-36',
-        focus: 'Establish permanent plantings',
+        focus: 'Fill remaining niches, begin harvesting herbs and early fruits',
         tasks: [
-          {
-            task: 'Canopy Trees',
-            timing: 'Early Spring (dormant)',
-            plants: config.trees ? ['Black Walnut', 'Chestnut', 'Oak', 'Hickory'] : ['Dwarf varieties in large containers'],
-            details: '30-40ft spacing for standard, 10-15ft for dwarf'
-          },
-          {
-            task: 'Nut Production',
-            timing: 'Spring/Fall',
-            plants: ['Hazelnut', 'Almond', 'Pecan (zone dependent)'],
-            details: 'Long-term investment, 5-10 years to full production'
-          },
           {
             task: 'Perennial Vegetables',
             timing: 'Early Spring',
-            plants: ['Asparagus', 'Rhubarb', 'Jerusalem Artichoke', 'Horseradish'],
-            details: '2-3 years to full harvest'
+            plants: ['Asparagus', 'Rhubarb', 'Jerusalem Artichoke', 'French Sorrel'],
+            details: 'Asparagus needs 2-3 years before full harvest. Plant on berms for drainage.'
+          },
+          {
+            task: 'Ground Cover & Living Mulch',
+            timing: 'Spring/Fall',
+            plants: ['White Clover', 'Creeping Thyme', 'Strawberry'],
+            details: 'Suppress weeds, fix nitrogen, support pollinators. Mow before seed if needed.'
           },
           {
             task: 'Guild Completion',
             timing: 'Throughout season',
-            details: 'Fill in nitrogen fixers, pollinators, mulch plants'
+            plants: ['Chives', 'Daffodils', 'Lupine', 'Clover'],
+            details: 'Fill gaps with pest deterrents, pollinator support, and mulch plants. Complete tree guilds.'
+          },
+          {
+            task: 'First Harvests',
+            timing: 'Seasonal',
+            plants: ['Herbs', 'Berries (year 2-3)', 'Comfrey biomass'],
+            details: 'Herbs and greens first. Berries in year 2-3. Tree fruit in year 3-7. Nuts in year 5-15.'
           }
         ]
       }

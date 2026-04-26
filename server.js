@@ -107,8 +107,28 @@ app.post('/api/generate-plan', async (req, res) => {
       console.warn('Geocoding failed, using fallback:', geoError.message);
     }
 
-    // Build prompt for Ollama
-    const prompt = buildPermaculturePrompt(userData, locationData);
+    // Get climate data BEFORE building Ollama prompt
+    let climateData = null;
+    if (locationData && locationData.latitude && locationData.longitude) {
+      try {
+        const climateResponse = await fetch(`http://localhost:${PORT}/api/climate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            latitude: locationData.latitude,
+            longitude: locationData.longitude
+          })
+        });
+        if (climateResponse.ok) {
+          climateData = await climateResponse.json();
+        }
+      } catch (climateError) {
+        console.warn('Climate lookup failed:', climateError.message);
+      }
+    }
+
+    // Build prompt for Ollama WITH climate data
+    const prompt = buildPermaculturePrompt(userData, locationData, climateData);
 
     // Call Ollama
     let ollamaPlan = null;
@@ -135,8 +155,9 @@ app.post('/api/generate-plan', async (req, res) => {
       console.warn('Ollama failed, falling back to template:', ollamaError.message);
     }
 
-    // Generate fallback plan (existing logic)
-    const plan = permaApp.generatePlan(userData);
+    // Climate data already fetched above for Ollama prompt — reuse it
+    // Generate fallback plan with climate filtering
+    const plan = permaApp.generatePlan(userData, climateData);
 
     // Merge Ollama plan if available
     if (ollamaPlan) {
@@ -151,26 +172,8 @@ app.post('/api/generate-plan', async (req, res) => {
       };
     }
 
-    // Add real location data
-    let climateData = null;
-    if (locationData && locationData.latitude && locationData.longitude) {
-      // Get climate data
-      try {
-        const climateResponse = await fetch(`http://localhost:${PORT}/api/climate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            latitude: locationData.latitude,
-            longitude: locationData.longitude
-          })
-        });
-        if (climateResponse.ok) {
-          climateData = await climateResponse.json();
-        }
-      } catch (climateError) {
-        console.warn('Climate lookup failed:', climateError.message);
-      }
-
+    // Attach location data to plan
+    if (locationData) {
       plan.locationData = locationData;
       plan.climateData = climateData;
     } else {
@@ -189,8 +192,27 @@ app.post('/api/generate-plan', async (req, res) => {
   }
 });
 
-function buildPermaculturePrompt(userData, locationData) {
+function buildPermaculturePrompt(userData, locationData, climateData = null) {
   const { address, sunSign, familyMembers = [], scale, soilTest } = userData;
+  
+  // Build climate context for the AI
+  let climateContext = '';
+  if (climateData) {
+    const zone = climateData.hardinessZone || 'unknown';
+    const koppen = climateData.koppenCode || 'unknown';
+    const frostInfo = climateData.frostDates?.light?.avgLastSpringFrost 
+      ? `Last spring frost: ${climateData.frostDates.light.avgLastSpringFrost}, First fall frost: ${climateData.frostDates.light.avgFirstFallFrost}`
+      : 'Frost-free or near-frost-free climate';
+    climateContext = `
+CLIMATE CONSTRAINTS (STRICT):
+- USDA Hardiness Zone: ${zone}
+- Köppen Climate: ${koppen}
+- ${frostInfo}
+- ONLY suggest plants that survive in USDA zone ${zone}
+- NO temperate plants (apple, pear, cherry, almond, walnut, chestnut, hazelnut) in zone 9+ unless specifically subtropical varieties
+- For zone 10a: citrus, avocado, mango, banana, papaya, passionfruit, guava, fig, pineapple, coconut, okra, sweet potato, taro, and tropical greens are appropriate
+- DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum (these need winter chill and won't survive/produce in zone 10a)`;
+  }
   
   return `You are an expert permaculture designer and astrological gardener. Create a detailed permaculture design plan based on the following information:
 
@@ -202,6 +224,8 @@ SITE INFORMATION:
 ${familyMembers.length > 0 ? `- Family Members: ${familyMembers.map(m => m.sunSign).join(', ')}` : ''}
 ${soilTest ? `- Soil Test: pH ${soilTest.ph}, N ${soilTest.nitrogen}, P ${soilTest.phosphorus}, K ${soilTest.potassium}` : '- No soil test provided'}
 
+${climateContext}
+
 Based on the cell salt philosophy:
 - ${sunSign} individuals benefit from plants rich in: ${getCellSaltsForSign(sunSign)}
 
@@ -211,6 +235,7 @@ Please provide a structured permaculture design plan with the following sections
 
 2. GUILDS: 3-5 specific plant guilds (groups of plants that support each other):
    - Each guild should have a name, central tree/shrub, supporting plants, and function
+   - CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone
 
 3. COMPANION_PLANTING: Key companion planting combinations for the recommended crops
 
@@ -423,8 +448,7 @@ app.post('/api/climate', async (req, res) => {
           const subZone = avgAnnualMinF < zoneMid ? 'a' : 'b';
           hardinessZone = `${zone}${subZone}`;
           
-          // Growing season estimate: ~365 - (abs avg min in °F / 3.3)
-          growingSeasonDays = Math.round(365 - (Math.abs(avgAnnualMinF) / 3.3));
+          // Growing season will be calculated from actual frost-free days below
           hardinessSource = 'Open-Meteo Climate Archive (1991–2020)';
 
           // ── Frost Date Analysis ──
@@ -453,22 +477,53 @@ app.post('/api/climate', async (req, res) => {
             Object.values(byYear).forEach(yearData => {
               const lastSpring = findLastSpringFrost(yearData, ft.tempC);
               const firstFall = findFirstFallFrost(yearData, ft.tempC);
+              
+              if (lastSpring) springDates.push(new Date(lastSpring));
+              if (firstFall) fallDates.push(new Date(firstFall));
+              
+              // Only count frost-free days if both dates exist in the same year
               if (lastSpring && firstFall) {
                 const s = new Date(lastSpring);
                 const f = new Date(firstFall);
-                springDates.push(s);
-                fallDates.push(f);
                 frostFreeDays.push(Math.round((f - s) / (1000 * 60 * 60 * 24)));
               }
             });
 
-            if (springDates.length > 0) {
-              const avgSpringDoy = Math.round(springDates.reduce((sum, d) => sum + getDayOfYear(d), 0) / springDates.length);
-              const avgFallDoy = Math.round(fallDates.reduce((sum, d) => sum + getDayOfYear(d), 0) / fallDates.length);
-              ft.avgLastSpringFrost = doyToDate(avgSpringDoy);
-              ft.avgFirstFallFrost = doyToDate(avgFallDoy);
-              ft.avgFrostFreeDays = Math.round(frostFreeDays.reduce((a, b) => a + b, 0) / frostFreeDays.length);
-              ft.dataYears = springDates.length;
+            const totalYears = Object.keys(byYear).length;
+
+            if (springDates.length > 0 || fallDates.length > 0) {
+              if (springDates.length > 0) {
+                const avgSpringDoy = Math.round(springDates.reduce((sum, d) => sum + getDayOfYear(d), 0) / springDates.length);
+                ft.avgLastSpringFrost = doyToDate(avgSpringDoy);
+              }
+              if (fallDates.length > 0) {
+                const avgFallDoy = Math.round(fallDates.reduce((sum, d) => sum + getDayOfYear(d), 0) / fallDates.length);
+                ft.avgFirstFallFrost = doyToDate(avgFallDoy);
+              }
+              if (frostFreeDays.length > 0) {
+                ft.avgFrostFreeDays = Math.round(frostFreeDays.reduce((a, b) => a + b, 0) / frostFreeDays.length);
+              } else {
+                // No years had both spring AND fall frost
+                // Use avg of available dates from different years
+                const springDoys = springDates.map(d => getDayOfYear(d));
+                const fallDoys = fallDates.map(d => getDayOfYear(d));
+                if (springDoys.length > 0 && fallDoys.length > 0) {
+                  const avgSpringDoy = springDoys.reduce((a, b) => a + b, 0) / springDoys.length;
+                  const avgFallDoy = fallDoys.reduce((a, b) => a + b, 0) / fallDoys.length;
+                  const estimatedDays = avgFallDoy - avgSpringDoy;
+                  ft.avgFrostFreeDays = estimatedDays > 0 ? Math.round(estimatedDays) : 365;
+                } else {
+                  ft.avgFrostFreeDays = 365;
+                }
+              }
+              ft.dataYears = totalYears;
+            } else {
+              // No frost events in entire 30-year record
+              ft.frostFree = true;
+              ft.avgLastSpringFrost = 'No frost (year-round growing)';
+              ft.avgFirstFallFrost = 'No frost (year-round growing)';
+              ft.avgFrostFreeDays = 365;
+              ft.dataYears = totalYears;
             }
           });
 
@@ -476,6 +531,11 @@ app.post('/api/climate', async (req, res) => {
             light: frostThresholds.find(f => f.label === 'light'),
             hard: frostThresholds.find(f => f.label === 'hard')
           };
+
+          // Use actual frost-free days as growing season (light frost 32°F/0°C)
+          if (frostDates.light && frostDates.light.avgFrostFreeDays) {
+            growingSeasonDays = frostDates.light.avgFrostFreeDays;
+          }
         }
       }
     } catch (archiveError) {
@@ -549,11 +609,10 @@ app.post('/api/climate', async (req, res) => {
 
 // Frost date helper functions
 function findLastSpringFrost(yearData, thresholdC) {
-  // Spring window: Feb 15 – Jun 15
+  // Search Jan 1 – Jun 30 for the last frost of the winter/growing season start
   const springWindow = yearData.filter(d => {
     const m = parseInt(d.date.substring(5, 7));
-    const day = parseInt(d.date.substring(8, 10));
-    return (m > 2 || (m === 2 && day >= 15)) && (m < 6 || (m === 6 && day <= 15));
+    return m >= 1 && m <= 6;
   });
   for (let i = springWindow.length - 1; i >= 0; i--) {
     if (springWindow[i].temp <= thresholdC) return springWindow[i].date;
@@ -562,11 +621,10 @@ function findLastSpringFrost(yearData, thresholdC) {
 }
 
 function findFirstFallFrost(yearData, thresholdC) {
-  // Fall window: Aug 15 – Dec 15
+  // Search Jul 1 – Dec 31 for the first frost of the fall/winter
   const fallWindow = yearData.filter(d => {
     const m = parseInt(d.date.substring(5, 7));
-    const day = parseInt(d.date.substring(8, 10));
-    return (m > 8 || (m === 8 && day >= 15)) && (m < 12 || (m === 12 && day <= 15));
+    return m >= 7 && m <= 12;
   });
   for (let i = 0; i < fallWindow.length; i++) {
     if (fallWindow[i].temp <= thresholdC) return fallWindow[i].date;
