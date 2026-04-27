@@ -1219,7 +1219,7 @@
     "botanical_name": null,
     "taxonomy": {
       "type": "fruit_tree",
-      "layer": "canopy"
+      "layer": "low_tree"
     },
     "bio_logic": {
       "salts": [

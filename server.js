@@ -309,61 +309,105 @@ app.post('/api/generate-plan', async (req, res) => {
       const anchorName = guild1Canopy ? guild1Canopy.split('[')[0].trim() : null;
 
       if (anchorName) {
-        // SCALE-AWARE HEADERS: Homestead uses multi-anchor header
+        // SCALE-AWARE HEADERS
         if (scale === 'homestead' && allAnchors.length > 1) {
           plan.threeYearPlan.year0.focus = `Establish Homestead Orchard Infrastructure & Anchors: ${allAnchors.join(', ')}`;
         } else {
           plan.threeYearPlan.year0.focus = `Establish ${anchorName} as the system anchor`;
         }
 
-        // PLURAL PLAN LOGIC: Homestead shows all 3 anchors in Canopy task
-        plan.threeYearPlan.year0.tasks.forEach(task => {
-          if (/canopy/i.test(task.task)) {
-            if (scale === 'homestead' && allAnchors.length > 1) {
-              task.task = 'Canopy Tree Planting — Plant Primary Anchors';
-              task.plants = [...allAnchors];
-            } else {
-              task.plants = [anchorName];
-            }
-          }
+        // ── CHRONOLOGICAL RE-ORDER + ANCHOR SYNC ────────────────────────────────
+        // Rebuild year0.tasks in strict chronological index order
+        // ANCHOR SYNC: Canopy Tree Planting task gets EXACTLY the 3 guild anchors — NO EXCEPTIONS
+        const canopyTask = plan.threeYearPlan.year0.tasks.find(t => /canopy/i.test(t.task));
+        const waterTask = plan.threeYearPlan.year0.tasks.find(t => /water/i.test(t.task));
+        const coverTask = plan.threeYearPlan.year0.tasks.find(t => /cover|soil prep/i.test(t.task));
+        const supportTask = plan.threeYearPlan.year0.tasks.find(t => /support|species/i.test(t.task));
+        const soilTask = plan.threeYearPlan.year0.tasks.find(t => /soil test|baseline/i.test(t.task));
 
-          // RECURSIVE PLANT SYNC: replace any plant not in anchor list
-          if (task.plants && Array.isArray(task.plants)) {
-            task.plants = task.plants.map(p => {
-              if (typeof p === 'string' && p.toLowerCase() !== anchorName.toLowerCase()) {
-                // Only replace if not another anchor
-                if (!allAnchors.some(a => a.toLowerCase() === p.toLowerCase())) {
-                  return scale === 'homestead' ? anchorName : anchorName;
-                }
-              }
-              return p;
-            });
+        // ANCHOR SYNC (THE RE-FIX): Force plants array to guild anchors for Canopy task
+        if (canopyTask) {
+          if (scale === 'homestead' && allAnchors.length > 1) {
+            canopyTask.task = 'Canopy Tree Planting — Plant Primary Anchors';
+            canopyTask.plants = [...allAnchors];  // [Apple, Avocado, Fig] — no Avocado under Apple
+            canopyTask.timing = 'Month 3 — Late Winter';
+          } else {
+            canopyTask.plants = [anchorName];
+            canopyTask.timing = 'Month 3 — Late Winter';
           }
+        }
 
-          // TERMINATOR REGEX: catch all variants with gmi flags
-          if (task.details) {
-            task.details = task.details.replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
-          }
-          if (task.guild_note) {
-            task.guild_note = task.guild_note.replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
-          }
-          if (task.task) {
-            task.task = task.task.replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
-          }
-        });
+        // Build ordered task list (strict index)
+        const orderedTasks = [];
 
-        // DEDUPLICATE ALL THE THINGS: run after all anchors added
-        plan.threeYearPlan.year0.tasks.forEach(task => {
-          if (task.plants && Array.isArray(task.plants)) {
-            task.plants = [...new Set(task.plants.map(p => typeof p === 'string' ? p.trim() : p))];
-          }
-        });
+        // Index 0: Soil Testing & Baseline
+        if (soilTask) {
+          orderedTasks.push(soilTask);
+        } else {
+          orderedTasks.push({
+            task: 'Soil Testing & Baseline',
+            timing: 'Month 0',
+            plants: [],
+            details: 'Conduct soil test across the property. Map pH, organic matter %, and baseline nutrient levels before adding any amendments.',
+            guild_note: 'All subsequent work builds on this baseline.'
+          });
+        }
 
-        // Vine Hierarchy: if anchor is a vine, add Support Structure task to Year 1
+        // Index 1: Water Infrastructure — SCALE-AWARE WATERING (explicit anchor names)
+        if (waterTask) {
+          waterTask.timing = 'Month 0-2';
+          orderedTasks.push(waterTask);
+        } else {
+          const waterDetail = scale === 'homestead' && allAnchors.length > 1
+            ? `Setup ${allAnchors.length}-zone irrigation for ${allAnchors.join(', ')}. Each guild has distinct water needs — install dedicated drip lines or micro-sprinkler zones per guild. Do not run a single irrigation line to all three anchors.`
+            : `Install primary water infrastructure: catchment systems, swales on contour, and primary irrigation lines.`;
+          orderedTasks.push({
+            task: 'Water Infrastructure & Earthworks',
+            timing: 'Month 0-2',
+            plants: [],
+            details: waterDetail,
+            guild_note: scale === 'homestead' && allAnchors.length > 1
+              ? `3-zone irrigation required for ${allAnchors.join(', ')} — each guild has unique moisture requirements.`
+              : 'Water infrastructure must be established before planting.'
+          });
+        }
+
+        // Index 2: Cover Crops & Soil Prep
+        if (coverTask) {
+          coverTask.timing = 'Month 1-2';
+          orderedTasks.push(coverTask);
+        } else {
+          orderedTasks.push({
+            task: 'Cover Crops & Soil Prep',
+            timing: 'Month 1-2',
+            plants: [],
+            details: 'Plant winter cover crop (crimson clover, austrian winter peas) to fix nitrogen and protect bare soil. Broadfork compacted zones.',
+            guild_note: 'Cover crops go in BEFORE canopy planting — this is the prep phase.'
+          });
+        }
+
+        // Index 3: Canopy Tree Planting (anchor-synced above)
+        if (canopyTask) orderedTasks.push(canopyTask);
+
+        // Index 4: Support Species
+        if (supportTask) {
+          supportTask.timing = 'Month 4+';
+          orderedTasks.push(supportTask);
+        } else {
+          orderedTasks.push({
+            task: 'Support Species — Dynamic Accumulators',
+            timing: 'Month 4+',
+            plants: ['Nettle', 'Comfrey', 'Dandelion', 'Yarrow'],
+            details: 'Install support species: Dynamic Accumulators (Nettle, Comfrey, Dandelion) for mineral cycling. Nitrogen fixers (Clover, Beans) for fertility build. DO NOT list Nettle as an N-fixer.',
+            guild_note: 'Support species establish after canopy trees are in the ground.'
+          });
+        }
+
+        // Add vine support structure if applicable (inserts after canopy)
         const VINES = ['passionflower', 'grape', 'hops', 'kiwi', 'vine', 'vining'];
         const isVine = VINES.some(v => anchorName.toLowerCase().includes(v));
         if (isVine) {
-          plan.threeYearPlan.year0.tasks.push({
+          orderedTasks.push({
             task: 'Support Structure for Vine Guild',
             timing: 'Month 0-1',
             plants: [],
@@ -372,25 +416,49 @@ app.post('/api/generate-plan', async (req, res) => {
           });
         }
 
-        // Year 1 Sync check
+        // Assign ordered task list back
+        plan.threeYearPlan.year0.tasks = orderedTasks;
+
+        // ── NETTLE/NITROGEN BAN (pre-render hard replacement) ──────────────────
+        plan.threeYearPlan.year0.tasks.forEach(task => {
+          ['task', 'details', 'guild_note'].forEach(field => {
+            if (task[field] && typeof task[field] === 'string') {
+              task[field] = task[field]
+                .replace(/nettle[^.,;\n]*nitrogen fixation/gi, 'Nettle: mineral accumulation')
+                .replace(/nettle[^.,;\n]*n-fix/gi, 'Nettle: mineral accumulation')
+                .replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
+            }
+          });
+          // Deduplicate
+          if (task.plants && Array.isArray(task.plants)) {
+            task.plants = [...new Set(task.plants.map(p => typeof p === 'string' ? p.trim() : p))];
+          }
+        });
+
+        // Year 1 Sync check: verify canopy task has correct anchors
         const planStar = plan.threeYearPlan.year0.tasks.find(t => /canopy/i.test(t.task))?.plants?.[0] || '';
         if (planStar && anchorName && planStar.toLowerCase() !== anchorName.toLowerCase()) {
           console.warn(`YEAR 1 SYNC FAIL: plan has '${planStar}' but guild has '${anchorName}' — overriding`);
           plan.threeYearPlan.year0.tasks.forEach(task => {
-            if (/canopy/i.test(task.task)) task.plants = [anchorName];
+            if (/canopy/i.test(task.task)) {
+              if (scale === 'homestead' && allAnchors.length > 1) {
+                task.plants = [...allAnchors];
+              } else {
+                task.plants = [anchorName];
+              }
+            }
           });
         }
 
-        // ZONE 10a WARNING + LOW-CHILL INJECTION (also inject into guild description for render)
+        // ZONE 10a WARNING + LOW-CHILL INJECTION
         const zoneStr = climateData?.hardinessZone || '';
         const zoneNum = parseInt(zoneStr.match(/^(\d+)/)?.[1] || '0');
         if (zoneNum >= 9) {
           if (anchorName.toLowerCase().includes('apple')) {
             const alert = '[LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Anna Apple or Dorsett Golden (<400 hrs below 45°F)] ';
             plan.threeYearPlan.year0.focus += alert;
-            // Also inject into Guild 1 description for [ZONE ALERT] rendering
             if (ollamaPlan.guilds?.[0]?.description) {
-              ollamaPlan.guilds[0].description = ollamaPlan.guilds[0].description.replace(/\[ZONE ALERT\].*?\]\s*/gi, ''); // dedup
+              ollamaPlan.guilds[0].description = ollamaPlan.guilds[0].description.replace(/\[ZONE ALERT\].*?\]\s*/gi, '');
               ollamaPlan.guilds[0].description = alert + ollamaPlan.guilds[0].description;
             }
           }
@@ -398,38 +466,30 @@ app.post('/api/generate-plan', async (req, res) => {
             plan.threeYearPlan.year0.focus += ' [LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Florida Prince or Tropic Snow Peach (<300 hrs)] ';
           }
         }
-
-        // SCALE-AWARE WATERING: Add irrigation zone task for Homestead
-        if (scale === 'homestead' && allAnchors.length > 1) {
-          plan.threeYearPlan.year0.tasks.push({
-            task: 'Water Infrastructure — Designate Irrigation Zones',
-            timing: 'Month 0-1',
-            plants: [],
-            details: `Designate specific irrigation zones for the ${allAnchors.length} separate guilds (${allAnchors.join(', ')}) to account for differing water needs. Each guild may require individual drip lines or micro-sprinkler zones based on soil moisture and species requirements.`,
-            guild_note: 'Homestead scale requires independent water management per guild — do not run a single irrigation line to all three anchors.'
-          });
-        }
       }
 
       // BOTANICAL TRUTH REGEX: rewrite N-fix lies in Support Species section
-      // Also applies to all guild layers, companion text, and plan task details
+      // NETTLE/NITROGEN BAN: hard replacement on all text fields
       const NEVER_FIX_N = ['sunflower', 'nettle', 'dandelion', 'comfrey', 'horseradish', 'radish', 'turnip', 'spinach', 'kale'];
       const rewriteAccumulator = (text) => {
         if (!text || typeof text !== 'string') return text;
         let fixed = text;
         NEVER_FIX_N.forEach(plant => {
-          // Botanical Truth Regex: "Nettle nitrogen fixers" → "Nettle dynamic accumulators"
-          const nFixRx = new RegExp(`(${plant})\\s+((?:nitrogen|n-fix|n\\s*fix|nitrogen\\s*fixers?)\\s+fixers?)`, 'gi');
-          fixed = fixed.replace(nFixRx, '$1 dynamic accumulators');
-          // Rewrite "fixes nitrogen" → "accumulates minerals" for these plants
-          const rx = new RegExp(`\\b${plant}\\b[^;]*nitrogen.fix[^,.]*`, 'gi');
+          // NETTLE/NITROGEN BAN: "nettle nitrogen fixation" / "nettle n-fix" -> "Nettle: mineral accumulation"
+          fixed = fixed.replace(
+            new RegExp(`${plant}[^.,;\n]*nitrogen[\s-]*(?:fix|fixers?|fixation)`, 'gi'),
+            `${plant.charAt(0).toUpperCase() + plant.slice(1)}: mineral accumulation`
+          );
+          // Rewrite "fixes nitrogen" -> "accumulates minerals" for these plants
+          const rx = new RegExp(`\b${plant}\b[^;]*nitrogen.fix[^,.]*`, 'gi');
           fixed = fixed.replace(rx, `${plant.charAt(0).toUpperCase() + plant.slice(1)} accumulates minerals and provides biomass`);
           // Also catch bare "X fixes nitrogen" patterns
-          const bareRx = new RegExp(`\\b${plant}\\b.*?:.*?(?:nitrogen|n-fix|n fixation)[^,.]*`, 'gi');
+          const bareRx = new RegExp(`\b${plant}\b.*?:.*?(?:nitrogen|n-fix|n fixation)[^,.]*`, 'gi');
           fixed = fixed.replace(bareRx, `${plant.charAt(0).toUpperCase() + plant.slice(1)}: Dynamic Accumulator (potassium/minerals)`);
         });
         return fixed;
       };
+
 
       if (ollamaPlan.companionPlanting) {
         ollamaPlan.companionPlanting = ollamaPlan.companionPlanting.map(c => rewriteAccumulator(c));
