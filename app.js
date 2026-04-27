@@ -228,7 +228,6 @@ class PermacultureApp {
         })()
       : 'container tree';
     
-    // ── YEAR 0: Canopy (Star Player) + N-Fixers ──────────────────────────────
     const year0Tasks = [];
     
     // Soil test baseline
@@ -257,7 +256,7 @@ class PermacultureApp {
       
       if (star) {
         year0Tasks.push({
-          task: 'Canopy Tree Planting (Star Player)',
+          task: 'Canopy Tree Planting',
           timing: 'Late winter/early spring (dormant bare root)',
           plants: [star.common_name],
           botanical: star.botanical_name || null,
@@ -616,7 +615,6 @@ class PermacultureApp {
     return {
       year0: {
         title: config.trees ? 'Canopy & Infrastructure' : 'Containers & Soil Base',
-        duration: 'Months 0-12',
         focus: config.trees
           ? `Establish ${preTreeStar} as the system anchor`
           : 'Permanent containers, trellises, soil building',
@@ -629,13 +627,13 @@ class PermacultureApp {
       },
       year1: {
         title: 'Sub-Canopy, Herbaceous & Vines',
-        duration: 'Months 12-24',
+        duration: 'Year 2',
         focus: `Fill mid-story with salt-linked plants targeting ${primarySalt || 'cell salt balance'}`,
         tasks: year1Tasks
       },
       year2: {
         title: 'Ground Cover, Roots & First Harvests',
-        duration: 'Months 24-36',
+        duration: 'Year 3',
         focus: 'Fill soil niche, begin producing food',
         tasks: year2Tasks
       }

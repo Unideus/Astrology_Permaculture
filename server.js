@@ -258,7 +258,17 @@ app.post('/api/generate-plan', async (req, res) => {
         ollamaPlan = parseOllamaResponse(ollamaData.response);
       }
     } catch (ollamaError) {
-      console.warn('Ollama failed, falling back to template:', ollamaError.message);
+      console.warn('Ollama generation failed:', ollamaError.message);
+      ollamaPlan = null;
+    }
+
+    // Homestead scale requires AI guilds — return error if Ollama unavailable
+    const scale = userData.scale || userData.propertySize;
+    if (!ollamaPlan && scale === 'homestead') {
+      return res.status(503).json({
+        error: 'Guild generation unavailable. Please try again or use a different location.',
+        detail: 'AI-powered guild generation requires the Ollama service to be available.'
+      });
     }
 
     // Climate data already fetched above for Ollama prompt — reuse it

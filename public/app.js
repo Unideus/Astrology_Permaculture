@@ -115,6 +115,10 @@ async function generatePlan() {
 
     generatedPlan = await response.json();
 
+    // Debug: log raw AI response so we can inspect what came back
+    console.log('=== AI RESPONSE ===');
+    console.log(JSON.stringify(generatedPlan, null, 2));
+
     // Display results
     displayResults(generatedPlan);
 
@@ -187,7 +191,8 @@ function displayResults(plan) {
     document.getElementById('siteMap').innerHTML = '<p class="note">Location map unavailable</p>';
   }
 
-  // AI Guilds
+  // AI Guilds — clear container before every render to prevent ghost data
+  document.getElementById('aiGuilds').innerHTML = '';
   if (plan.aiGenerated) {
     document.getElementById('aiGuildsCard').style.display = 'block';
     renderAIGuilds(plan.aiGenerated);
@@ -235,6 +240,12 @@ function displayResults(plan) {
 
   // 3-Year Plan
   const planData = plan.threeYearPlan;
+  
+  // Data Binding Enforcement: extract anchor from AI guilds if available
+  const anchor = (plan.aiGenerated?.guilds?.[0]?.layers?.layer1_canopy)
+    ? plan.aiGenerated.guilds[0].layers.layer1_canopy.split('[')[0].trim()
+    : null;
+  
   document.getElementById('threeYearPlan').innerHTML = `
     <div class="plan-timeline">
       <div class="year-section">
@@ -242,13 +253,22 @@ function displayResults(plan) {
         <p><em>${planData.year0.duration}</em></p>
         <p>${planData.year0.focus}</p>
         <div style="margin-top: 15px">
-          ${planData.year0.tasks.map(task => `
+          ${planData.year0.tasks.map(task => {
+            // If this is the canopy planting task, bind to the actual guild anchor
+            const displayPlants = (task.plants && anchor)
+              ? (task.plants.map(p => {
+                  // Avoid hardcoding Sour Cherry — always use AI anchor or dynamic data
+                  if (typeof p === 'string' && /sour.cherry/i.test(p)) return anchor;
+                  return p;
+                }))
+              : task.plants;
+            return `
             <div class="task-item">
               <strong>${task.task} - ${task.timing}</strong>
-              ${task.plants ? `<p>Plants: ${task.plants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
+              ${displayPlants ? `<p>Plants: ${displayPlants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
               <p>${task.details}</p>
-            </div>
-          `).join('')}
+            </div>`;
+          }).join('')}
         </div>
       </div>
 
