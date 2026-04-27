@@ -300,38 +300,59 @@ app.post('/api/generate-plan', async (req, res) => {
 
       // ── Post-Merge Sync: Bind plan star to Guild 1 anchor ───────────────────
       const guild1Canopy = ollamaPlan.guilds?.[0]?.layers?.layer1_canopy || null;
-      if (guild1Canopy) {
-        // Extract anchor name (strip [id: xxx])
-        const anchorName = guild1Canopy.split('[')[0].trim();
-        const anchorId = (guild1Canopy.match(/\[id:\s*([^\]]+)\]/) || [])[1] || '';
-        
-        // Year 1 focus: use anchor name
-        plan.threeYearPlan.year0.focus = `Establish ${anchorName} as the system anchor`;
-        
-        // RECURSIVE PLANT SYNC: iterate ALL year0 tasks, replace any non-anchor plant
+      const scale = userData.scale || userData.propertySize || '';
+
+      // Extract all guild anchors for Homestead multi-anchor plan
+      const allAnchors = (ollamaPlan.guilds || [])
+        .map(g => g.layers?.layer1_canopy?.split('[')[0].trim())
+        .filter(Boolean);
+      const anchorName = guild1Canopy ? guild1Canopy.split('[')[0].trim() : null;
+
+      if (anchorName) {
+        // SCALE-AWARE HEADERS: Homestead uses multi-anchor header
+        if (scale === 'homestead' && allAnchors.length > 1) {
+          plan.threeYearPlan.year0.focus = `Establish Homestead Orchard Infrastructure & Anchors: ${allAnchors.join(', ')}`;
+        } else {
+          plan.threeYearPlan.year0.focus = `Establish ${anchorName} as the system anchor`;
+        }
+
+        // PLURAL PLAN LOGIC: Homestead shows all 3 anchors in Canopy task
         plan.threeYearPlan.year0.tasks.forEach(task => {
-          // Recursive: replace ALL plant references in this task that don't match anchor
+          if (/canopy/i.test(task.task)) {
+            if (scale === 'homestead' && allAnchors.length > 1) {
+              task.task = 'Canopy Tree Planting — Plant Primary Anchors';
+              task.plants = [...allAnchors];
+            } else {
+              task.plants = [anchorName];
+            }
+          }
+
+          // RECURSIVE PLANT SYNC: replace any plant not in anchor list
           if (task.plants && Array.isArray(task.plants)) {
             task.plants = task.plants.map(p => {
               if (typeof p === 'string' && p.toLowerCase() !== anchorName.toLowerCase()) {
-                return anchorName;
+                // Only replace if not another anchor
+                if (!allAnchors.some(a => a.toLowerCase() === p.toLowerCase())) {
+                  return scale === 'homestead' ? anchorName : anchorName;
+                }
               }
               return p;
             });
           }
+
           // TERMINATOR REGEX: catch all variants with gmi flags
           if (task.details) {
-            task.details = task.details.replace(/plant now or wait for harvest/gmi, 'Timeline: Establish Year 1');
+            task.details = task.details.replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
           }
           if (task.guild_note) {
-            task.guild_note = task.guild_note.replace(/plant now or wait for harvest/gmi, 'Timeline: Establish Year 1');
+            task.guild_note = task.guild_note.replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
           }
           if (task.task) {
-            task.task = task.task.replace(/plant now or wait for harvest/gmi, 'Timeline: Establish Year 1');
+            task.task = task.task.replace(/plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
           }
         });
 
-        // Deduplicate plant arrays after sync
+        // DEDUPLICATE ALL THE THINGS: run after all anchors added
         plan.threeYearPlan.year0.tasks.forEach(task => {
           if (task.plants && Array.isArray(task.plants)) {
             task.plants = [...new Set(task.plants.map(p => typeof p === 'string' ? p.trim() : p))];
@@ -346,25 +367,30 @@ app.post('/api/generate-plan', async (req, res) => {
             task: 'Support Structure for Vine Guild',
             timing: 'Month 0-1',
             plants: [],
-            details: `Passionflower/vine anchor requires a trellis, arbor, or nurse tree for structural support. Install T-post + wire trellis or plant alongside a living nurse tree (Black Locust) for initial years.`,
+            details: `Passionflower/vine anchor requires a trellis, arbor, or nurse tree. Install T-post + wire trellis or plant alongside a living nurse tree (Black Locust).`,
             guild_note: 'Vines need structure. Without it, they sprawl and fail to fruit properly.'
           });
         }
 
-        // Year 1 Sync check: verify plan star matches guild anchor
+        // Year 1 Sync check
         const planStar = plan.threeYearPlan.year0.tasks.find(t => /canopy/i.test(t.task))?.plants?.[0] || '';
-        const guildStar = anchorName;
-        if (planStar && guildStar && planStar.toLowerCase() !== guildStar.toLowerCase()) {
-          console.warn(`YEAR 1 SYNC FAIL: plan has '${planStar}' but guild has '${guildStar}' — overriding plan star`);
+        if (planStar && anchorName && planStar.toLowerCase() !== anchorName.toLowerCase()) {
+          console.warn(`YEAR 1 SYNC FAIL: plan has '${planStar}' but guild has '${anchorName}' — overriding`);
           plan.threeYearPlan.year0.tasks.forEach(task => {
-            if (/canopy/i.test(task.task)) task.plants = [guildStar];
+            if (/canopy/i.test(task.task)) task.plants = [anchorName];
           });
         }
 
-        // ZONE 10a WARNING: if zone is 10 and plant is Apple, append Low-Chill warning
+        // ZONE 10a WARNING + LOW-CHILL INJECTION
         const zoneStr = climateData?.hardinessZone || '';
-        if (/^10/i.test(zoneStr) && anchorName.toLowerCase().includes('apple')) {
-          plan.threeYearPlan.year0.focus += ' [ZONE ALERT: Dunnellon FL is Zone 10a — use Low-Chill Apple variety (<400 hrs below 45°F) or growth will fail] ';
+        const zoneNum = parseInt(zoneStr.match(/^(\d+)/)?.[1] || '0');
+        if (zoneNum >= 9) {
+          if (anchorName.toLowerCase().includes('apple')) {
+            plan.threeYearPlan.year0.focus += ' [LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Anna Apple or Dorsett Golden (<400 hrs below 45°F)] ';
+          }
+          if (anchorName.toLowerCase().includes('peach')) {
+            plan.threeYearPlan.year0.focus += ' [LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Florida Prince or Tropic Snow Peach (<300 hrs)] ';
+          }
         }
       }
 

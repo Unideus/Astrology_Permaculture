@@ -248,6 +248,8 @@ function displayResults(plan) {
     ? plan.aiGenerated.guilds[0].layers.layer1_canopy.split('[')[0].trim()
     : null;
   
+  
+  // ZOMBIE PHRASE KILLER: brute-force replace on rendered HTML
   document.getElementById('threeYearPlan').innerHTML = `
     <div class="plan-timeline">
       <div class="year-section">
@@ -322,6 +324,15 @@ function displayResults(plan) {
       </div>
     </div>
   `;
+
+  // ZOMBIE PHRASE KILLER: brute-force sanitize rendered HTML
+  const planEl = document.getElementById('threeYearPlan');
+  if (planEl) {
+    planEl.innerHTML = planEl.innerHTML.replace(
+      /plant now or wait for harvest/gi,
+      'Timeline: Establish Year 1'
+    );
+  }
 
   // Moon Calendar
   const moon = plan.moonCalendar;
