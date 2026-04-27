@@ -30,6 +30,45 @@ class PermacultureApp {
     }));
   }
 
+  // Filter registry by zone, climate affinity, and optionally zodiac salt
+  filterPlants({ zone = null, koppen = null, affinity = null, layer = null, salt = null, nitrogenFixer = false }) {
+    const results = Object.values(this.masterRegistry);
+    
+    return results.filter(plant => {
+      // Zone filter
+      if (zone !== null) {
+        const zones = plant.climate_profile?.zones || [];
+        if (zones.length > 0 && (zone < zones[0] || zone > zones[zones.length - 1])) {
+          return false;
+        }
+      }
+      
+      // Climate affinity filter (skip if plant has no affinity or affinity is "any")
+      if (affinity !== null && plant.climate_affinity && plant.climate_affinity !== 'any') {
+        if (plant.climate_affinity !== affinity) return false;
+      }
+      
+      // Layer filter
+      if (layer !== null && plant.taxonomy?.layer !== layer) return false;
+      
+      // Zodiac salt filter (plant bio_logic.salts must include the cell salt)
+      if (salt !== null) {
+        const plantSalts = plant.bio_logic?.salts || [];
+        const hasSalt = plantSalts.some(ps => ps.toLowerCase().replace(/ /g, '_') === salt.toLowerCase().replace(/ /g, '_'));
+        if (!hasSalt) return false;
+      }
+      
+      // Nitrogen fixer filter
+      if (nitrogenFixer) {
+        const funcs = plant.permaculture_role?.functions || [];
+        const isNFixer = funcs.includes('nitrogen_fixation') || funcs.includes('nitrogen');
+        if (!isNFixer) return false;
+      }
+      
+      return true;
+    });
+  }
+
   // Get recommended plants based on deficient salts, filtered by climate zone
   getRecommendedPlants(deficientSalts, climateData = null) {
     const plantMap = {};
@@ -76,7 +115,7 @@ class PermacultureApp {
     return Object.values(plantMap);
   }
 
-  // Generate complete plan — now accepts climateData for zone filtering
+  // Generate complete plan
   generatePlan(userData, climateData = null) {
     const {
       address,
@@ -98,8 +137,8 @@ class PermacultureApp {
     // Get recommended plants, filtered by zone if climate data available
     const recommendedPlants = this.getRecommendedPlants(uniqueSalts, climateData);
     
-    // Generate 3-year plan based on scale
-    const plan = this.generateThreeYearPlan(scale, recommendedPlants, soilTest);
+    // Generate 3-year plan — now uses registry queries with climate + salt context
+    const plan = this.generateThreeYearPlan(scale, climateData, uniqueSalts, soilTest);
     
     return {
       siteInfo: {
@@ -120,8 +159,8 @@ class PermacultureApp {
     };
   }
 
-  // Generate 3-year implementation plan — CORRECTED: Canopy First Succession
-  generateThreeYearPlan(scale, plants, soilTest) {
+  // Generate 3-year implementation plan using registry queries
+  generateThreeYearPlan(scale, climateData, uniqueSalts, soilTest) {
     const scaleConfig = {
       'balcony': { area: '0-100 sq ft', trees: false, focus: 'containers, herbs' },
       'backyard': { area: '100-1000 sq ft', trees: true, focus: 'berries, small trees' },
@@ -130,107 +169,304 @@ class PermacultureApp {
       'community': { area: '50+ acres', trees: true, focus: 'food forest' }
     };
     
+    // Extract climate context
+    let siteZone = null;
+    let siteKoppen = null;
+    if (climateData) {
+      if (climateData.hardinessZone) {
+        const zm = climateData.hardinessZone.match(/^(\d+)/);
+        if (zm) siteZone = parseInt(zm[1]);
+      }
+      siteKoppen = climateData.koppenCode || null;
+    }
+    
+    // Determine climate affinity from Köppen
+    // A, Cfa, Cfb, Dfa, Dfb = humid; BSh, BSk, Csa, Csb = arid; Cwa, Dwa = transitional
+    let affinityTarget = null;
+    if (siteKoppen) {
+      if (siteKoppen.startsWith('A') || siteKoppen.startsWith('Cf') || siteKoppen.startsWith('Df')) {
+        affinityTarget = 'humid';
+      } else if (siteKoppen.startsWith('B') || siteKoppen.startsWith('Cs')) {
+        affinityTarget = 'arid';
+      }
+    }
+    
+    // ── PREFLIGHT: config, primary salt, star name ─────────────────────────
     const config = scaleConfig[scale] || scaleConfig.backyard;
+    const primarySalt = uniqueSalts.length > 0 ? uniqueSalts[0].cell_salt : null;
+    
+    // Compute star name before branching so it's available in return block
+    const preTreeStar = config.trees
+      ? (() => {
+          const sp = this.filterPlants({ zone: siteZone, layer: 'canopy' });
+          const vs = sp.filter(p => !affinityTarget || !p.climate_affinity || p.climate_affinity === 'any' || p.climate_affinity === affinityTarget);
+          return (vs[0] || sp[0] || null)?.common_name || 'canopy tree';
+        })()
+      : 'container tree';
+    
+    // ── YEAR 0: Canopy (Star Player) + N-Fixers ──────────────────────────────
+    const year0Tasks = [];
+    
+    // Soil test baseline
+    year0Tasks.push({
+      task: 'Soil Testing & Baseline',
+      timing: 'Month 0 (before planting)',
+      details: soilTest
+        ? `Use existing soil test (pH ${soilTest.ph}). Tree guilds need pH 6.0-7.0.`
+        : 'Send soil sample to extension office. Most fruit/nut trees prefer pH 6.0-7.0.',
+      plants: []
+    });
+    
+    if (config.trees) {
+      // Star player: pick ONE canopy tree matching zone and affinity
+      const starPlayer = this.filterPlants({ zone: siteZone, layer: 'canopy' });
+      const viableStar = starPlayer.filter(p => {
+        if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+          return p.climate_affinity === affinityTarget;
+        }
+        return true;
+      });
+      const star = viableStar.length > 0 ? viableStar[0] : starPlayer[0] || null;
+      
+      if (star) {
+        year0Tasks.push({
+          task: 'Canopy Tree Planting (Star Player)',
+          timing: 'Late winter/early spring (dormant bare root)',
+          plants: [star.common_name],
+          botanical: star.botanical_name || null,
+          cellSalts: star.bio_logic?.salts || [],
+          climateAffinity: star.climate_affinity || 'any',
+          details: `${star.common_name} — ${star.taxonomy?.type || 'tree'}. Spacing: 30-50ft. ` +
+                   `Matures in 5-15 years. Plant now or wait for harvest.`,
+          guild_note: `This is the structural anchor of your entire system. All other plants support it.`
+        });
+      }
+      
+      // N-fixers: 2 shrubs with nitrogen_fixation function
+      const nFixers = this.filterPlants({ zone: siteZone, layer: 'shrub', nitrogenFixer: true });
+      const viableNFixers = nFixers.filter(p => {
+        if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+          return p.climate_affinity === affinityTarget;
+        }
+        return true;
+      });
+      const selectedNFixers = (viableNFixers.length >= 2 ? viableNFixers.slice(0, 2) : nFixers.slice(0, 2));
+      
+      year0Tasks.push({
+        task: 'Support Species (N-Fixers)',
+        timing: 'Month 3-6',
+        plants: selectedNFixers.map(p => p.common_name),
+        botanical: selectedNFixers.map(p => p.botanical_name).filter(Boolean),
+        cellSalts: [...new Set(selectedNFixers.flatMap(p => p.bio_logic?.salts || []))],
+        details: 'Fast-growing nitrogen fixers. Chop-and-drop biomass to feed the canopy star player. ' +
+                 'Some yield berries as a bonus. These define the sub-canopy layer.',
+        guild_note: `N-fixers pump nitrogen into the guild. Cut back 3-4x per year for maximum biomass.`
+      });
+      
+      // Water infrastructure
+      year0Tasks.push({
+        task: 'Water Infrastructure',
+        timing: 'Month 0-2',
+        plants: [],
+        details: 'Swales on contour, drip irrigation zones, rain catchment. Design around mature canopy spread.',
+        guild_note: `Without water capture, your star player struggles in dry spells.`
+      });
+      
+      // Cover crops between rows
+      year0Tasks.push({
+        task: 'Cover Crops Between Rows',
+        timing: 'Month 1-3',
+        plants: ['Cereal Rye', 'Crimson Clover', 'Hairy Vetch', 'White Clover'],
+        details: 'Protect bare soil, build biology, suppress weeds. Will be mowed/chopped as guild fills in.',
+        guild_note: `Cover crops buy time while the slow trees establish.`
+      });
+    } else {
+      // Balcony: containers, dwarf/compact trees
+      const containerTrees = this.filterPlants({ zone: siteZone, layer: 'canopy' });
+      const viableContainer = containerTrees.filter(p => {
+        if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+          return p.climate_affinity === affinityTarget;
+        }
+        return true;
+      });
+      const star = viableContainer[0] || containerTrees[0] || null;
+      
+      year0Tasks.push({
+        task: 'Container Setup & Dwarf Tree',
+        timing: 'Month 0-2',
+        plants: star ? [star.common_name + ' (dwarf/formal)'] : [],
+        details: '5-gallon minimum containers with drainage. Use well-draining potting mix. ' +
+                 'Dwarf trees need root stock suited to container life.',
+        guild_note: `Balcony systems are container-first. No in-ground planting possible.`
+      });
+      
+      year0Tasks.push({
+        task: 'Herb Containers & Trellises',
+        timing: 'Month 1-3',
+        plants: ['Mint', 'Chives', 'Parsley', 'Thyme'],
+        details: 'Shallow-rooted herbs in window boxes and hanging planters. Vertical trellis for vines.',
+        guild_note: `Herbs are the balcony food forest. Fast harvest, high density.`
+      });
+    }
+    
+    // ── YEAR 1: Sub-Canopy & Herbaceous tied to zodiac salt ─────────────────
+    const year1Tasks = [];
+    
+    // Sub-canopy plants sharing zodiac salt
+    const saltPlants = primarySalt
+      ? this.filterPlants({ zone: siteZone, layer: 'sub_canopy', salt: primarySalt })
+      : this.filterPlants({ zone: siteZone, layer: 'sub_canopy' });
+    const viableSaltSC = saltPlants.filter(p => {
+      if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+        return p.climate_affinity === affinityTarget;
+      }
+      return true;
+    });
+    const selectedSubCanopy = viableSaltSC.slice(0, 3);
+    
+    // Herbaceous plants sharing zodiac salt (fill if not enough sub-canopy)
+    const herbSaltPlants = primarySalt
+      ? this.filterPlants({ zone: siteZone, layer: 'herbaceous', salt: primarySalt })
+      : this.filterPlants({ zone: siteZone, layer: 'herbaceous' });
+    const viableSaltHerb = herbSaltPlants.filter(p => {
+      if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+        return p.climate_affinity === affinityTarget;
+      }
+      return true;
+    });
+    
+    // Combine to get 3 total for year 1
+    const year1Candidates = [...selectedSubCanopy, ...viableSaltHerb];
+    const year1Selected = year1Candidates.slice(0, 3);
+    
+    year1Tasks.push({
+      task: 'Salt-Linked Plants (Sub-Canopy & Herbaceous)',
+      timing: 'Early Spring after last frost',
+      plants: year1Selected.map(p => p.common_name),
+      botanical: year1Selected.map(p => p.botanical_name).filter(Boolean),
+      cellSalts: [...new Set(year1Selected.flatMap(p => p.bio_logic?.salts || []))],
+      primarySalt: primarySalt,
+      details: `Plants selected for alignment with ${primarySalt || 'general'} cell salt needs. ` +
+               `Sub-canopy fills the mid-story; herbaceous provides ground cover and harvest.`,
+      guild_note: `These plants address the zodiac salt deficiency directly. Their biomass feeds the canopy.`
+    });
+    
+    // Dynamic accumulators
+    const dynAcc = this.filterPlants({ zone: siteZone, layer: 'herbaceous', salt: primarySalt });
+    const viableDyn = dynAcc.filter(p => p.permaculture_role?.functions?.includes('potassium_mining') ||
+                                          p.permaculture_role?.functions?.includes('biomass'));
+    const selectedDyn = viableDyn.slice(0, 2);
+    
+    year1Tasks.push({
+      task: 'Dynamic Accumulators',
+      timing: 'Spring after last frost',
+      plants: selectedDyn.map(p => p.common_name),
+      details: 'Plant at tree drip lines. Deep roots mine potassium, calcium, silica. ' +
+               'Begin chop-and-drop cycles to feed canopy star player.',
+      guild_note: `Accumulators are the mineral cyclers. Cut at bloom for maximum biomass nutrient content.`
+    });
+    
+    // Vines (if scale supports)
+    if (config.trees) {
+      const vines = this.filterPlants({ zone: siteZone, layer: 'vine' });
+      const viableVine = vines.filter(p => {
+        if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+          return p.climate_affinity === affinityTarget;
+        }
+        return true;
+      });
+      
+      year1Tasks.push({
+        task: 'Vine Trellises',
+        timing: 'Spring',
+        plants: viableVine.slice(0, 2).map(p => p.common_name),
+        details: 'Install on pergolas or between trees. Grapes on south-facing trellises for maximum sun.',
+        guild_note: `Vines use vertical space above the herbaceous layer. Don't let them smother the star player.`
+      });
+    }
+    
+    // ── YEAR 2: Ground Cover & Root ──────────────────────────────────────────
+    const year2Tasks = [];
+    
+    // Ground cover
+    const groundCover = this.filterPlants({ zone: siteZone, layer: 'ground_cover' });
+    const viableGC = groundCover.filter(p => {
+      if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+        return p.climate_affinity === affinityTarget;
+      }
+      return true;
+    });
+    
+    year2Tasks.push({
+      task: 'Ground Cover & Living Mulch',
+      timing: 'Spring/Fall',
+      plants: viableGC.slice(0, 3).map(p => p.common_name),
+      details: 'Suppress weeds, fix nitrogen, support pollinators. Mow before seed set if needed. ' +
+               'Living mulch fills bare soil between trees and herbs.',
+      guild_note: `Ground cover is the immune system of the soil. Keep it diverse.`
+    });
+    
+    // Root layer
+    const roots = this.filterPlants({ zone: siteZone, layer: 'root' });
+    const viableRoot = roots.filter(p => {
+      if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+        return p.climate_affinity === affinityTarget;
+      }
+      return true;
+    });
+    
+    year2Tasks.push({
+      task: 'Root Layer (Bulbs & Tubers)',
+      timing: 'Early Spring or Fall',
+      plants: viableRoot.slice(0, 3).map(p => p.common_name),
+      details: 'Deep-rooted storage crops. Harvest in fall/winter. ' +
+               'Some (garlic, onion) also serve as pest deterrents in guilds.',
+      guild_note: `Root layer uses space below. Most root vegetables prefer well-drained soil.`
+    });
+    
+    // Guild completion
+    const remaining = this.filterPlants({ zone: siteZone });
+    const viableRemaining = remaining.filter(p => {
+      if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+        return p.climate_affinity === affinityTarget;
+      }
+      return true;
+    });
+    
+    year2Tasks.push({
+      task: 'Guild Completion & First Harvests',
+      timing: 'Throughout season',
+      plants: viableRemaining.slice(0, 5).map(p => p.common_name),
+      details: 'Fill remaining niches with guild-compatible plants. ' +
+               `Begin harvesting herbs and early production crops by season end.`,
+      guild_note: `By year 2, the guild is producing food. Year 3+ is full production.`
+    });
     
     return {
       year0: {
-        title: config.trees ? 'Canopy Trees & Infrastructure' : 'Containers & Infrastructure',
+        title: config.trees ? 'Canopy & Infrastructure' : 'Containers & Soil Base',
         duration: 'Months 0-12',
-        focus: config.trees ? 'Establish overstory structure that defines the entire system' : 'Permanent containers, trellises, soil base',
-        tasks: [
-          {
-            task: 'Soil Testing & Baseline',
-            timing: 'Month 0 (before planting)',
-            details: soilTest ? 'Use existing test data to select trees' : 'Send soil sample; most fruit/nut trees prefer pH 6.0-7.0'
-          },
-          {
-            task: 'Canopy Tree Planting',
-            timing: 'Late winter/early spring (dormant bare root)',
-            plants: config.trees ? ['Black Walnut', 'Chestnut', 'Pecan', 'Persimmon'] : ['Dwarf varieties in containers'],
-            details: '30-50ft spacing. These need 5-15 years to mature. Plant now or wait years for harvest.'
-          },
-          {
-            task: 'Water Infrastructure',
-            timing: 'Month 0-2',
-            details: 'Swales on contour, drip irrigation zones, rain catchment. Design around mature tree canopy spread.'
-          },
-          {
-            task: 'Cover Crops Between Rows',
-            timing: 'Month 1-3',
-            plants: ['Cereal Rye', 'Crimson Clover', 'Hairy Vetch', 'White Clover'],
-            details: 'Protect bare soil, build biology, fix nitrogen. Will be mowed/chopped as guild fills in.'
-          },
-          {
-            task: 'Support Species (N-fixers)',
-            timing: 'Month 3-6',
-            plants: ['Autumn Olive', 'Sea Buckthorn', 'Goumi', 'Black Locust'],
-            details: 'Fast-growing nitrogen fixers. Chop-and-drop biomass for canopy trees. Some yield berries as bonus.'
-          }
-        ]
+        focus: config.trees
+          ? `Establish ${preTreeStar} as the system anchor`
+          : 'Permanent containers, trellises, soil building',
+        tasks: year0Tasks,
+        climateContext: {
+          zone: siteZone || 'unknown',
+          koppen: siteKoppen || 'unknown',
+          affinityFilter: affinityTarget || 'any'
+        }
       },
-      
       year1: {
-        title: config.trees ? 'Sub-canopy, Fruit Trees & Shrubs' : 'Herbs, Berries & Containers',
+        title: 'Sub-Canopy, Herbaceous & Vines',
         duration: 'Months 12-24',
-        focus: 'Fill in the layers beneath developing canopy',
-        tasks: [
-          {
-            task: 'Fruit Tree Planting',
-            timing: 'Early Spring (dormant)',
-            plants: config.trees ? ['Apple', 'Pear', 'Peach', 'Plum', 'Cherry'] : ['Dwarf Citrus', 'Fig (containers)'],
-            details: '15-25ft spacing. Plant into guilds that will support them. Mulch heavily.'
-          },
-          {
-            task: 'Berry & Shrub Layer',
-            timing: 'Early Spring',
-            plants: ['Raspberry', 'Black Currant', 'Gooseberry', 'Elderberry', 'Blueberry'],
-            details: 'Juglone-tolerant varieties near black walnut. Shade-tolerant currants on north side of trees.'
-          },
-          {
-            task: 'Vine Trellises',
-            timing: 'Spring',
-            plants: ['Grapes', 'Hardy Kiwi', 'Passionflower'],
-            details: 'Install on pergolas or between trees. Grapes on south-facing trellises for sun.'
-          },
-          {
-            task: 'Dynamic Accumulators',
-            timing: 'Spring after last frost',
-            plants: ['Comfrey', 'Yarrow', 'Nettle'],
-            details: 'Plant at tree drip lines. Begin chop-and-drop cycles to feed canopy.'
-          }
-        ]
+        focus: `Fill mid-story with salt-linked plants targeting ${primarySalt || 'cell salt balance'}`,
+        tasks: year1Tasks
       },
-      
       year2: {
-        title: 'Herbaceous, Ground Cover & Production Harvest',
+        title: 'Ground Cover, Roots & First Harvests',
         duration: 'Months 24-36',
-        focus: 'Fill remaining niches, begin harvesting herbs and early fruits',
-        tasks: [
-          {
-            task: 'Perennial Vegetables',
-            timing: 'Early Spring',
-            plants: ['Asparagus', 'Rhubarb', 'Jerusalem Artichoke', 'French Sorrel'],
-            details: 'Asparagus needs 2-3 years before full harvest. Plant on berms for drainage.'
-          },
-          {
-            task: 'Ground Cover & Living Mulch',
-            timing: 'Spring/Fall',
-            plants: ['White Clover', 'Creeping Thyme', 'Strawberry'],
-            details: 'Suppress weeds, fix nitrogen, support pollinators. Mow before seed if needed.'
-          },
-          {
-            task: 'Guild Completion',
-            timing: 'Throughout season',
-            plants: ['Chives', 'Daffodils', 'Lupine', 'Clover'],
-            details: 'Fill gaps with pest deterrents, pollinator support, and mulch plants. Complete tree guilds.'
-          },
-          {
-            task: 'First Harvests',
-            timing: 'Seasonal',
-            plants: ['Herbs', 'Berries (year 2-3)', 'Comfrey biomass'],
-            details: 'Herbs and greens first. Berries in year 2-3. Tree fruit in year 3-7. Nuts in year 5-15.'
-          }
-        ]
+        focus: 'Fill soil niche, begin producing food',
+        tasks: year2Tasks
       }
     };
   }
