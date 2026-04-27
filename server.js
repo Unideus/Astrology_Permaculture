@@ -381,25 +381,46 @@ app.post('/api/generate-plan', async (req, res) => {
           });
         }
 
-        // ZONE 10a WARNING + LOW-CHILL INJECTION
+        // ZONE 10a WARNING + LOW-CHILL INJECTION (also inject into guild description for render)
         const zoneStr = climateData?.hardinessZone || '';
         const zoneNum = parseInt(zoneStr.match(/^(\d+)/)?.[1] || '0');
         if (zoneNum >= 9) {
           if (anchorName.toLowerCase().includes('apple')) {
-            plan.threeYearPlan.year0.focus += ' [LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Anna Apple or Dorsett Golden (<400 hrs below 45°F)] ';
+            const alert = '[LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Anna Apple or Dorsett Golden (<400 hrs below 45°F)] ';
+            plan.threeYearPlan.year0.focus += alert;
+            // Also inject into Guild 1 description for [ZONE ALERT] rendering
+            if (ollamaPlan.guilds?.[0]?.description) {
+              ollamaPlan.guilds[0].description = ollamaPlan.guilds[0].description.replace(/\[ZONE ALERT\].*?\]\s*/gi, ''); // dedup
+              ollamaPlan.guilds[0].description = alert + ollamaPlan.guilds[0].description;
+            }
           }
           if (anchorName.toLowerCase().includes('peach')) {
             plan.threeYearPlan.year0.focus += ' [LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Florida Prince or Tropic Snow Peach (<300 hrs)] ';
           }
         }
+
+        // SCALE-AWARE WATERING: Add irrigation zone task for Homestead
+        if (scale === 'homestead' && allAnchors.length > 1) {
+          plan.threeYearPlan.year0.tasks.push({
+            task: 'Water Infrastructure — Designate Irrigation Zones',
+            timing: 'Month 0-1',
+            plants: [],
+            details: `Designate specific irrigation zones for the ${allAnchors.length} separate guilds (${allAnchors.join(', ')}) to account for differing water needs. Each guild may require individual drip lines or micro-sprinkler zones based on soil moisture and species requirements.`,
+            guild_note: 'Homestead scale requires independent water management per guild — do not run a single irrigation line to all three anchors.'
+          });
+        }
       }
 
-      // Sunflower/Nettle/Dandelion audit: rewrite N-fix claims in companion/layer text
-      const NEVER_FIX_N = ['sunflower', 'nettle', 'dandelion', 'comfrey', 'horseradish', 'radish', 'turnip'];
+      // BOTANICAL TRUTH REGEX: rewrite N-fix lies in Support Species section
+      // Also applies to all guild layers, companion text, and plan task details
+      const NEVER_FIX_N = ['sunflower', 'nettle', 'dandelion', 'comfrey', 'horseradish', 'radish', 'turnip', 'spinach', 'kale'];
       const rewriteAccumulator = (text) => {
         if (!text || typeof text !== 'string') return text;
         let fixed = text;
         NEVER_FIX_N.forEach(plant => {
+          // Botanical Truth Regex: "Nettle nitrogen fixers" → "Nettle dynamic accumulators"
+          const nFixRx = new RegExp(`(${plant})\\s+((?:nitrogen|n-fix|n\\s*fix|nitrogen\\s*fixers?)\\s+fixers?)`, 'gi');
+          fixed = fixed.replace(nFixRx, '$1 dynamic accumulators');
           // Rewrite "fixes nitrogen" → "accumulates minerals" for these plants
           const rx = new RegExp(`\\b${plant}\\b[^;]*nitrogen.fix[^,.]*`, 'gi');
           fixed = fixed.replace(rx, `${plant.charAt(0).toUpperCase() + plant.slice(1)} accumulates minerals and provides biomass`);
