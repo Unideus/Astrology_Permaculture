@@ -242,26 +242,46 @@ function displayResults(plan) {
 
   // 3-Year Plan
   const planData = plan.threeYearPlan;
-  
-  // Variable Injection: extract primary tree from AI guilds
-  const primaryTree = (plan.aiGenerated?.guilds?.[0]?.layers?.layer1_canopy)
-    ? plan.aiGenerated.guilds[0].layers.layer1_canopy.split('[')[0].trim()
-    : null;
-  
-  
-  // ZOMBIE PHRASE KILLER: brute-force replace on rendered HTML
+
+  // Extract ALL 3 guild anchors for brute-force injection (ARRAY-BASED RENDER + ALL-ANCHOR)
+  const guildAnchors = (plan.aiGenerated?.guilds || [])
+    .map(g => g.layers?.layer1_canopy?.split('[')[0].trim())
+    .filter(Boolean);
+  const scale = planData.year0.focus?.includes('Homestead') ? 'homestead' : '';
+
+  // ARRAY-BASED RENDER (TIMELINE): Force chronological index order 0-4.
+  // Swap water and canopy tasks so water always appears first.
+  let orderedTasks = [...(planData.year0.tasks || [])];
+  const findIdx = (tasks, pattern) => tasks.findIndex(t => pattern.test(t.task));
+  const waterIdx = findIdx(orderedTasks, /water|irrigation|earthwork/i);
+  const canopyIdx = findIdx(orderedTasks, /canopy|tree.?plant/i);
+  if (waterIdx > -1 && canopyIdx > -1 && waterIdx > canopyIdx) {
+    // Water comes after canopy in AI output — swap them
+    const waterTask = orderedTasks.splice(waterIdx, 1)[0];
+    const canopyTask = orderedTasks.splice(canopyIdx, 1)[0];
+    orderedTasks.splice(canopyIdx, 0, waterTask);
+    orderedTasks.splice(waterIdx, 0, canopyTask);
+  }
+
+  // ALL-ANCHOR BRUTE FORCE: Locate Canopy Planting task and overwrite its plants array
+  // with all 3 guild anchors — no exceptions, no AI override
+  orderedTasks.forEach(task => {
+    if (/canopy|tree.?plant/i.test(task.task)) {
+      if (scale === 'homestead' && guildAnchors.length > 1) {
+        task.plants = [...guildAnchors];  // [Apple, Avocado, Fig] — never Avocado-only
+      }
+    }
+  });
+
   document.getElementById('threeYearPlan').innerHTML = `
     <div class="plan-timeline">
       <div class="year-section">
         <h4>${planData.year0.title || 'Canopy & Infrastructure'}</h4>
         <p><em>${planData.year0.duration || planData.year0.timeframe || 'Months 0-12'}</em></p>
-        <p>${primaryTree ? `Establish ${primaryTree} as the system anchor` : planData.year0.focus}</p>
+        <p>${planData.year0.focus || ''}</p>
         <div style="margin-top: 15px">
-          ${planData.year0.tasks.map(task => {
-            // Variable Injection: bind to primaryTree for canopy planting task
-            const isCanopyTask = primaryTree && /canopy/i.test(task.task);
+          ${orderedTasks.map(task => {
             const rawPlants = task.plants || [];
-            // Deduplicate plants (case-insensitive, preserve first occurrence)
             const seen = new Set();
             const displayPlants = rawPlants
               .map(p => typeof p === 'string' ? p.trim() : (p.common_name || p.name || JSON.stringify(p)))
@@ -270,14 +290,10 @@ function displayResults(plan) {
                 if (seen.has(key)) return false;
                 seen.add(key);
                 return true;
-              })
-              .map(p => {
-                if (typeof p === 'string' && /sour.cherry/i.test(p)) return primaryTree;
-                return p;
               });
             return `
             <div class="task-item">
-              <strong>${task.task} - ${task.timing}</strong>
+              <strong>${task.task || 'Task'} - ${task.timing || ''}</strong>
               ${displayPlants.length ? `<p>Plants: ${displayPlants.join(', ')}</p>` : ''}
               <p>${task.details || ''}</p>
             </div>`;

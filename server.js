@@ -308,6 +308,37 @@ app.post('/api/generate-plan', async (req, res) => {
         .filter(Boolean);
       const anchorName = guild1Canopy ? guild1Canopy.split('[')[0].trim() : null;
 
+      // ── FIG RE-RE-CLASSIFICATION MIDDLEWARE ────────────────────────────────
+      // If Fig appears in Layer 1, demote it to Layer 2 and find replacement
+      if (ollamaPlan.guilds) {
+        ollamaPlan.guilds.forEach(guild => {
+          if (guild.layers) {
+            // Check layer1_canopy for fig
+            if (guild.layers.layer1_canopy && guild.layers.layer1_canopy.toLowerCase().includes('fig')) {
+              const layer2 = guild.layers.layer2_low_tree || '';
+              // Demote fig to layer2
+              guild.layers.layer2_low_tree = guild.layers.layer1_canopy; // move fig to layer2
+              // Promote layer2 to layer1 if it exists and is a tree, else find tallest available
+              if (layer2 && !layer2.toLowerCase().includes('fig') && layer2.length > 2) {
+                guild.layers.layer1_canopy = layer2; // promote layer2 to layer1
+                guild.layers.layer2_low_tree = '[PROPOSED] Live Oak [id: live_oak]'; // fill layer2
+              } else {
+                // No valid layer2 tree — use a tall native
+                guild.layers.layer1_canopy = '[PROPOSED] Live Oak [id: live_oak]';
+                guild.layers.layer2_low_tree = guild.layers.layer1_canopy.replace('Live Oak', 'Fig');
+              }
+            }
+          }
+        });
+        // Recompute allAnchors after fig demotion
+        allAnchors.length = 0;
+        (ollamaPlan.guilds || []).forEach(g => {
+          const a = g.layers?.layer1_canopy?.split('[')[0].trim();
+          if (a) allAnchors.push(a);
+        });
+        if (anchorName && allAnchors[0] !== anchorName) allAnchors[0] = anchorName;
+      }
+
       if (anchorName) {
         // SCALE-AWARE HEADERS
         if (scale === 'homestead' && allAnchors.length > 1) {
@@ -465,6 +496,11 @@ app.post('/api/generate-plan', async (req, res) => {
           if (anchorName.toLowerCase().includes('peach')) {
             plan.threeYearPlan.year0.focus += ' [LOW-CHILL REQUIRED: In Zone ' + zoneNum + ', use Florida Prince or Tropic Snow Peach (<300 hrs)] ';
           }
+        }
+
+        // SCALE-AWARE HEADER (FINAL STICK): Force correct header for Homestead
+        if (scale === 'homestead' && allAnchors.length > 1) {
+          plan.threeYearPlan.year0.focus = `Establish Homestead Orchard Infrastructure & Anchors: ${allAnchors.join(', ')}`;
         }
       }
 
@@ -663,6 +699,8 @@ STRICT REQUIREMENTS:
 
    LAYER 1 RIGIDITY: Layer 1 (Canopy) MUST be a Tree. If you run out of trees from the registry, DO NOT create a fake guild. It is better to have 1 perfect guild than a fake one.
    THE ANCHOR REQUIREMENT: If a Guild is centered around a tree (Mulberry, Chestnut, Cherry, etc.), that tree MUST be placed in Layer 1 (Canopy). Do not leave Layer 1 empty if a tree exists in the guild.
+   SUNFLOWER BAN: Sunflowers [id: sunflower] are Layer 4 (Herbaceous). They can NEVER be an anchor or Layer 1. If you attempt to place Sunflower in Layer 1, REJECT that guild and use a real canopy tree (Pecan, Oak, Mulberry, Live Oak). The AI must force a re-roll with a valid tree.
+   FIG RE-RE-CLASSIFICATION: Figs [id: fig] are Layer 2 (Low Tree). A Fig must NEVER appear in Layer 1 (Canopy). If a Fig is in Layer 1, the middleware will move it to Layer 2 and find a taller replacement tree for Layer 1.
 
    VERTICAL VALIDATION (STRICT): Layer 7 (Vertical) is STRICTLY for vining/climbing plants only. If you do not have a vine like Grapes, Hops, or Pole Beans in the registry, you MUST return "None". DO NOT place Bell Peppers, Chard, or any other non-climbing plant in Layer 7 under any circumstances.
 
