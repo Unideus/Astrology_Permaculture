@@ -197,7 +197,13 @@ app.post('/api/generate-plan', async (req, res) => {
     }
 
     // Build prompt for Ollama WITH climate data
-    const prompt = buildPermaculturePrompt(userData, locationData, climateData);
+    // Build zone-filtered plant list to include in prompt (Task 4: verify AI uses context)
+    const siteZoneNum = climateData ? parseInt((climateData.hardinessZone || '0').match(/^(\d+)/)?.[1] || '0') : null;
+    const filteredPlants = siteZoneNum
+      ? permaApp.filterPlants({ zone: siteZoneNum })
+      : [];
+    
+    const prompt = buildPermaculturePrompt(userData, locationData, climateData, filteredPlants);
 
     // Call Ollama
     let ollamaPlan = null;
@@ -261,7 +267,7 @@ app.post('/api/generate-plan', async (req, res) => {
   }
 });
 
-function buildPermaculturePrompt(userData, locationData, climateData = null) {
+function buildPermaculturePrompt(userData, locationData, climateData = null, filteredPlants = []) {
   const { address, sunSign, familyMembers = [], scale, soilTest } = userData;
   
   // Build climate context for the AI
@@ -298,9 +304,12 @@ function buildPermaculturePrompt(userData, locationData, climateData = null) {
     // ── Zone-specific guidance ───────────────────────────────────────────
     let zoneSpecificGuidance = '';
     if (siteZoneNum >= 7 && siteZoneNum <= 8) {
-      zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: Prioritize 'Temperate-Subtropical' crossover species. Prefer Pecan, Persimmon, Pomegranate (zone 7+), and Jujube over true tropicals. Citrus (satsuma, kumquat) work with cold protection. Avoid true tropicals like Mango and Papaya without heated winter protection.`;
+      zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: AVOCADO, KEY LIME, MANGO, AND BANANA ARE FORBIDDEN in this zone — even if you think they might survive, they are not permitted. Prioritize 'Temperate-Subtropical' crossover species: Pecan, Persimmon, Pomegranate (zone 7+), Jujube, Satsuma, and Kumquat. No Mango, Papaya, or true tropicals without heated winter protection.`;
     } else if (siteZoneNum >= 9) {
       zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: True tropicals (Mango, Papaya, Coconut, Lychee) are appropriate. Subtropicals (Citrus, Avocado, Guava) thrive here.`;
+    } else if (siteZoneNum >= 7 && siteZoneNum <= 8) {
+      // Zone 8 is COLD WINTER subtropical — NO true tropicals allowed
+      zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: AVOCADO, KEY LIME, MANGO, AND BANANA ARE FORBIDDEN — even if you think they might survive, they are not permitted. Prioritize Pecan, Persimmon, Pomegranate (zone 7+), Jujube, and cold-hardy citrus (satsuma, kumquat). No tropicals without heated winter protection.`;
     } else if (siteZoneNum <= 5) {
       zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: Focus on ultra-cold-hardy species (Honeyberry, Sea Buckthorn, Aronia, haskap). Russian Sage and Bee Balm are reliable herbaceous perennials. Avoid any plant not rated to zone ${siteZoneNum}.`;
     } 
@@ -323,6 +332,12 @@ ${zoneSpecificGuidance}
 - All guild supporting plants must be real, growable species from your verified plant list.
   `;
   }
+
+  // ── Plant Allow List for AI ───────────────────────────────────────────────
+  // Build a safe plant list from registry — zone-filtered before it reaches AI
+  const plantAllowList = filteredPlants.length > 0
+    ? filteredPlants.map(p => p.common_name).filter(Boolean).slice(0, 60).join(', ')
+    : 'N/A — use only plants that survive the stated USDA zone';
   
   return `You are an expert permaculture designer and astrological gardener. Create a detailed permaculture design plan based on the following information:
 
@@ -343,11 +358,18 @@ Please provide a structured permaculture design plan with the following sections
 
 1. SUMMARY: A 2-3 paragraph overview of the design approach
 
+PLANT ALLOW LIST (your ONLY valid plant names — do not deviate):
+${plantAllowList}
+
+STRICT REQUIREMENT: You may ONLY use plant names from the Plant Allow List above. If a plant is not listed, DO NOT include it in any Guild, Summary, or Companion list. If you need a Canopy tree and none are suitable, use 'Hardy native shade tree'. Never invent a plant name.
+
 2. GUILDS: 3-5 specific plant guilds (groups of plants that support each other):
    - Each guild should have a name, central tree/shrub, supporting plants, and function
    - CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone
 
 3. COMPANION_PLANTING: Key companion planting combinations for the recommended crops:
+   Format companionPlanting entries as: "Plant A + Plant B: [Brief reason]" — e.g., "Tomato + Basil: Basil repels aphids and improves tomato flavor"
+   DO NOT output single plant names or bare pairs. Each entry must include the colon and a brief reason.
    - IF site zone <= 5 (cold climate): Default to "Hardy Mulch" or "Native Grass" ground covers instead of Mediterranean herbs. Use cold-hardy companions only.
    - IF site zone >= 7 (warm climate): Mediterranean herbs (Rosemary, Lavender, Sage companion trio) are appropriate as companion plants.
 
@@ -360,6 +382,18 @@ Please provide a structured permaculture design plan with the following sections
 7. PEST_CONTROL: Natural pest management strategies using companion plants and beneficial insects
 
 Format your response as valid JSON with these exact keys: summary, guilds (array), companionPlanting (array), timingAdvice (string), soilAmendments (array), waterManagement (string), pestControl (string)
+
+Example companionPlanting entries (MUST match this format):
+  "companionPlanting": [
+    "Tomato + Basil: Basil repels aphids, improves flavor",
+    "Navy Beans + Corn: Beans fix nitrogen, corn provides support"
+  ]
+
+Example companionPlanting format (MUST follow this pattern):
+  "companionPlanting": [
+    "Tomato + Basil: repels aphids and improves tomato flavor",
+    "Navy Beans + Corn: beans fix nitrogen, corn provides trellis"
+  ]
 
 Example guild format:
 {
