@@ -439,6 +439,7 @@ STRICT REQUIREMENTS:
    Layer 7: [id: xxx] or "None"
 
    TREE CLASSIFICATION: Peach [id: peach] is a Tree. It must NEVER be listed in the Herbaceous (Layer 4) or Shrub (Layer 3) layers. It belongs in Layer 1 (Canopy) or Layer 2 (Low Tree) only. Apply this rule to all fruit trees — no fruit tree belongs in Herbaceous or Shrub layers.
+   LAYER HIERARCHY LAW: Respect plant biology. A Mango [id: mango] is a CANOPY (Layer 1). A Passion Fruit [id: passion_fruit] is a VERTICAL VINE (Layer 7). Never place a tree in a shrub layer or a vine in the canopy layer. Layer 1 must be the largest woody plant in the guild — the anchor.
 
    CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone.
    ZONE TRUTH: You MUST use the geocoded Hardiness Zone provided in the Site Information. Do not use fallbacks or estimates. Crown Point, IN is Zone 5b/6a. Do not suggest Zone 7+ plants like Figs unless they are explicitly marked as ultra-hardy or indoor/container plants in the registry. Do not invent a warmer zone than what was geocoded.
@@ -461,7 +462,7 @@ STRICT REQUIREMENTS:
    "Plant A + Plant B: [Functional Relationship]". Use ONLY plants from the Plant Allow List.
    DO NOT output single plant names or bare pairs. Each entry must include the colon and a brief reason.
    CRITICAL: Companion relationships must be based on actual permaculture functions: Nitrogen Fixation, Dynamic Accumulation, Pest Deterrent (via scent/flowers), or Physical Support. Do NOT claim relationships without a functional basis (e.g., "Blackberries deter pests" is not valid — blackberries do not function as pest deterrents).
-   NITROGEN FIXATION ONLY ATTRIBUTION — THE LEGUME LAW: ONLY legumes (Clover, Beans, Peas, Vetch) or specific N-fixing shrubs (Goumi, Seaberry) can be called Nitrogen Fixers. DO NOT claim N-fixation for Turnips, Radish, Nettle, or Comfrey — label those as 'Dynamic Accumulators' or 'Soil Decompactors'. Comfrey [id: comfrey] is a DYNAMIC ACCUMULATOR (Potassium/Minerals). It is NOT a Nitrogen Fixer. Never label Comfrey as an N-fixer in the 3-Year Plan or Companion sections.
+   NITROGEN FIXATION ONLY ATTRIBUTION — THE ONLY LEGUMES RULE: ONLY legumes (Clover, Beans, Peas, Vetch, Alfalfa) and specific N-fixing shrubs (Goumi, Seaberry, Acacia) can be called Nitrogen Fixers. Nettle, Radish, Comfrey, Dandelion, and Turnips are DYNAMIC ACCUMULATORS. Do not lie about their function. If the layers say Nettle is an Accumulator, the companion text cannot say it fixes nitrogen. Companion and layer functions must be consistent.
    - IF site zone <= 5 (cold climate): Default to "Hardy Mulch" or "Native Grass" ground covers instead of Mediterranean herbs. Use cold-hardy companions only.
    - IF site zone >= 7 (warm climate): Mediterranean herbs (Rosemary, Lavender, Sage companion trio) are appropriate as companion plants.
 

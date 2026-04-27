@@ -263,7 +263,7 @@ class PermacultureApp {
           cellSalts: star.bio_logic?.salts || [],
           climateAffinity: star.climate_affinity || 'any',
           details: `${star.common_name} — ${star.taxonomy?.type || 'tree'}. Spacing: 30-50ft. ` +
-                   `Matures in 5-15 years. Plant now or wait for harvest.`,
+                   `Matures in 5-15 years. Timeline: Establish Year 1. Expected Harvest: Year 4+.`,
           guild_note: `This is the structural anchor of your entire system. All other plants support it.`
         });
       }

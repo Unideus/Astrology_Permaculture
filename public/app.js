@@ -258,49 +258,66 @@ function displayResults(plan) {
           ${planData.year0.tasks.map(task => {
             // Variable Injection: bind to primaryTree for canopy planting task
             const isCanopyTask = primaryTree && /canopy/i.test(task.task);
-            const displayPlants = (task.plants && primaryTree)
-              ? (task.plants.map(p => {
-                  if (typeof p === 'string' && /sour.cherry/i.test(p)) return primaryTree;
-                  return p;
-                }))
-              : task.plants;
+            const rawPlants = task.plants || [];
+            // Deduplicate plants (case-insensitive, preserve first occurrence)
+            const seen = new Set();
+            const displayPlants = rawPlants
+              .map(p => typeof p === 'string' ? p.trim() : (p.common_name || p.name || JSON.stringify(p)))
+              .filter(p => {
+                const key = p.toLowerCase();
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+              })
+              .map(p => {
+                if (typeof p === 'string' && /sour.cherry/i.test(p)) return primaryTree;
+                return p;
+              });
             return `
             <div class="task-item">
               <strong>${task.task} - ${task.timing}</strong>
-              ${displayPlants ? `<p>Plants: ${displayPlants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
-              <p>${task.details}</p>
+              ${displayPlants.length ? `<p>Plants: ${displayPlants.join(', ')}</p>` : ''}
+              <p>${task.details || ''}</p>
             </div>`;
           }).join('')}
         </div>
       </div>
 
       <div class="year-section">
-        <h4>${planData.year1.title}</h4>
-        <p><em>${planData.year1.duration}</em></p>
-        <p>${planData.year1.focus}</p>
+        <h4>${planData.year1.title || 'Year 1'}</h4>
+        <p><em>${planData.year1.duration || 'Year 2'}</em></p>
+        <p>${planData.year1.focus || ''}</p>
         <div style="margin-top: 15px">
-          ${planData.year1.tasks.map(task => `
+          ${planData.year1.tasks.map(task => {
+            const rawP = task.plants || [];
+            const seen1 = new Set();
+            const dp1 = rawP.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).filter(p => { const k=p.toLowerCase(); return seen1.has(k)?false:(seen1.add(k),true); });
+            return `
             <div class="task-item">
-              <strong>${task.task} - ${task.timing}</strong>
-              ${task.plants ? `<p>Plants: ${task.plants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
-              <p>${task.details}</p>
-            </div>
-          `).join('')}
+              <strong>${task.task} - ${task.timing || ''}</strong>
+              ${dp1.length ? `<p>Plants: ${dp1.join(', ')}</p>` : ''}
+              <p>${task.details || ''}</p>
+            </div>`;
+          }).join('')}
         </div>
       </div>
 
       <div class="year-section">
-        <h4>${planData.year2.title}</h4>
-        <p><em>${planData.year2.duration}</em></p>
-        <p>${planData.year2.focus}</p>
+        <h4>${planData.year2.title || 'Year 2'}</h4>
+        <p><em>${planData.year2.duration || 'Year 3'}</em></p>
+        <p>${planData.year2.focus || ''}</p>
         <div style="margin-top: 15px">
-          ${planData.year2.tasks.map(task => `
+          ${planData.year2.tasks.map(task => {
+            const rawP2 = task.plants || [];
+            const seen2 = new Set();
+            const dp2 = rawP2.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).filter(p => { const k=p.toLowerCase(); return seen2.has(k)?false:(seen2.add(k),true); });
+            return `
             <div class="task-item">
-              <strong>${task.task} - ${task.timing}</strong>
-              ${task.plants ? `<p>Plants: ${task.plants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
-              <p>${task.details}</p>
-            </div>
-          `).join('')}
+              <strong>${task.task || 'Task'} - ${task.timing || ''}</strong>
+              ${dp2.length ? `<p>Plants: ${dp2.join(', ')}</p>` : ''}
+              <p>${task.details || ''}</p>
+            </div>`;
+          }).join('')}
         </div>
       </div>
     </div>
