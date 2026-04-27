@@ -33,30 +33,64 @@ app.post('/api/geocode', async (req, res) => {
     const { address } = req.body;
     if (!address) return res.status(400).json({ error: 'Address required' });
 
-    // Try exact address first, then progressively simpler queries
-    const queries = [address];
-    
-    // Extract city, state from address for fallback
-    const parts = address.split(',').map(p => p.trim());
-    if (parts.length >= 2) {
-      queries.push(parts.slice(-2).join(', ')); // "City, State"
-    }
-    if (parts.length >= 1) {
-      queries.push(parts[parts.length - 1]); // Just state
+    const baseAddress = address.trim();
+
+    // ── Parse structured components from the address string ──────────────
+    // Handle formats: "123 Main St, Duluth, MN" / "123 Main St, Duluth, MN, USA" / "Duluth, MN"
+    const commaParts = baseAddress.split(',').map(p => p.trim()).filter(Boolean);
+    let street = null, city = null, state = null;
+
+    if (commaParts.length >= 3) {
+      // "123 Main St, Duluth, MN" → street=city-state[0], city=city-state[1], state=city-state[2]
+      street = commaParts[0];
+      city   = commaParts[1];
+      state  = commaParts[2];
+    } else if (commaParts.length === 2) {
+      city  = commaParts[0];
+      state = commaParts[1];
+    } else if (commaParts.length === 1) {
+      // Could be "Duluth MN" or "Duluth, MN" — try split-on-spaces
+      const spaceParts = commaParts[0].split(/\s+/);
+      if (spaceParts.length >= 2) {
+        city  = spaceParts.slice(0, -1).join(' ');
+        state = spaceParts[spaceParts.length - 1];
+      } else {
+        city = commaParts[0];
+      }
     }
 
-    for (const query of queries) {
-      // Always append USA to prevent ambiguous international results
-      const usaQuery = query.includes('USA') ? query : `${query}, USA`;
-      const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(usaQuery)}&limit=1`;
-      
+    const stateAbbr = state || '';
+    // Expand common state abbreviations (simple map — add more as needed)
+    const stateMap = {
+      'AL':'Alabama','AK':'Alaska','AZ':'Arizona','AR':'Arkansas','CA':'California',
+      'CO':'Colorado','CT':'Connecticut','DE':'Delaware','FL':'Florida','GA':'Georgia',
+      'HI':'Hawaii','ID':'Idaho','IL':'Illinois','IN':'Indiana','IA':'Iowa',
+      'KS':'Kansas','KY':'Kentucky','LA':'Louisiana','ME':'Maine','MD':'Maryland',
+      'MA':'Massachusetts','MI':'Michigan','MN':'Minnesota','MS':'Mississippi',
+      'MO':'Missouri','MT':'Montana','NE':'Nebraska','NV':'Nevada','NH':'New Hampshire',
+      'NJ':'New Jersey','NM':'New Mexico','NY':'New York','NC':'North Carolina',
+      'ND':'North Dakota','OH':'Ohio','OK':'Oklahoma','OR':'Oregon','PA':'Pennsylvania',
+      'RI':'Rhode Island','SC':'South Carolina','SD':'South Dakota','TN':'Tennessee',
+      'TX':'Texas','UT':'Utah','VT':'Vermont','VA':'Virginia','WA':'Washington',
+      'WV':'West Virginia','WI':'Wisconsin','WY':'Wyoming','DC':'District of Columbia'
+    };
+    const stateName = stateMap[stateAbbr.toUpperCase()] || stateAbbr;
+
+    // ── Strategy 1: Structured query (most reliable) ──────────────────
+    const headers = { 'User-Agent': 'PermacultureDesignApp/1.0 (contact@example.com)' };
+
+    if (city) {
+      const params = new URLSearchParams({ format: 'json', limit: '1', countrycodes: 'us' });
+      if (street)  params.set('street',  street);
+      params.set('city',   city);
+      if (stateName) params.set('state', stateName);
+      params.set('country', 'USA');
+
+      const structUrl = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
       try {
-        const response = await fetch(nominatimUrl, {
-          headers: { 'User-Agent': 'PermacultureDesignApp/1.0' }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
+        const r = await fetch(structUrl, { headers });
+        if (r.ok) {
+          const data = await r.json();
           if (data && data.length > 0) {
             const result = data[0];
             return res.json({
@@ -65,17 +99,40 @@ app.post('/api/geocode', async (req, res) => {
               formattedAddress: result.display_name,
               placeId: result.place_id,
               boundingBox: result.boundingbox,
-              queryUsed: query
+              queryUsed: structUrl.includes('street=') ? 'structured (street)' : 'structured (city+state)'
             });
           }
         }
       } catch (e) {
-        console.warn(`Geocoding failed for query "${query}":`, e.message);
+        console.warn('Structured geocode failed:', e.message);
       }
     }
 
-    // All queries failed
-    res.status(404).json({ error: 'Address not found' });
+    // ── Strategy 2: Free-text with countrycodes=us lock ─────────────────
+    // Fallback: q=query&countrycodes=us limits results to United States only
+    const freeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(baseAddress)}&countrycodes=us&limit=1`;
+    try {
+      const r = await fetch(freeUrl, { headers });
+      if (r.ok) {
+        const data = await r.json();
+        if (data && data.length > 0) {
+          const result = data[0];
+          return res.json({
+            latitude: parseFloat(result.lat),
+            longitude: parseFloat(result.lon),
+            formattedAddress: result.display_name,
+            placeId: result.place_id,
+            boundingBox: result.boundingbox,
+            queryUsed: 'free-text+countrycodes'
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('Free-text geocode failed:', e.message);
+    }
+
+    // All strategies exhausted
+    res.status(404).json({ error: `Address not found in USA: ${address}` });
   } catch (error) {
     console.error('Geocoding error:', error);
     res.status(500).json({ error: error.message });
