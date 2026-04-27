@@ -258,9 +258,9 @@ function displayResults(plan) {
           ${planData.year0.tasks.map(task => {
             // Variable Injection: bind to primaryTree for canopy planting task
             const isCanopyTask = primaryTree && /canopy/i.test(task.task);
-            const displayPlants = (task.plants && (anchor || primaryTree))
+            const displayPlants = (task.plants && primaryTree)
               ? (task.plants.map(p => {
-                  if (typeof p === 'string' && /sour.cherry/i.test(p)) return primaryTree || anchor;
+                  if (typeof p === 'string' && /sour.cherry/i.test(p)) return primaryTree;
                   return p;
                 }))
               : task.plants;
