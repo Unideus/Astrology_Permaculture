@@ -77,14 +77,16 @@ app.post('/api/geocode', async (req, res) => {
     const stateName = stateMap[stateAbbr.toUpperCase()] || stateAbbr;
 
     // ── Strategy 1: Structured query (most reliable) ──────────────────
-    const headers = { 'User-Agent': 'PermacultureDesignApp/1.0 (contact@example.com)' };
+    const headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'application/json'
+    };
 
     if (city) {
       const params = new URLSearchParams({ format: 'json', limit: '1', countrycodes: 'us' });
       if (street)  params.set('street',  street);
       params.set('city',   city);
       if (stateName) params.set('state', stateName);
-      params.set('country', 'USA');
 
       const structUrl = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
       try {
@@ -99,8 +101,9 @@ app.post('/api/geocode', async (req, res) => {
               formattedAddress: result.display_name,
               placeId: result.place_id,
               boundingBox: result.boundingbox,
-              queryUsed: structUrl.includes('street=') ? 'structured (street)' : 'structured (city+state)'
+              queryUsed: `structured:${params.toString().slice(0,60)}`
             });
+          } else {
           }
         }
       } catch (e) {
@@ -109,7 +112,6 @@ app.post('/api/geocode', async (req, res) => {
     }
 
     // ── Strategy 2: Free-text with countrycodes=us lock ─────────────────
-    // Fallback: q=query&countrycodes=us limits results to United States only
     const freeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(baseAddress)}&countrycodes=us&limit=1`;
     try {
       const r = await fetch(freeUrl, { headers });
@@ -125,7 +127,9 @@ app.post('/api/geocode', async (req, res) => {
             boundingBox: result.boundingbox,
             queryUsed: 'free-text+countrycodes'
           });
+        } else {
         }
+      } else {
       }
     } catch (e) {
       console.warn('Free-text geocode failed:', e.message);
@@ -271,8 +275,8 @@ CLIMATE CONSTRAINTS (STRICT):
 - NO temperate plants (apple, pear, cherry, almond, walnut, chestnut, hazelnut) in zone 9+ unless specifically subtropical varieties
 - For zone 10a: citrus, avocado, mango, banana, papaya, passionfruit, guava, fig, pineapple, coconut, okra, sweet potato, taro, and tropical greens are appropriate
 - DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum (these need winter chill and won't survive/produce in zone 10a)
+- For USDA zones below 5: REJECT Peach, Nectarine, and Sweet Cherry entirely. These species are budded onto tender rootstocks and will not survive zone 4 or below without exceptional winter protection. Substitute Honeyberry (Haskaps), Sea Buckthorn, or Cold-Hardy Plum (e.g., 'Superior' or 'La Crescent') instead.
 - STRICTLY use ONLY the plants in the provided registry list. DO NOT invent names like Dragon Fruit, Cinnamon, Nutmeg, Cardamom, Lychee, Durian, or any plant not explicitly in your provided data.
-- For zones 6 or lower: DO NOT suggest Mediterranean perennials (Rosemary, Lavender, Sage, Thyme, Oregano) as permanent outdoor supporting species — these are frost-tender and will not survive a hard freeze. Use cold-hardy alternatives instead.
 - All guild supporting plants must be real, growable species from your verified plant list.
 - If a plant is not in your data, do not mention it. Substitute with a known compatible alternative instead.`;
   }
