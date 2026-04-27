@@ -612,6 +612,24 @@ class PermacultureApp {
       guild_note: `By year 2, the guild is producing food. Year 3+ is full production.`
     });
     
+    // N-Fixer post-processing: move non-legume species to Dynamic Accumulators
+    const DYNAMIC_ACCUMULATORS = new Set(['nettle', 'dandelion', 'comfrey', 'horseradish']);
+    [year0Tasks, year1Tasks, year2Tasks].forEach(tasks => {
+      tasks.forEach(task => {
+        if (!task.plants || !Array.isArray(task.plants)) return;
+        // Deduplicate plant list
+        task.plants = [...new Map(task.plants.map(p => [p.toLowerCase(), p])).values()];
+        if (task.task && task.task.includes('N-Fixers') && !task.task.includes('Dynamic')) {
+          const nonLegumes = task.plants.filter(p => DYNAMIC_ACCUMULATORS.has(p.toLowerCase()));
+          const legumes = task.plants.filter(p => !DYNAMIC_ACCUMULATORS.has(p.toLowerCase()));
+          task.plants = legumes;
+          if (nonLegumes.length > 0) {
+            task.details = (task.details || '') + ` Dynamic Accumulators (K/Minerals): ${nonLegumes.join(', ')}.`;
+          }
+        }
+      });
+    });
+    
     return {
       year0: {
         title: config.trees ? 'Canopy & Infrastructure' : 'Containers & Soil Base',

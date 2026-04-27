@@ -251,8 +251,8 @@ function displayResults(plan) {
   document.getElementById('threeYearPlan').innerHTML = `
     <div class="plan-timeline">
       <div class="year-section">
-        <h4>${planData.year0.title}</h4>
-        <p><em>${planData.year0.duration}</em></p>
+        <h4>${planData.year0.title || 'Canopy & Infrastructure'}</h4>
+        <p><em>${planData.year0.duration || planData.year0.timeframe || 'Months 0-12'}</em></p>
         <p>${primaryTree ? `Establish ${primaryTree} as the system anchor` : planData.year0.focus}</p>
         <div style="margin-top: 15px">
           ${planData.year0.tasks.map(task => {

@@ -442,6 +442,7 @@ STRICT REQUIREMENTS:
 
    CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone.
    ZONE TRUTH: You MUST use the geocoded Hardiness Zone provided in the Site Information. Do not use fallbacks or estimates. Crown Point, IN is Zone 5b/6a. Do not suggest Zone 7+ plants like Figs unless they are explicitly marked as ultra-hardy or indoor/container plants in the registry. Do not invent a warmer zone than what was geocoded.
+   ZONE WARNING: If the user requests a plant inappropriate for the geocoded zone, add [ZONE ALERT] to that guild's description. Example: In Zone 10a (Florida), Apple requires a low-chill variety (≤400 hours below 45°F) — include this warning.
    DO NOT create "Vegetable Guilds". All vegetables must be assigned to Layer 4 or 6 of a Tree-centric Guild.
    If no suitable plant exists in the plantAllowList for a specific layer, provide a specific native species for the site's Zone and label it [PROPOSED NATIVE] (e.g., "Wild Grape [PROPOSED NATIVE]" for Layer 7, "Serviceberry [PROPOSED NATIVE]" for Layer 2). This marks it as ecologically sound but not in the database.
    ID CLEANUP: Every [id: xxx] must contain only lowercase letters, numbers, and underscores — no trailing underscores, no extra characters. Strip trailing underscores before outputting: [id: black_currant] is valid, [id: black_currant_] is not.
@@ -454,7 +455,7 @@ STRICT REQUIREMENTS:
    LAYER 2 REJECTION: If you do not have a dwarf tree or large shrub in the registry for Layer 2, you must return "None" or "[PROPOSED NATIVE]". Do not categorize small herbs or groundcovers as trees.
 
    SUMMARY SYNC: The AI Summary at the top must mention the specific Canopy trees chosen (e.g., "Centered on Apple and Hazelnut") to make the output feel cohesive and intentional.
-   GUILD-PLAN SYNC: The 3-Year Implementation Plan MUST use the exact same common name and ID as the Guild's Layer 1 anchor. If Layer 1 is Mulberry, the Plan starts with Mulberry. No exceptions.
+   ANCHOR SYNC: The Year 1 Canopy Planting MUST use the exact name and ID of Guild 1's Layer 1 anchor. If Guild 1 is Apple [id: apple], the plan says Apple. If Guild 1 is Avocado [id: avocado], the plan says Avocado. No mixing, no substituting, no adding a second canopy tree. The Year 1 focus is: "Establish [anchor] as the system anchor."
 
 3. COMPANION_PLANTING: Generate EXACTLY 5 companion pairs in this format:
    "Plant A + Plant B: [Functional Relationship]". Use ONLY plants from the Plant Allow List.
