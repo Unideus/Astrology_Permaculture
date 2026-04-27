@@ -234,7 +234,7 @@ function displayResults(plan) {
           ${planData.year0.tasks.map(task => `
             <div class="task-item">
               <strong>${task.task} - ${task.timing}</strong>
-              ${task.plants ? `<p>Plants: ${task.plants.join(', ')}</p>` : ''}
+              ${task.plants ? `<p>Plants: ${task.plants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
               <p>${task.details}</p>
             </div>
           `).join('')}
@@ -249,7 +249,7 @@ function displayResults(plan) {
           ${planData.year1.tasks.map(task => `
             <div class="task-item">
               <strong>${task.task} - ${task.timing}</strong>
-              ${task.plants ? `<p>Plants: ${task.plants.join(', ')}</p>` : ''}
+              ${task.plants ? `<p>Plants: ${task.plants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
               <p>${task.details}</p>
             </div>
           `).join('')}
@@ -264,7 +264,7 @@ function displayResults(plan) {
           ${planData.year2.tasks.map(task => `
             <div class="task-item">
               <strong>${task.task} - ${task.timing}</strong>
-              ${task.plants ? `<p>Plants: ${task.plants.join(', ')}</p>` : ''}
+              ${task.plants ? `<p>Plants: ${task.plants.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).join(', ')}</p>` : ''}
               <p>${task.details}</p>
             </div>
           `).join('')}

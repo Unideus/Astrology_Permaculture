@@ -211,7 +211,10 @@ CLIMATE CONSTRAINTS (STRICT):
 - ONLY suggest plants that survive in USDA zone ${zone}
 - NO temperate plants (apple, pear, cherry, almond, walnut, chestnut, hazelnut) in zone 9+ unless specifically subtropical varieties
 - For zone 10a: citrus, avocado, mango, banana, papaya, passionfruit, guava, fig, pineapple, coconut, okra, sweet potato, taro, and tropical greens are appropriate
-- DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum (these need winter chill and won't survive/produce in zone 10a)`;
+- DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum (these need winter chill and won't survive/produce in zone 10a)
+- STRICTLY use ONLY the plants in the provided registry list. DO NOT invent names like Dragon Fruit, Cinnamon, Nutmeg, Cardamom, Lychee, Durian, or any plant not explicitly in your provided data.
+- All guild supporting plants must be real, growable species from your verified plant list.
+- If a plant is not in your data, do not mention it. Substitute with a known compatible alternative instead.`;
   }
   
   return `You are an expert permaculture designer and astrological gardener. Create a detailed permaculture design plan based on the following information:
