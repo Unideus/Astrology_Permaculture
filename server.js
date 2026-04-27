@@ -406,16 +406,12 @@ STRICT REQUIREMENTS:
 - If you cannot find an ID for a plant, you CANNOT use that plant.
 - Never invent a plant name or use a plant without its registry_id.
 
-2. GUILDS: 3-5 plant guilds structured as vertical stacks using the Standard 7 Layers of Permaculture.
-   A Guild is NOT a list — it is a height-based system centered on a Canopy or Sub-Canopy anchor.
-
-   PRIORITY 0 (User Desired Plants): If the user has provided "Desired Canopy Plants" in the Site Information, you MUST build the Guilds around these specific selections first. Use the Registry ID that most closely matches the user's request (e.g., if they type "Apple", use [id: apple]). Only if the user leaves this blank should you pick the highest-yielding Zone-appropriate tree yourself.
-
-   CANOPY SELECTION PRIORITY (Layer 1):
-   - 1st Priority: Choose the highest-yielding, most nutritious food tree for the site's Zone (e.g., Apple, Cherry, Plum, Pear).
-   - 2nd Priority: Integrate Cell Salt plants into the SHRUB, HERBACEOUS, and GROUNDCOVER layers.
-   - Do NOT sacrifice food production speed for astrological alignment at the Canopy level.
-
+2. GUILDS: If scale is HOMESTEAD, you MUST generate EXACTLY 3 distinct guilds with different Layer 1 anchors.
+   - Guild 1: Centered on the User's Desired Plant (from userDesiredPlants — e.g., Apple, Peach).
+   - Guild 2: Centered on a different anchor for Zone 5b providing a different yield type (e.g., Hazelnut for Protein/Nut, Elderberry for Berry, Plum for Fruit). Must be a DIFFERENT tree from Guild 1.
+   - Guild 3: Centered on another compatible Zone 5b anchor different from Guilds 1 and 2 (e.g., if Guild 1 is Apple and Guild 2 is Hazelnut, try Plum, Cherry, or Aronia).
+   NO-ONE-PLANT-LIMIT: Even if the user provides only ONE desired plant, generate 2nd and 3rd guilds with DIFFERENT anchors. Do not repeat the same star player across all three guilds. Each guild must have a unique Layer 1 anchor.
+   
    For each guild, populate ALL 7 layers:
 
    Layer 1 — Canopy: Large Fruit/Nut Trees (the anchor)
@@ -581,6 +577,7 @@ function parseOllamaResponse(response) {
       }
       
       // LEGUME SANITY CHECK: hard-validation rewrite of N-fixer misattributions
+      // Applies to ALL guilds AND plan fields — catches Nettle/Dandelion in all 3 guilds
       // Only Legumes (Beans, Clover, Vetch, Peas) and Goumi/Seaberry get N-Fixer
       const LEGUME_N_FIXERS = ['beans', 'clover', 'vetch', 'peas', 'goumi', 'seaberry'];
       const NOT_N_FIXERS = ['nettle', 'turnips', 'turnip', 'radish', 'radishes', 'comfrey', 'dandelion', 'dandelions'];
@@ -590,8 +587,7 @@ function parseOllamaResponse(response) {
         NOT_N_FIXERS.forEach(plant => {
           const regex = new RegExp(`\\b${plant}\\b[^;]*nitrogen.fix[^"']*`, 'gi');
           fixed = fixed.replace(regex, `${plant} — Dynamic Accumulator`);
-          // Also catch standalone misattributions like "Nettle: fixes nitrogen"
-          const directRegex = new RegExp(`\\b${plant}\\b.*?:.*?(?:nitrogen|n-fix|no-literal)[^"']*`, 'gi');
+          const directRegex = new RegExp(`\\b${plant}\\b.*?:.*?(?:nitrogen|n-fix)[^"']*`, 'gi');
           fixed = fixed.replace(directRegex, `${plant}: Dynamic Accumulator (potassium/minerals)`);
         });
         return fixed;
@@ -602,6 +598,20 @@ function parseOllamaResponse(response) {
       if (parsed.summary) parsed.summary = fixNFixerText(parsed.summary);
       if (parsed.soilAmendments && Array.isArray(parsed.soilAmendments)) {
         parsed.soilAmendments = parsed.soilAmendments.map(a => typeof a === 'string' ? fixNFixerText(a) : a);
+      }
+      
+      // Apply N-fixer check to all guild layer values across all 3 guilds
+      if (parsed.guilds && Array.isArray(parsed.guilds)) {
+        parsed.guilds = parsed.guilds.map(guild => {
+          if (guild.layers) {
+            const cleanedLayers = {};
+            for (const [k, v] of Object.entries(guild.layers)) {
+              cleanedLayers[k] = cleanId(fixNFixerText(v));
+            }
+            return { ...guild, layers: cleanedLayers };
+          }
+          return guild;
+        });
       }
       
       return parsed;
