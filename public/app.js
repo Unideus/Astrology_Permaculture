@@ -71,6 +71,7 @@ async function generatePlan() {
     address: document.getElementById('address').value,
     sunSign: document.getElementById('sunSign').value,
     scale: document.getElementById('scale').value,
+    userDesiredPlants: document.getElementById('userDesiredPlants').value.trim() || null,
     familyMembers: []
   };
 
@@ -209,18 +210,28 @@ function displayResults(plan) {
   `;
 
   // Recommended Plants
-  document.getElementById('recommendedPlants').innerHTML = `
-    <div class="plant-list">
-      ${plan.recommendedPlants.slice(0, 12).map(plant => `
-        <div class="plant-item">
-          <h4>${plant.plant.replace(/_/g, ' ')}</h4>
-          <p><strong>Rich in:</strong> ${plant.minerals.join(', ')}</p>
-        </div>
-      `).join('')}
-    </div>
-    ${plan.recommendedPlants.length > 12 ? 
-      `<p class="note">Showing 12 of ${plan.recommendedPlants.length} recommended plants. Full list in downloadable plan.</p>` : ''}
-  `;
+  // If geocoding failed, do NOT show a stale plant list — clear it and warn the user
+  if (geoFailed) {
+    document.getElementById('recommendedPlants').innerHTML = `
+      <p class="note" style="background:#ffebee;border-color:#ef5350;">
+        ⚠️ <strong>Location unavailable.</strong> Recommended plants require a valid USDA hardiness zone. 
+        Please enter a valid City and State (e.g., "Duluth, MN") and try again.
+      </p>
+    `;
+  } else {
+    document.getElementById('recommendedPlants').innerHTML = `
+      <div class="plant-list">
+        ${plan.recommendedPlants.slice(0, 12).map(plant => `
+          <div class="plant-item">
+            <h4>${plant.plant.replace(/_/g, ' ')}</h4>
+            <p><strong>Rich in:</strong> ${plant.minerals.join(', ')}</p>
+          </div>
+        `).join('')}
+      </div>
+      ${plan.recommendedPlants.length > 12 ? 
+        `<p class="note">Showing 12 of ${plan.recommendedPlants.length} recommended plants. Full list in downloadable plan.</p>` : ''}
+    `;
+  };
 
   // 3-Year Plan
   const planData = plan.threeYearPlan;
@@ -360,17 +371,36 @@ function renderAIGuilds(aiData) {
     return;
   }
 
+  const layerLabels = {
+    layer1_canopy: '🌳 Layer 1 — Canopy',
+    layer2_low_tree: '🌿 Layer 2 — Low Tree',
+    layer3_shrub: '🫐 Layer 3 — Shrub',
+    layer4_herbaceous: '🌱 Layer 4 — Herbaceous',
+    layer5_rhizosphere: '🥔 Layer 5 — Rhizosphere',
+    layer6_soil_surface: '🍀 Layer 6 — Soil Surface',
+    layer7_vertical: '🧗 Layer 7 — Vertical'
+  };
+
   guildsDiv.innerHTML = `
     ${aiData.summary ? `<div class="note" style="margin-bottom:20px">
       <strong>AI Summary:</strong> ${aiData.summary}
     </div>` : ''}
-    <div class="plant-list">
+    <div class="guild-stack">
       ${aiData.guilds.map(guild => `
-        <div class="plant-item" style="border-left:4px solid #4caf50">
-          <h4>🌳 ${guild.name}</h4>
-          <p><strong>Central:</strong> ${guild.central}</p>
-          <p><strong>Supporting:</strong> ${guild.supporting.join(', ')}</p>
-          <p><strong>Function:</strong> ${guild.function}</p>
+        <div class="guild-card" style="border-left:4px solid #4caf50;margin-bottom:24px;padding:12px 16px;background:#f9f9f9;border-radius:6px">
+          <h4 style="margin:0 0 8px 0">🌳 ${guild.name}</h4>
+          ${guild.function ? `<p style="margin:0 0 12px 0;color:#555;font-size:0.9em"><em>${guild.function}</em></p>` : ''}
+          <div class="layer-table" style="display:grid;gap:4px">
+            ${Object.entries(layerLabels).map(([key, label]) => {
+              const val = guild.layers ? (guild.layers[key] || '-') : (guild[key] || '-');
+              return `
+                <div style="display:grid;grid-template-columns:200px 1fr;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #eee">
+                  <span style="font-size:0.85em;color:#666">${label}</span>
+                  <span style="font-weight:500">${val}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
         </div>
       `).join('')}
     </div>
@@ -406,9 +436,9 @@ function renderAIGuilds(aiData) {
       <div class="note">${aiData.waterManagement}</div>
     ` : ''}
     
-    ${aiData.pestControl ? `
-      <h4 style="margin-top:20px;color:var(--primary)">🐛 Natural Pest Control</h4>
-      <div class="note">${aiData.pestControl}</div>
+    ${aiData.beneficialInsectHabitat ? `
+      <h4 style="margin-top:20px;color:var(--primary)">🐞 Beneficial Insect Habitat</h4>
+      <div class="note">${aiData.beneficialInsectHabitat}</div>
     ` : ''}
   `;
 }

@@ -161,19 +161,44 @@ app.post('/api/generate-plan', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Get geocoded location
+    // Get geocoded location — try full address first, then strip to City, State on failure
     let locationData = null;
-    try {
+    const fullAddress = userData.address;
+    
+    const tryGeocode = async (address) => {
       const geoResponse = await fetch(`http://localhost:${PORT}/api/geocode`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: userData.address })
+        body: JSON.stringify({ address })
       });
-      if (geoResponse.ok) {
-        locationData = await geoResponse.json();
+      if (geoResponse.ok) return await geoResponse.json();
+      return null;
+    };
+
+    locationData = await tryGeocode(fullAddress);
+
+    // Fallback: if full address fails, strip to City, State and retry
+    if (!locationData) {
+      console.warn(`Full address geocode failed (${fullAddress}), trying City, State fallback...`);
+      // Extract City, State from the address string
+      const commaParts = fullAddress.split(',').map(p => p.trim()).filter(Boolean);
+      let cityStateFallback = null;
+      if (commaParts.length >= 2) {
+        // Use first two parts: "City, State" or "City, State, ZIP"
+        cityStateFallback = `${commaParts[0]}, ${commaParts[1]}`;
+      } else if (commaParts.length === 1) {
+        // Single part like "Duluth MN" — split on spaces
+        const spaceParts = commaParts[0].split(/\s+/);
+        if (spaceParts.length >= 2) {
+          cityStateFallback = `${spaceParts.slice(0, -1).join(' ')}, ${spaceParts[spaceParts.length - 1]}`;
+        }
       }
-    } catch (geoError) {
-      console.warn('Geocoding failed, using fallback:', geoError.message);
+      if (cityStateFallback && cityStateFallback !== fullAddress) {
+        locationData = await tryGeocode(cityStateFallback);
+        if (locationData) {
+          console.warn(`City/State fallback succeeded: ${cityStateFallback}`);
+        }
+      }
     }
 
     // Get climate data BEFORE building Ollama prompt
@@ -199,6 +224,12 @@ app.post('/api/generate-plan', async (req, res) => {
     // Build prompt for Ollama WITH climate data
     // Build zone-filtered plant list to include in prompt (Task 4: verify AI uses context)
     const siteZoneNum = climateData ? parseInt((climateData.hardinessZone || '0').match(/^(\d+)/)?.[1] || '0') : null;
+
+    // NO-ZONE BLOCKER: Do not proceed to AI without a valid zone
+    if (siteZoneNum === null || siteZoneNum === 0) {
+      return res.status(422).json({ error: 'Location data required to verify plant hardiness. Please provide a City and State.' });
+    }
+
     const filteredPlants = siteZoneNum
       ? permaApp.filterPlants({ zone: siteZoneNum })
       : [];
@@ -243,7 +274,7 @@ app.post('/api/generate-plan', async (req, res) => {
         timingAdvice: ollamaPlan.timingAdvice,
         soilAmendments: ollamaPlan.soilAmendments,
         waterManagement: ollamaPlan.waterManagement,
-        pestControl: ollamaPlan.pestControl
+        beneficialInsectHabitat: ollamaPlan.beneficialInsectHabitat || ollamaPlan.pestControl || null,
       };
     }
 
@@ -268,7 +299,7 @@ app.post('/api/generate-plan', async (req, res) => {
 });
 
 function buildPermaculturePrompt(userData, locationData, climateData = null, filteredPlants = []) {
-  const { address, sunSign, familyMembers = [], scale, soilTest } = userData;
+  const { address, sunSign, familyMembers = [], scale, soilTest, userDesiredPlants } = userData;
   
   // Build climate context for the AI
   let climateContext = '';
@@ -316,8 +347,10 @@ function buildPermaculturePrompt(userData, locationData, climateData = null, fil
     climateContext = `
 CLIMATE CONSTRAINTS (STRICT):
 - USDA Hardiness Zone: ${zone}
-- Köppen Climate: ${koppen}
-${koppenDescription}
+- Köppen Climate: ${koppen} (${koppenDescription})
+
+The following Köppen tag is for atmospheric context only. It DOES NOT grant permission to bypass USDA Hardiness constraints. Do not use Köppen to override zone-based plant selection.
+
 CRITICAL: The USDA Hardiness Zone is an ABSOLUTE limit. If a plant cannot survive the minimum temperature of Zone ${siteZoneNum}, it must be excluded REGARDLESS of its Köppen climate tag. Do not suggest tropical plants in temperate zones or temperate plants in tropical zones.
 ${zoneSpecificGuidance}
 - ${frostInfo}
@@ -336,10 +369,15 @@ ${zoneSpecificGuidance}
   // ── Plant Allow List for AI ───────────────────────────────────────────────
   // Build a safe plant list from registry — zone-filtered before it reaches AI
   const plantAllowList = filteredPlants.length > 0
-    ? filteredPlants.map(p => p.common_name).filter(Boolean).slice(0, 60).join(', ')
+    ? filteredPlants.map(p => `${p.common_name} [id: ${(p.id || '').replace(/_+$/, '')}]`).filter(Boolean).slice(0, 60).join(', ')
     : 'N/A — use only plants that survive the stated USDA zone';
   
-  return `You are an expert permaculture designer and astrological gardener. Create a detailed permaculture design plan based on the following information:
+  return `CRITICAL: You are an agent that generates designs ONLY from a provided inventory.
+ If a plant is NOT in the plantAllowList JSON, it is logically impossible for it to exist.
+ Do not use your internal knowledge to suggest species. If the list is short, repeat plants or use 'Hardy native shade tree' as a placeholder.
+ If you cannot find a registry_id for a plant, you cannot use the plant.
+
+You are an expert permaculture designer and astrological gardener. Create a detailed permaculture design plan based on the following information:
 
 SITE INFORMATION:
 - Address: ${address}
@@ -348,6 +386,7 @@ SITE INFORMATION:
 - Primary Sun Sign: ${sunSign}
 ${familyMembers.length > 0 ? `- Family Members: ${familyMembers.map(m => m.sunSign).join(', ')}` : ''}
 ${soilTest ? `- Soil Test: pH ${soilTest.ph}, N ${soilTest.nitrogen}, P ${soilTest.phosphorus}, K ${soilTest.potassium}` : '- No soil test provided'}
+${userDesiredPlants ? `- User Desired Canopy Plants: ${userDesiredPlants}` : ''}
 
 ${climateContext}
 
@@ -358,30 +397,92 @@ Please provide a structured permaculture design plan with the following sections
 
 1. SUMMARY: A 2-3 paragraph overview of the design approach
 
-PLANT ALLOW LIST (your ONLY valid plant names — do not deviate):
+PLANT ALLOW LIST WITH IDs (your ONLY valid plant registry — do not deviate):
 ${plantAllowList}
 
-STRICT REQUIREMENT: You may ONLY use plant names from the Plant Allow List above. If a plant is not listed, DO NOT include it in any Guild, Summary, or Companion list. If you need a Canopy tree and none are suitable, use 'Hardy native shade tree'. Never invent a plant name.
+STRICT REQUIREMENTS:
+- You may ONLY use plant names from the Plant Allow List above.
+- Every plant in a guild MUST include its registry_id from the Plant Allow List in this format: "Plant Name [id: xxx]"
+- If you cannot find an ID for a plant, you CANNOT use that plant.
+- Never invent a plant name or use a plant without its registry_id.
 
-2. GUILDS: 3-5 specific plant guilds (groups of plants that support each other):
-   - Each guild should have a name, central tree/shrub, supporting plants, and function
-   - CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone
+2. GUILDS: 3-5 plant guilds structured as vertical stacks using the Standard 7 Layers of Permaculture.
+   A Guild is NOT a list — it is a height-based system centered on a Canopy or Sub-Canopy anchor.
 
-3. COMPANION_PLANTING: Key companion planting combinations for the recommended crops:
-   Format companionPlanting entries as: "Plant A + Plant B: [Brief reason]" — e.g., "Tomato + Basil: Basil repels aphids and improves tomato flavor"
+   PRIORITY 0 (User Desired Plants): If the user has provided "Desired Canopy Plants" in the Site Information, you MUST build the Guilds around these specific selections first. Use the Registry ID that most closely matches the user's request (e.g., if they type "Apple", use [id: apple]). Only if the user leaves this blank should you pick the highest-yielding Zone-appropriate tree yourself.
+
+   CANOPY SELECTION PRIORITY (Layer 1):
+   - 1st Priority: Choose the highest-yielding, most nutritious food tree for the site's Zone (e.g., Apple, Cherry, Plum, Pear).
+   - 2nd Priority: Integrate Cell Salt plants into the SHRUB, HERBACEOUS, and GROUNDCOVER layers.
+   - Do NOT sacrifice food production speed for astrological alignment at the Canopy level.
+
+   For each guild, populate ALL 7 layers:
+
+   Layer 1 — Canopy: Large Fruit/Nut Trees (the anchor)
+   Layer 2 — Low Tree: Dwarf Fruit Trees / Large Shrubs
+   Layer 3 — Shrub: Berries / Currants
+   Layer 4 — Herbaceous: Comfrey, Herbs, Salt-linked Perennials
+   Layer 5 — Rhizosphere: Root crops / Tubers
+   Layer 6 — Soil Surface: Ground cover / Living mulch
+   Layer 7 — Vertical: Vines / Climbers
+
+   TREE CLASSIFICATION: Peach [id: peach] is a Tree. It must NEVER be listed in the Herbaceous (Layer 4) or Shrub (Layer 3) layers. It belongs in Layer 1 (Canopy) or Layer 2 (Low Tree) only. Apply this rule to all fruit trees — no fruit tree belongs in Herbaceous or Shrub layers.
+
+   CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone.
+   ZONE TRUTH: You MUST use the geocoded Hardiness Zone provided in the Site Information. Do not use fallbacks or estimates. Crown Point, IN is Zone 5b/6a. Do not suggest Zone 7+ plants like Figs unless they are explicitly marked as ultra-hardy or indoor/container plants in the registry. Do not invent a warmer zone than what was geocoded.
+   DO NOT create "Vegetable Guilds". All vegetables must be assigned to Layer 4 or 6 of a Tree-centric Guild.
+   If no suitable plant exists in the plantAllowList for a specific layer, provide a specific native species for the site's Zone and label it [PROPOSED NATIVE] (e.g., "Wild Grape [PROPOSED NATIVE]" for Layer 7, "Serviceberry [PROPOSED NATIVE]" for Layer 2). This marks it as ecologically sound but not in the database.
+   ID CLEANUP: Every [id: xxx] must contain only lowercase letters, numbers, and underscores — no trailing underscores, no extra characters. Strip trailing underscores before outputting: [id: black_currant] is valid, [id: black_currant_] is not.
+
+   LAYER 1 RIGIDITY: Layer 1 (Canopy) MUST be a Tree. If you run out of trees from the registry, DO NOT create a new guild. It is better to have 1 perfect "Sour Cherry Guild" than a fake "Strawberry Canopy Guild".
+   THE ANCHOR REQUIREMENT: If a Guild is centered around a tree (Mulberry, Chestnut, Cherry, etc.), that tree MUST be placed in Layer 1 (Canopy). Do not leave Layer 1 empty if a tree exists in the guild.
+
+   VERTICAL VALIDATION (STRICT): Layer 7 (Vertical) is STRICTLY for vining/climbing plants only. If you do not have a vine like Grapes, Hops, or Pole Beans in the registry, you MUST return "None". DO NOT place Bell Peppers, Chard, or any other non-climbing plant in Layer 7 under any circumstances.
+
+   LAYER 2 REJECTION: If you do not have a dwarf tree or large shrub in the registry for Layer 2, you must return "None" or "[PROPOSED NATIVE]". Do not categorize small herbs or groundcovers as trees.
+
+   SUMMARY SYNC: The AI Summary at the top must mention the specific Canopy trees chosen (e.g., "Centered on Sour Cherry and Chestnut") to make the output feel cohesive and intentional.
+   GUILD-PLAN SYNC: The 3-Year Implementation Plan MUST use the exact same common name and ID as the Guild's Layer 1 anchor. If Layer 1 is Mulberry, the Plan starts with Mulberry. No exceptions.
+
+3. COMPANION_PLANTING: Generate EXACTLY 5 companion pairs in this format:
+   "Plant A + Plant B: [Functional Relationship]". Use ONLY plants from the Plant Allow List.
    DO NOT output single plant names or bare pairs. Each entry must include the colon and a brief reason.
+   CRITICAL: Companion relationships must be based on actual permaculture functions: Nitrogen Fixation, Dynamic Accumulation, Pest Deterrent (via scent/flowers), or Physical Support. Do NOT claim relationships without a functional basis (e.g., "Blackberries deter pests" is not valid — blackberries do not function as pest deterrents).
+   NITROGEN FIXATION ONLY ATTRIBUTION — THE LEGUME LAW: ONLY legumes (Clover, Beans, Peas, Vetch) or specific N-fixing shrubs (Goumi, Seaberry) can be called Nitrogen Fixers. DO NOT claim N-fixation for Turnips, Radish, Nettle, or Comfrey — label those as 'Dynamic Accumulators' or 'Soil Decompactors'. Comfrey [id: comfrey] is a DYNAMIC ACCUMULATOR (Potassium/Minerals). It is NOT a Nitrogen Fixer. Never label Comfrey as an N-fixer in the 3-Year Plan or Companion sections.
    - IF site zone <= 5 (cold climate): Default to "Hardy Mulch" or "Native Grass" ground covers instead of Mediterranean herbs. Use cold-hardy companions only.
    - IF site zone >= 7 (warm climate): Mediterranean herbs (Rosemary, Lavender, Sage companion trio) are appropriate as companion plants.
 
-4. TIMING_ADVICE: Specific timing recommendations based on moon phases and seasons
+   ID INTEGRITY: Use the EXACT registry id. If the registry says "red_raspberry", you MUST use [id: red_raspberry], not [id: raspberry]. Match the id string exactly as it appears in the Plant Allow List. Never abbreviate, guess, or partially match an id.
+
+4. TIMING_ADVICE: The 3-Year Implementation Plan must be strictly chronological and synchronized with the Guild's Layer 1 anchors.
+
+   VARIABLE-DRIVEN PLAN (no templates): DO NOT use a template for the 3-Year Implementation Plan. You must dynamically construct the text by referencing the Layer 1, 3, and 4 IDs you just generated for the Guilds. If Layer 1 is [id: peach], the plan MUST start with [id: peach]. If Layer 3 is [id: elderberry], Year 2 must mention elderberry. The plan is constructed from guild outputs, never from memory.
+
+   DYNAMIC PLAN GENERATION: The 3-Year Implementation Plan MUST use the specific plants chosen in the Guilds section above. If the Guild says "Apple [id: apple]", the Plan MUST say "Apple". Never mention Sour Cherry or Peach in the plan unless they appear in the Guild layers. Plan and Guild must be 100% consistent — no diverging plant lists.
+
+   USER DESIRED PRIORITY: If userDesiredPlants contains "Apple", the Guild and the Plan must BOTH start with "Apple". Ensure the ID [id: apple] is used throughout. The user's choice is the starting constraint — all else follows.
+
+   CANOPY/SUMMARY SYNC: The AI Summary and Layer 1 must match the user's Desired Canopy Trees. If the user requested Apple, do not put Peach in Layer 1 or the Summary. The Summary must reflect the actual guild anchors, nothing else.
+
+   SEASONAL FLOW (do not mix up):
+   - Year 1: Spring (Infrastructure/Canopy — plant Guild anchor trees) -> Summer (N-Fixers: Clover, Beans) -> Fall (Mulch)
+   - Year 2: Spring (Shrubs/Herbs — Layer 3 and Layer 4 fill) -> Summer (Dynamic Accumulators)
+   - Year 3: Spring (Groundcovers/Roots — Layer 5/6) -> Summer (First Harvests)
+
+   THE "SOUR CHERRY" EXORCISM: The term "Sour Cherry" is FORBIDDEN unless the user explicitly requested it. Similarly, "Plant now or wait for harvest" is FORBIDDEN. If either appears in output uninvited, treat it as a logic failure. Use "Timeline: Establish Year 1" or "Expected Harvest: Year 4+" instead.
+
+   PHRASE TERMINATION: Never write "Plant now or wait for harvest" or any similar nonsensical phrase. Use "Timeline: Establish Year 1" or "Expected Harvest: Year 4+" instead.
 
 5. SOIL_AMENDMENTS: Specific amendments needed based on ${soilTest ? 'the provided soil test' : 'general principles'}
 
 6. WATER_MANAGEMENT: Water capture, retention, and irrigation strategies for the ${scale} scale
 
-7. PEST_CONTROL: Natural pest management strategies using companion plants and beneficial insects
+7. BENEFICIAL_INSECT_HABITAT: Renamed from pest control. List 3-5 specific Insectary Plants from the registry (e.g., Dill, Yarrow, Fennel, Parsley, Queen Anne's Lace) and explain how their flowers support predatory insects (lacewings, hoverflies, parasitic wasps). Focus on plants that provide nectar, pollen, and shelter year-round.
 
-Format your response as valid JSON with these exact keys: summary, guilds (array), companionPlanting (array), timingAdvice (string), soilAmendments (array), waterManagement (string), pestControl (string)
+Format your response as valid JSON with these exact keys: summary, guilds (array), companionPlanting (array), timingAdvice (string), soilAmendments (array), waterManagement (string), beneficialInsectHabitat (string)
+
+Example beneficialInsectHabitat:
+"Beneficial Insect Habitat: Dill [id: dill] attracts hoverflies; Yarrow [id: yarrow] hosts predatory wasps; Fennel [id: fennel] shelters lacewings. Plant these in guild margins to maintain year-round predatory insect populations."
 
 Example companionPlanting entries (MUST match this format):
   "companionPlanting": [
@@ -395,12 +496,19 @@ Example companionPlanting format (MUST follow this pattern):
     "Navy Beans + Corn: beans fix nitrogen, corn provides trellis"
   ]
 
-Example guild format:
+Example 7-Layer Guild format (MUST include registry_id for every plant; fill ALL 7 layers):
 {
-  "name": "Apple Guild",
-  "central": "Dwarf Apple Tree",
-  "supporting": ["Comfrey", "Chives", "Daffodils", "Clover"],
-  "function": "Fruit production with dynamic accumulator and pest deterrent"
+  "name": "Pomegranate Guild",
+  "layers": {
+    "layer1_canopy": "Pomegranate Tree [id: pomegranate]",
+    "layer2_low_tree": "Goji Berry [id: goji]",
+    "layer3_shrub": "Elderberry [id: elderberry]",
+    "layer4_herbaceous": "Comfrey [id: comfrey], Chives [id: chives]",
+    "layer5_rhizosphere": "Naturally Occurring",
+    "layer6_soil_surface": "Clover [id: clover]",
+    "layer7_vertical": "Hardy Native Vine"
+  },
+  "function": "Subtropical fruit production with nitrogen fixation and dynamic accumulation"
 }`;
 }
 
@@ -433,7 +541,70 @@ function parseOllamaResponse(response) {
     // Try to extract JSON from the response
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      const parsed = JSON.parse(jsonMatch[0]);
+      
+      // Clean trailing underscores from all registry IDs in guild layer values
+      const cleanId = (s) => typeof s === 'string' ? s.replace(/\[id:\s*([^\]]+)\]/g, (_, id) => `[id: ${id.replace(/_+$/, '')}]`) : s;
+      
+      if (parsed.guilds && Array.isArray(parsed.guilds)) {
+        parsed.guilds = parsed.guilds.map(guild => {
+          // Already has layers — pass through (but clean IDs)
+          if (guild.layers) {
+            const cleanedLayers = {};
+            for (const [k, v] of Object.entries(guild.layers)) {
+              cleanedLayers[k] = cleanId(v);
+            }
+            return { ...guild, layers: cleanedLayers };
+          }
+          
+          // Legacy format (central + supporting) — convert to 7-layer
+          const layers = {
+            layer1_canopy: guild.central || 'Hardy Native Canopy',
+            layer2_low_tree: guild.lowTree || guild.layer2 || 'Naturally Occurring',
+            layer3_shrub: guild.shrub || guild.layer3 || 'Naturally Occurring',
+            layer4_herbaceous: guild.supporting?.join(', ') || guild.herbaceous || guild.layer4 || 'Naturally Occurring',
+            layer5_rhizosphere: guild.rhizosphere || guild.layer5 || 'Naturally Occurring',
+            layer6_soil_surface: guild.groundCover || guild.layer6 || 'Naturally Occurring',
+            layer7_vertical: guild.vertical || guild.layer7 || 'Naturally Occurring'
+          };
+          const cleanedLayers = {};
+          for (const [k, v] of Object.entries(layers)) {
+            cleanedLayers[k] = cleanId(v);
+          }
+          return { name: guild.name, layers: cleanedLayers, function: guild.function || '' };
+        });
+      }
+      
+      // Normalize pestControl → beneficialInsectHabitat
+      if (parsed.pestControl && !parsed.beneficialInsectHabitat) {
+        parsed.beneficialInsectHabitat = parsed.pestControl;
+      }
+      
+      // LEGUME SANITY CHECK: hard-validation rewrite of N-fixer misattributions
+      // Only Legumes (Beans, Clover, Vetch, Peas) and Goumi/Seaberry get N-Fixer
+      const LEGUME_N_FIXERS = ['beans', 'clover', 'vetch', 'peas', 'goumi', 'seaberry'];
+      const NOT_N_FIXERS = ['nettle', 'turnips', 'turnip', 'radish', 'radishes', 'comfrey', 'dandelion', 'dandelions'];
+      const fixNFixerText = (text) => {
+        if (!text || typeof text !== 'string') return text;
+        let fixed = text;
+        NOT_N_FIXERS.forEach(plant => {
+          const regex = new RegExp(`\\b${plant}\\b[^;]*nitrogen.fix[^"']*`, 'gi');
+          fixed = fixed.replace(regex, `${plant} — Dynamic Accumulator`);
+          // Also catch standalone misattributions like "Nettle: fixes nitrogen"
+          const directRegex = new RegExp(`\\b${plant}\\b.*?:.*?(?:nitrogen|n-fix|no-literal)[^"']*`, 'gi');
+          fixed = fixed.replace(directRegex, `${plant}: Dynamic Accumulator (potassium/minerals)`);
+        });
+        return fixed;
+      };
+      
+      if (parsed.timingAdvice) parsed.timingAdvice = fixNFixerText(parsed.timingAdvice);
+      if (parsed.beneficialInsectHabitat) parsed.beneficialInsectHabitat = fixNFixerText(parsed.beneficialInsectHabitat);
+      if (parsed.summary) parsed.summary = fixNFixerText(parsed.summary);
+      if (parsed.soilAmendments && Array.isArray(parsed.soilAmendments)) {
+        parsed.soilAmendments = parsed.soilAmendments.map(a => typeof a === 'string' ? fixNFixerText(a) : a);
+      }
+      
+      return parsed;
     }
     // If no JSON, return the raw text as summary
     return { summary: response };
