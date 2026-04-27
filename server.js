@@ -12,6 +12,12 @@ const PORT = process.env.PORT || 3000;
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5-coder:14b';
 
+// ── Tender perennial blacklist (USDA zone-sensitive) ──────────────────────
+const TENDER_PERENNIALS = [
+  'Rosemary', 'Lavender', 'Thyme (non-hardy)', 'Sage (non-hardy)',
+  'Bay Laurel', 'Artichoke'
+];
+
 // Middleware
 app.use(express.json());
 app.use(express.static('public'));
@@ -274,11 +280,13 @@ CLIMATE CONSTRAINTS (STRICT):
 - ONLY suggest plants that survive in USDA zone ${zone}
 - NO temperate plants (apple, pear, cherry, almond, walnut, chestnut, hazelnut) in zone 9+ unless specifically subtropical varieties
 - For zone 10a: citrus, avocado, mango, banana, papaya, passionfruit, guava, fig, pineapple, coconut, okra, sweet potato, taro, and tropical greens are appropriate
-- DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum (these need winter chill and won't survive/produce in zone 10a)
-- For USDA zones below 5: REJECT Peach, Nectarine, and Sweet Cherry entirely. These species are budded onto tender rootstocks and will not survive zone 4 or below without exceptional winter protection. Substitute Honeyberry (Haskaps), Sea Buckthorn, or Cold-Hardy Plum (e.g., 'Superior' or 'La Crescent') instead.
+- DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum
+- STRICTLY filter tender perennials for cold sites: IF zone <= 5, REMOVE all plants matching [${TENDER_PERENNIALS.join(', ')}] from any guild or companion list. Replace with ONLY zone-hardy substitutes: Russian Sage (zone 4+), Bee Balm (zone 3+), Chives (zone 3+), Hyssop (zone 3+), or Mint (zone 3+). Do not suggest any tender perennial as a permanent outdoor plant in zone 5 or below.
+- DO NOT suggest Mediterranean herbs (Rosemary, Lavender, Sage, Thyme, Oregano) as permanent outdoor supporting species in zone 6 or below — these are frost-tender.
+- IF zone >= 7, Rosemary and Lavender MAY be included as appropriate.
 - STRICTLY use ONLY the plants in the provided registry list. DO NOT invent names like Dragon Fruit, Cinnamon, Nutmeg, Cardamom, Lychee, Durian, or any plant not explicitly in your provided data.
 - All guild supporting plants must be real, growable species from your verified plant list.
-- If a plant is not in your data, do not mention it. Substitute with a known compatible alternative instead.`;
+  `;
   }
   
   return `You are an expert permaculture designer and astrological gardener. Create a detailed permaculture design plan based on the following information:
@@ -304,7 +312,9 @@ Please provide a structured permaculture design plan with the following sections
    - Each guild should have a name, central tree/shrub, supporting plants, and function
    - CRITICAL: All plants MUST be compatible with the stated USDA hardiness zone
 
-3. COMPANION_PLANTING: Key companion planting combinations for the recommended crops
+3. COMPANION_PLANTING: Key companion planting combinations for the recommended crops:
+   - IF site zone <= 5 (cold climate): Default to "Hardy Mulch" or "Native Grass" ground covers instead of Mediterranean herbs. Use cold-hardy companions only.
+   - IF site zone >= 7 (warm climate): Mediterranean herbs (Rosemary, Lavender, Sage companion trio) are appropriate as companion plants.
 
 4. TIMING_ADVICE: Specific timing recommendations based on moon phases and seasons
 
