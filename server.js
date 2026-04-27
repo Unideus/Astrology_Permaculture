@@ -272,10 +272,45 @@ function buildPermaculturePrompt(userData, locationData, climateData = null) {
     const frostInfo = climateData.frostDates?.light?.avgLastSpringFrost 
       ? `Last spring frost: ${climateData.frostDates.light.avgLastSpringFrost}, First fall frost: ${climateData.frostDates.light.avgFirstFallFrost}`
       : 'Frost-free or near-frost-free climate';
+    
+    // Extract numeric zone for comparisons
+    const siteZoneNum = parseInt((zone.match(/^(\d+)/) || [])[1] || '0');
+    
+    // ── Köppen description translation ─────────────────────────────────────
+    const koppenDescriptions = {
+      'Cfa': 'Humid Subtropical — hot humid summers, mild winters with occasional freezes',
+      'Cfb': 'Oceanic/Marine — cool wet summers, mild winters',
+      'Csa': 'Hot-Summer Mediterranean — dry summers, mild wet winters',
+      'Csb': 'Warm-Summer Mediterranean — dry summers, cool wet winters',
+      'Cwa': 'Humid Subtropical (Monsoon) — hot summers, dry winters',
+      'Dfa': 'Hot-Humid Continental — hot summers, cold winters with deep freezes',
+      'Dfb': 'Warm-Humid Continental — warm summers, cold snowy winters',
+      'Dwa': 'Hot-Humid Continental (Monsoon) — hot summers, cold dry winters',
+      'Dwb': 'Warm-Humid Continental (Monsoon) — warm summers, cold dry winters',
+      'BSh': 'Semi-Arid Hot — hot dry conditions, limited rainfall',
+      'BSk': 'Semi-Arid Cold — cold dry conditions, limited rainfall',
+      'A': 'Tropical Rainforest — hot and wet year-round',
+      'Am': 'Tropical Monsoon — hot, very wet monsoon season',
+      'Aw': 'Tropical Savanna — hot, distinct dry season'
+    };
+    const koppenDescription = koppenDescriptions[koppen] || `Köppen ${koppen} classification`;
+    
+    // ── Zone-specific guidance ───────────────────────────────────────────
+    let zoneSpecificGuidance = '';
+    if (siteZoneNum >= 7 && siteZoneNum <= 8) {
+      zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: Prioritize 'Temperate-Subtropical' crossover species. Prefer Pecan, Persimmon, Pomegranate (zone 7+), and Jujube over true tropicals. Citrus (satsuma, kumquat) work with cold protection. Avoid true tropicals like Mango and Papaya without heated winter protection.`;
+    } else if (siteZoneNum >= 9) {
+      zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: True tropicals (Mango, Papaya, Coconut, Lychee) are appropriate. Subtropicals (Citrus, Avocado, Guava) thrive here.`;
+    } else if (siteZoneNum <= 5) {
+      zoneSpecificGuidance = `Zone ${siteZoneNum} GUIDANCE: Focus on ultra-cold-hardy species (Honeyberry, Sea Buckthorn, Aronia, haskap). Russian Sage and Bee Balm are reliable herbaceous perennials. Avoid any plant not rated to zone ${siteZoneNum}.`;
+    } 
     climateContext = `
 CLIMATE CONSTRAINTS (STRICT):
 - USDA Hardiness Zone: ${zone}
 - Köppen Climate: ${koppen}
+${koppenDescription}
+CRITICAL: The USDA Hardiness Zone is an ABSOLUTE limit. If a plant cannot survive the minimum temperature of Zone ${siteZoneNum}, it must be excluded REGARDLESS of its Köppen climate tag. Do not suggest tropical plants in temperate zones or temperate plants in tropical zones.
+${zoneSpecificGuidance}
 - ${frostInfo}
 - ONLY suggest plants that survive in USDA zone ${zone}
 - NO temperate plants (apple, pear, cherry, almond, walnut, chestnut, hazelnut) in zone 9+ unless specifically subtropical varieties
