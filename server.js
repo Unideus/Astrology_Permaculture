@@ -416,21 +416,16 @@ STRICT REQUIREMENTS:
 - If you cannot find an ID for a plant, you CANNOT use that plant.
 - Never invent a plant name or use a plant without its registry_id.
 
-2. GUILDS: If scale is HOMESTEAD, you MUST generate EXACTLY 3 distinct guilds with different Layer 1 anchors.
-   - Guild 1: Centered on the User's Desired Plant (from userDesiredPlants — e.g., Apple, Peach).
-   - Guild 2: Centered on a different anchor for Zone 5b providing a different yield type (e.g., Hazelnut for Protein/Nut, Elderberry for Berry, Plum for Fruit). Must be a DIFFERENT tree from Guild 1.
-   - Guild 3: Centered on another compatible Zone 5b anchor different from Guilds 1 and 2 (e.g., if Guild 1 is Apple and Guild 2 is Hazelnut, try Plum, Cherry, or Aronia).
-   NO-ONE-PLANT-LIMIT: Even if the user provides only ONE desired plant, generate 2nd and 3rd guilds with DIFFERENT anchors. Do not repeat the same star player across all three guilds. Each guild must have a unique Layer 1 anchor.
+2. GUILDS: If scale is HOMESTEAD, you MUST generate EXACTLY 3 distinct guilds with different Layer 1 anchors. Guild 1 uses userDesiredPlants as the anchor. Guilds 2 and 3 use different Zone 5b-compatible trees (e.g., Hazelnut, Plum, Elderberry). Each guild MUST have a unique Layer 1 anchor — do not repeat the same tree across guilds. Close the JSON object properly after Guild 3's layers.
    
-   For each guild, populate ALL 7 layers:
-
-   Layer 1 — Canopy: Large Fruit/Nut Trees (the anchor)
-   Layer 2 — Low Tree: Dwarf Fruit Trees / Large Shrubs
-   Layer 3 — Shrub: Berries / Currants
-   Layer 4 — Herbaceous: Comfrey, Herbs, Salt-linked Perennials
-   Layer 5 — Rhizosphere: Root crops / Tubers
-   Layer 6 — Soil Surface: Ground cover / Living mulch
-   Layer 7 — Vertical: Vines / Climbers
+   For each guild, populate all 7 layers concisely (minimal descriptions):
+   Layer 1: [id: xxx] — anchor tree only
+   Layer 2: [id: xxx] — dwarf fruit or large shrub
+   Layer 3: [id: xxx] — berries
+   Layer 4: [id: xxx] — herbs or dynamic accumulators
+   Layer 5: [id: xxx] — root crops
+   Layer 6: [id: xxx] — ground cover
+   Layer 7: [id: xxx] or "None"
 
    TREE CLASSIFICATION: Peach [id: peach] is a Tree. It must NEVER be listed in the Herbaceous (Layer 4) or Shrub (Layer 3) layers. It belongs in Layer 1 (Canopy) or Layer 2 (Low Tree) only. Apply this rule to all fruit trees — no fruit tree belongs in Herbaceous or Shrub layers.
 
@@ -440,14 +435,14 @@ STRICT REQUIREMENTS:
    If no suitable plant exists in the plantAllowList for a specific layer, provide a specific native species for the site's Zone and label it [PROPOSED NATIVE] (e.g., "Wild Grape [PROPOSED NATIVE]" for Layer 7, "Serviceberry [PROPOSED NATIVE]" for Layer 2). This marks it as ecologically sound but not in the database.
    ID CLEANUP: Every [id: xxx] must contain only lowercase letters, numbers, and underscores — no trailing underscores, no extra characters. Strip trailing underscores before outputting: [id: black_currant] is valid, [id: black_currant_] is not.
 
-   LAYER 1 RIGIDITY: Layer 1 (Canopy) MUST be a Tree. If you run out of trees from the registry, DO NOT create a new guild. It is better to have 1 perfect "Sour Cherry Guild" than a fake "Strawberry Canopy Guild".
+   LAYER 1 RIGIDITY: Layer 1 (Canopy) MUST be a Tree. If you run out of trees from the registry, DO NOT create a fake guild. It is better to have 1 perfect guild than a fake one.
    THE ANCHOR REQUIREMENT: If a Guild is centered around a tree (Mulberry, Chestnut, Cherry, etc.), that tree MUST be placed in Layer 1 (Canopy). Do not leave Layer 1 empty if a tree exists in the guild.
 
    VERTICAL VALIDATION (STRICT): Layer 7 (Vertical) is STRICTLY for vining/climbing plants only. If you do not have a vine like Grapes, Hops, or Pole Beans in the registry, you MUST return "None". DO NOT place Bell Peppers, Chard, or any other non-climbing plant in Layer 7 under any circumstances.
 
    LAYER 2 REJECTION: If you do not have a dwarf tree or large shrub in the registry for Layer 2, you must return "None" or "[PROPOSED NATIVE]". Do not categorize small herbs or groundcovers as trees.
 
-   SUMMARY SYNC: The AI Summary at the top must mention the specific Canopy trees chosen (e.g., "Centered on Sour Cherry and Chestnut") to make the output feel cohesive and intentional.
+   SUMMARY SYNC: The AI Summary at the top must mention the specific Canopy trees chosen (e.g., "Centered on Apple and Hazelnut") to make the output feel cohesive and intentional.
    GUILD-PLAN SYNC: The 3-Year Implementation Plan MUST use the exact same common name and ID as the Guild's Layer 1 anchor. If Layer 1 is Mulberry, the Plan starts with Mulberry. No exceptions.
 
 3. COMPANION_PLANTING: Generate EXACTLY 5 companion pairs in this format:

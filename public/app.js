@@ -197,7 +197,9 @@ function displayResults(plan) {
     document.getElementById('aiGuildsCard').style.display = 'block';
     renderAIGuilds(plan.aiGenerated);
   } else {
-    document.getElementById('aiGuildsCard').style.display = 'none';
+    // AI failed to generate guilds — show error, do NOT use fallback
+    document.getElementById('aiGuildsCard').style.display = 'block';
+    document.getElementById('aiGuilds').innerHTML = '<p style="color:#d32f2f;font-weight:bold;padding:12px;background:#ffebee;border:1px solid #ef5350;border-radius:4px;">⚠️ AI failed to generate guilds.</p>';
   }
 
   // Cell Salts
@@ -241,8 +243,8 @@ function displayResults(plan) {
   // 3-Year Plan
   const planData = plan.threeYearPlan;
   
-  // Data Binding Enforcement: extract anchor from AI guilds if available
-  const anchor = (plan.aiGenerated?.guilds?.[0]?.layers?.layer1_canopy)
+  // Variable Injection: extract primary tree from AI guilds
+  const primaryTree = (plan.aiGenerated?.guilds?.[0]?.layers?.layer1_canopy)
     ? plan.aiGenerated.guilds[0].layers.layer1_canopy.split('[')[0].trim()
     : null;
   
@@ -251,14 +253,14 @@ function displayResults(plan) {
       <div class="year-section">
         <h4>${planData.year0.title}</h4>
         <p><em>${planData.year0.duration}</em></p>
-        <p>${planData.year0.focus}</p>
+        <p>${primaryTree ? `Establish ${primaryTree} as the system anchor` : planData.year0.focus}</p>
         <div style="margin-top: 15px">
           ${planData.year0.tasks.map(task => {
-            // If this is the canopy planting task, bind to the actual guild anchor
-            const displayPlants = (task.plants && anchor)
+            // Variable Injection: bind to primaryTree for canopy planting task
+            const isCanopyTask = primaryTree && /canopy/i.test(task.task);
+            const displayPlants = (task.plants && (anchor || primaryTree))
               ? (task.plants.map(p => {
-                  // Avoid hardcoding Sour Cherry — always use AI anchor or dynamic data
-                  if (typeof p === 'string' && /sour.cherry/i.test(p)) return anchor;
+                  if (typeof p === 'string' && /sour.cherry/i.test(p)) return primaryTree || anchor;
                   return p;
                 }))
               : task.plants;
@@ -387,7 +389,7 @@ function getSunDesignTip(altitude, direction) {
 function renderAIGuilds(aiData) {
   const guildsDiv = document.getElementById('aiGuilds');
   if (!aiData.guilds || aiData.guilds.length === 0) {
-    guildsDiv.innerHTML = '<p>No AI guilds generated.</p>';
+    guildsDiv.innerHTML = '<p style="color:#d32f2f;font-weight:bold;padding:12px;background:#ffebee;border:1px solid #ef5350;border-radius:4px;">⚠️ AI failed to generate guilds. Please try again.</p>';
     return;
   }
 
