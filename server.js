@@ -297,6 +297,87 @@ app.post('/api/generate-plan', async (req, res) => {
         waterManagement: ollamaPlan.waterManagement,
         beneficialInsectHabitat: ollamaPlan.beneficialInsectHabitat || ollamaPlan.pestControl || null,
       };
+
+      // ── Post-Merge Sync: Bind plan star to Guild 1 anchor ───────────────────
+      const guild1Canopy = ollamaPlan.guilds?.[0]?.layers?.layer1_canopy || null;
+      if (guild1Canopy) {
+        // Extract anchor name (strip [id: xxx])
+        const anchorName = guild1Canopy.split('[')[0].trim();
+        const anchorId = (guild1Canopy.match(/\[id:\s*([^\]]+)\]/) || [])[1] || '';
+        
+        // Year 1 focus: use anchor name
+        plan.threeYearPlan.year0.focus = `Establish ${anchorName} as the system anchor`;
+        
+        // Replace plan star player with guild anchor
+        plan.threeYearPlan.year0.tasks.forEach(task => {
+          if (task.task && /canopy/i.test(task.task) && task.plants) {
+            task.plants = [anchorName];
+          }
+          // Also fix phrase termination in task details
+          if (task.details) {
+            task.details = task.details.replace(/Plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
+          }
+        });
+
+        // Vine Hierarchy: if anchor is a vine, add Support Structure task to Year 1
+        const VINES = ['passionflower', 'grape', 'hops', 'kiwi', 'vine', 'vining'];
+        const isVine = VINES.some(v => anchorName.toLowerCase().includes(v));
+        if (isVine) {
+          plan.threeYearPlan.year0.tasks.push({
+            task: 'Support Structure for Vine Guild',
+            timing: 'Month 0-1',
+            plants: [],
+            details: `Passionflower/vine anchor requires a trellis, arbor, or nurse tree for structural support. Install T-post + wire trellis or plant alongside a living nurse tree (Black Locust) for initial years.`,
+            guild_note: 'Vines need structure. Without it, they sprawl and fail to fruit properly.'
+          });
+        }
+
+        // Year 1 Sync check: verify plan star matches guild anchor
+        const planStar = plan.threeYearPlan.year0.tasks.find(t => /canopy/i.test(t.task))?.plants?.[0] || '';
+        const guildStar = anchorName;
+        if (planStar && guildStar && planStar.toLowerCase() !== guildStar.toLowerCase()) {
+          console.warn(`YEAR 1 SYNC FAIL: plan has '${planStar}' but guild has '${guildStar}' — overriding plan star`);
+          plan.threeYearPlan.year0.tasks.forEach(task => {
+            if (/canopy/i.test(task.task)) task.plants = [guildStar];
+          });
+        }
+      }
+
+      // Sunflower/Nettle/Dandelion audit: rewrite N-fix claims in companion/layer text
+      const NEVER_FIX_N = ['sunflower', 'nettle', 'dandelion', 'comfrey', 'horseradish', 'radish', 'turnip'];
+      const rewriteAccumulator = (text) => {
+        if (!text || typeof text !== 'string') return text;
+        let fixed = text;
+        NEVER_FIX_N.forEach(plant => {
+          // Rewrite "fixes nitrogen" → "accumulates minerals" for these plants
+          const rx = new RegExp(`\\b${plant}\\b[^;]*nitrogen.fix[^,.]*`, 'gi');
+          fixed = fixed.replace(rx, `${plant.charAt(0).toUpperCase() + plant.slice(1)} accumulates minerals and provides biomass`);
+          // Also catch bare "X fixes nitrogen" patterns
+          const bareRx = new RegExp(`\\b${plant}\\b.*?:.*?(?:nitrogen|n-fix|n fixation)[^,.]*`, 'gi');
+          fixed = fixed.replace(bareRx, `${plant.charAt(0).toUpperCase() + plant.slice(1)}: Dynamic Accumulator (potassium/minerals)`);
+        });
+        return fixed;
+      };
+
+      if (ollamaPlan.companionPlanting) {
+        ollamaPlan.companionPlanting = ollamaPlan.companionPlanting.map(c => rewriteAccumulator(c));
+      }
+      if (ollamaPlan.summary) {
+        ollamaPlan.summary = rewriteAccumulator(ollamaPlan.summary);
+      }
+      if (ollamaPlan.timingAdvice) {
+        ollamaPlan.timingAdvice = rewriteAccumulator(ollamaPlan.timingAdvice);
+      }
+      // Apply to all guild layers
+      if (ollamaPlan.guilds) {
+        ollamaPlan.guilds.forEach(g => {
+          if (g.layers) {
+            for (const [k, v] of Object.entries(g.layers)) {
+              g.layers[k] = rewriteAccumulator(v);
+            }
+          }
+        });
+      }
     }
 
     // Attach location data to plan
