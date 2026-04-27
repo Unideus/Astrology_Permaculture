@@ -195,8 +195,27 @@ class PermacultureApp {
     const config = scaleConfig[scale] || scaleConfig.backyard;
 
     // Quantity multiplier: scale determines how many plants per layer
-    const scaleDepthMap = { 'balcony': 1, 'backyard': 3, 'homestead': 5, 'farm': 10, 'community': 10 };
+    const scaleDepthMap = {
+    'balcony': 2,     // 0-100 sq ft: 1-2 per layer
+    'backyard': 4,    // 100-1000 sq ft: 3-4 per layer
+    'homestead': 9,   // 1/4-2 acres: 8-10 per layer
+    'farm': 17,       // 2-50 acres: 15-20 per layer
+    'community': 17   // 50+ acres: same as farm
+  };
     const planDepth = scaleDepthMap[scale] || 3;
+
+    // ── DIVERSITY FALLBACK: fill gaps when filtered list is too short ──────
+    const fillGaps = (candidates, needed, zone, affinityTarget) => {
+      if (candidates.length >= needed) return candidates;
+      // Try relaxing affinity, then zone constraints
+      const relaxed = Object.values(this.masterRegistry).filter(p => {
+        if (candidates.some(c => c.id === p.id)) return false;
+        const zones = p.climate_profile?.zones || [];
+        if (zone !== null && zones.length > 0 && (zone < zones[0] || zone > zones[zones.length - 1])) return false;
+        return true;
+      });
+      return [...candidates, ...relaxed].slice(0, needed);
+    };
 
     const primarySalt = uniqueSalts.length > 0 ? uniqueSalts[0].cell_salt : null;
     
@@ -255,7 +274,14 @@ class PermacultureApp {
         }
         return true;
       });
-      const selectedNFixers = (viableNFixers.length >= 2 ? viableNFixers.slice(0, 2) : nFixers.slice(0, planDepth));
+      const year0Used = new Set();
+      const fillGapsY0 = (candidates, needed, zone, affinity) => {
+        const pool = candidates.filter(p => !year0Used.has(p.id));
+        const result = pool.length >= needed ? pool.slice(0, needed) : [...pool, ...Object.values(this.masterRegistry).filter(p => !year0Used.has(p.id) && (zone === null || (p.climate_profile?.zones?.length && p.climate_profile.zones[0] <= zone && p.climate_profile.zones[p.climate_profile.zones.length-1] >= zone)))].slice(0, needed);
+        result.forEach(p => year0Used.add(p.id));
+        return result;
+      };
+      const selectedNFixers = fillGapsY0(viableNFixers, planDepth, siteZone, affinityTarget);
       
       year0Tasks.push({
         task: 'Support Species (N-Fixers)',
@@ -327,7 +353,14 @@ class PermacultureApp {
       }
       return true;
     });
-    const selectedSubCanopy = viableSaltSC.slice(0, planDepth * 2);
+    const year1Used = new Set();
+    const fillGapsY1 = (candidates, needed, zone, affinity) => {
+      const pool = candidates.filter(p => !year1Used.has(p.id));
+      const result = pool.length >= needed ? pool.slice(0, needed) : [...pool, ...Object.values(this.masterRegistry).filter(p => !year1Used.has(p.id) && (zone === null || (p.climate_profile?.zones?.length && p.climate_profile.zones[0] <= zone && p.climate_profile.zones[p.climate_profile.zones.length-1] >= zone)))].slice(0, needed);
+      result.forEach(p => year1Used.add(p.id));
+      return result;
+    };
+    const selectedSubCanopy = fillGapsY1(viableSaltSC, planDepth * 2, siteZone, affinityTarget);
     
     // Herbaceous plants sharing zodiac salt (fill if not enough sub-canopy)
     const herbSaltPlants = primarySalt
@@ -341,8 +374,13 @@ class PermacultureApp {
     });
     
     // Combine to get 3 total for year 1
-    const year1Candidates = [...selectedSubCanopy, ...viableSaltHerb];
-    const year1Selected = year1Candidates.slice(0, planDepth * 2);
+    // Deduplicate: same plant shouldn't appear twice in one year's task list
+    const seenIds = new Set(selectedSubCanopy.map(p => p.id));
+    const year1Candidates = [
+      ...selectedSubCanopy,
+      ...viableSaltHerb.filter(p => { if (seenIds.has(p.id)) return false; seenIds.add(p.id); return true; })
+    ];
+    const year1Selected = fillGapsY1(year1Candidates, planDepth * 2, siteZone, affinityTarget);
     
     year1Tasks.push({
       task: 'Salt-Linked Plants (Sub-Canopy & Herbaceous)',
@@ -360,7 +398,8 @@ class PermacultureApp {
     const dynAcc = this.filterPlants({ zone: siteZone, layer: 'herbaceous', salt: primarySalt });
     const viableDyn = dynAcc.filter(p => p.permaculture_role?.functions?.includes('potassium_mining') ||
                                           p.permaculture_role?.functions?.includes('biomass'));
-    const selectedDyn = viableDyn.slice(0, planDepth);
+    const selectedDyn = fillGapsY1(viableDyn, planDepth, siteZone, affinityTarget);
+    selectedDyn.forEach(p => year1Used.add(p.id));
     
     year1Tasks.push({
       task: 'Dynamic Accumulators',
@@ -384,14 +423,20 @@ class PermacultureApp {
       year1Tasks.push({
         task: 'Vine Trellises',
         timing: 'Spring',
-        plants: viableVine.slice(0, planDepth).map(p => p.common_name),
+        plants: (() => { const r = fillGapsY1(viableVine, planDepth, siteZone, affinityTarget); return r; })().map(p => p.common_name),
         details: 'Install on pergolas or between trees. Grapes on south-facing trellises for maximum sun.',
         guild_note: `Vines use vertical space above the herbaceous layer. Don't let them smother the star player.`
       });
     }
     
     // ── YEAR 2: Ground Cover & Root ──────────────────────────────────────────
-    const year2Tasks = [];
+    const year2Used = new Set();
+    const fillGapsY2 = (candidates, needed, zone, affinity) => {
+      const pool = candidates.filter(p => !year2Used.has(p.id));
+      const result = pool.length >= needed ? pool.slice(0, needed) : [...pool, ...Object.values(this.masterRegistry).filter(p => !year2Used.has(p.id) && (zone === null || (p.climate_profile?.zones?.length && p.climate_profile.zones[0] <= zone && p.climate_profile.zones[p.climate_profile.zones.length-1] >= zone)))].slice(0, needed);
+      result.forEach(p => year2Used.add(p.id));
+      return result;
+    };
     
     // Ground cover
     const groundCover = this.filterPlants({ zone: siteZone, layer: 'ground_cover' });
@@ -402,10 +447,12 @@ class PermacultureApp {
       return true;
     });
     
+    const year2Tasks = [];
+    
     year2Tasks.push({
       task: 'Ground Cover & Living Mulch',
       timing: 'Spring/Fall',
-      plants: viableGC.slice(0, planDepth * 2).map(p => p.common_name),
+      plants: (() => { const r = fillGapsY2(viableGC, planDepth * 2, siteZone, affinityTarget); r.forEach(p => year2Used.add(p.id)); return r; })().map(p => p.common_name),
       details: 'Suppress weeds, fix nitrogen, support pollinators. Mow before seed set if needed. ' +
                'Living mulch fills bare soil between trees and herbs.',
       guild_note: `Ground cover is the immune system of the soil. Keep it diverse.`
@@ -423,7 +470,7 @@ class PermacultureApp {
     year2Tasks.push({
       task: 'Root Layer (Bulbs & Tubers)',
       timing: 'Early Spring or Fall',
-      plants: viableRoot.slice(0, planDepth * 2).map(p => p.common_name),
+      plants: (() => { const r = fillGapsY2(viableRoot, planDepth * 2, siteZone, affinityTarget); r.forEach(p => year2Used.add(p.id)); return r; })().map(p => p.common_name),
       details: 'Deep-rooted storage crops. Harvest in fall/winter. ' +
                'Some (garlic, onion) also serve as pest deterrents in guilds.',
       guild_note: `Root layer uses space below. Most root vegetables prefer well-drained soil.`
@@ -441,7 +488,7 @@ class PermacultureApp {
     year2Tasks.push({
       task: 'Guild Completion & First Harvests',
       timing: 'Throughout season',
-      plants: viableRemaining.slice(0, planDepth * 3).map(p => p.common_name),
+      plants: (() => { const r = fillGapsY2(viableRemaining, planDepth * 3, siteZone, affinityTarget); r.forEach(p => year2Used.add(p.id)); return r; })().map(p => p.common_name),
       details: 'Fill remaining niches with guild-compatible plants. ' +
                `Begin harvesting herbs and early production crops by season end.`,
       guild_note: `By year 2, the guild is producing food. Year 3+ is full production.`
