@@ -308,14 +308,33 @@ app.post('/api/generate-plan', async (req, res) => {
         // Year 1 focus: use anchor name
         plan.threeYearPlan.year0.focus = `Establish ${anchorName} as the system anchor`;
         
-        // Replace plan star player with guild anchor
+        // RECURSIVE PLANT SYNC: iterate ALL year0 tasks, replace any non-anchor plant
         plan.threeYearPlan.year0.tasks.forEach(task => {
-          if (task.task && /canopy/i.test(task.task) && task.plants) {
-            task.plants = [anchorName];
+          // Recursive: replace ALL plant references in this task that don't match anchor
+          if (task.plants && Array.isArray(task.plants)) {
+            task.plants = task.plants.map(p => {
+              if (typeof p === 'string' && p.toLowerCase() !== anchorName.toLowerCase()) {
+                return anchorName;
+              }
+              return p;
+            });
           }
-          // Also fix phrase termination in task details
+          // TERMINATOR REGEX: catch all variants with gmi flags
           if (task.details) {
-            task.details = task.details.replace(/Plant now or wait for harvest/gi, 'Timeline: Establish Year 1');
+            task.details = task.details.replace(/plant now or wait for harvest/gmi, 'Timeline: Establish Year 1');
+          }
+          if (task.guild_note) {
+            task.guild_note = task.guild_note.replace(/plant now or wait for harvest/gmi, 'Timeline: Establish Year 1');
+          }
+          if (task.task) {
+            task.task = task.task.replace(/plant now or wait for harvest/gmi, 'Timeline: Establish Year 1');
+          }
+        });
+
+        // Deduplicate plant arrays after sync
+        plan.threeYearPlan.year0.tasks.forEach(task => {
+          if (task.plants && Array.isArray(task.plants)) {
+            task.plants = [...new Set(task.plants.map(p => typeof p === 'string' ? p.trim() : p))];
           }
         });
 
@@ -340,6 +359,12 @@ app.post('/api/generate-plan', async (req, res) => {
           plan.threeYearPlan.year0.tasks.forEach(task => {
             if (/canopy/i.test(task.task)) task.plants = [guildStar];
           });
+        }
+
+        // ZONE 10a WARNING: if zone is 10 and plant is Apple, append Low-Chill warning
+        const zoneStr = climateData?.hardinessZone || '';
+        if (/^10/i.test(zoneStr) && anchorName.toLowerCase().includes('apple')) {
+          plan.threeYearPlan.year0.focus += ' [ZONE ALERT: Dunnellon FL is Zone 10a — use Low-Chill Apple variety (<400 hrs below 45°F) or growth will fail] ';
         }
       }
 

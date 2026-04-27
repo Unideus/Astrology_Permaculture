@@ -630,13 +630,17 @@ class PermacultureApp {
       });
     });
     
+    if (!year.timeframe) year.timeframe = 'Months 0-12';
+    
     return {
       year0: {
         title: config.trees ? 'Canopy & Infrastructure' : 'Containers & Soil Base',
+        timeframe: year.timeframe,
         focus: config.trees
           ? `Establish ${preTreeStar} as the system anchor`
           : 'Permanent containers, trellises, soil building',
         tasks: year0Tasks,
+        timeframe: year.timeframe,
         climateContext: {
           zone: siteZone || 'unknown',
           koppen: siteKoppen || 'unknown',
