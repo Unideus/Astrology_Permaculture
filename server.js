@@ -313,24 +313,32 @@ app.post('/api/generate-plan', async (req, res) => {
       if (ollamaPlan.guilds) {
         ollamaPlan.guilds.forEach(guild => {
           if (guild.layers) {
+            // VINE BAN FROM LAYER 1: Vines can never be Layer 1 anchors
+            const VINE_IDS = ['passionfruit', 'grape', 'hops', 'kiwi'];
+            const layer1 = guild.layers.layer1_canopy || '';
+            const layer1Id = (layer1.match(/\[id:\s*([^\]]+)\]/) || [])[1] || '';
+            if (VINE_IDS.some(v => layer1Id.toLowerCase().includes(v) || layer1.toLowerCase().includes(v))) {
+              // Move vine to Layer 7 (Vertical)
+              guild.layers.layer7_vertical = layer1;
+              // Replace Layer 1 with Live Oak
+              guild.layers.layer1_canopy = '[PROPOSED] Live Oak [id: live_oak]';
+              console.warn(`VINE BAN: Removed vine from Layer 1 — replaced with Live Oak`);
+            }
             // Check layer1_canopy for fig
             if (guild.layers.layer1_canopy && guild.layers.layer1_canopy.toLowerCase().includes('fig')) {
               const layer2 = guild.layers.layer2_low_tree || '';
-              // Demote fig to layer2
-              guild.layers.layer2_low_tree = guild.layers.layer1_canopy; // move fig to layer2
-              // Promote layer2 to layer1 if it exists and is a tree, else find tallest available
+              guild.layers.layer2_low_tree = guild.layers.layer1_canopy;
               if (layer2 && !layer2.toLowerCase().includes('fig') && layer2.length > 2) {
-                guild.layers.layer1_canopy = layer2; // promote layer2 to layer1
-                guild.layers.layer2_low_tree = '[PROPOSED] Live Oak [id: live_oak]'; // fill layer2
+                guild.layers.layer1_canopy = layer2;
+                guild.layers.layer2_low_tree = '[PROPOSED] Live Oak [id: live_oak]';
               } else {
-                // No valid layer2 tree — use a tall native
                 guild.layers.layer1_canopy = '[PROPOSED] Live Oak [id: live_oak]';
                 guild.layers.layer2_low_tree = guild.layers.layer1_canopy.replace('Live Oak', 'Fig');
               }
             }
           }
         });
-        // Recompute allAnchors after fig demotion
+        // ANCHOR EXTRACTION RE-FIX: Recompute allAnchors AFTER all demotions/replacements
         allAnchors.length = 0;
         (ollamaPlan.guilds || []).forEach(g => {
           const a = g.layers?.layer1_canopy?.split('[')[0].trim();
@@ -360,7 +368,7 @@ app.post('/api/generate-plan', async (req, res) => {
         if (canopyTask) {
           if (scale === 'homestead' && allAnchors.length > 1) {
             canopyTask.task = 'Canopy Tree Planting — Plant Primary Anchors';
-            canopyTask.plants = [...allAnchors];  // [Apple, Avocado, Fig] — no Avocado under Apple
+            canopyTask.plants = [...allAnchors];  // ANCHOR EXTRACTION RE-FIX: array of all guild anchors
             canopyTask.timing = 'Month 3 — Late Winter';
           } else {
             canopyTask.plants = [anchorName];
@@ -529,12 +537,25 @@ app.post('/api/generate-plan', async (req, res) => {
 
       if (ollamaPlan.companionPlanting) {
         ollamaPlan.companionPlanting = ollamaPlan.companionPlanting.map(c => rewriteAccumulator(c));
+        // COMPANION LOGIC PURGE: If Homestead, force first pairing to Anchor + White Clover
+        if (scale === 'homestead' && allAnchors.length > 1) {
+          const anchor = allAnchors[0] || 'Apple';
+          ollamaPlan.companionPlanting = [
+            `${anchor} + White Clover: Nitrogen Fixation — White Clover fixes atmospheric nitrogen, enriching soil for ${anchor} establishment`,
+            ...ollamaPlan.companionPlanting.filter(p => !p.toLowerCase().includes('white clover') && !p.toLowerCase().includes('clover'))
+          ];
+        }
       }
       if (ollamaPlan.summary) {
         ollamaPlan.summary = rewriteAccumulator(ollamaPlan.summary);
       }
       if (ollamaPlan.timingAdvice) {
         ollamaPlan.timingAdvice = rewriteAccumulator(ollamaPlan.timingAdvice);
+        // THE "NETTLE" BOTANY FINALITY: fix Parsley/Celery N-fix lies in timing advice
+        ollamaPlan.timingAdvice = ollamaPlan.timingAdvice
+          .replace(/nitrogen-fixing (?:herbs|plants) like (?:Parsley|Celery|Nettle)[^.,;\n]*/gi, 'nutrient-dense plants')
+          .replace(/Parsley[^.,;\n]*nitrogen-fix[^.,;\n]*/gi, 'Parsley: mineral accumulation')
+          .replace(/Celery[^.,;\n]*nitrogen-fix[^.,;\n]*/gi, 'Celery: nutrient-dense biennial');
       }
       // Apply to all guild layers
       if (ollamaPlan.guilds) {
