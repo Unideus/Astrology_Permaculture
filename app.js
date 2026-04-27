@@ -245,6 +245,9 @@ class PermacultureApp {
       // Star player: pick ONE canopy tree matching zone and affinity
       const starPlayer = this.filterPlants({ zone: siteZone, layer: 'canopy' });
       const viableStar = starPlayer.filter(p => {
+        // Zone MIN clamp: exclude plants whose min zone exceeds user's zone
+        const zones = p.climate_profile?.zones || [];
+        if (zones.length > 0 && siteZone !== null && zones[0] > siteZone) return false;
         if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
           return p.climate_affinity === affinityTarget;
         }
@@ -267,7 +270,12 @@ class PermacultureApp {
       }
       
       // N-fixers: 2 shrubs with nitrogen_fixation function
-      const nFixers = this.filterPlants({ zone: siteZone, layer: 'shrub', nitrogenFixer: true });
+      // N-fixers: shrubs in zone, further filtered by zone_min clamp
+      let nFixers = this.filterPlants({ zone: siteZone, layer: 'shrub', nitrogenFixer: true });
+      nFixers = nFixers.filter(p => {
+        const zones = p.climate_profile?.zones || [];
+        return !(zones.length > 0 && siteZone !== null && zones[0] > siteZone);
+      });
       const viableNFixers = nFixers.filter(p => {
         if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
           return p.climate_affinity === affinityTarget;

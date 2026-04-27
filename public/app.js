@@ -378,7 +378,14 @@ function renderAIGuilds(aiData) {
     ${aiData.companionPlanting && aiData.companionPlanting.length > 0 ? `
       <h4 style="margin-top:20px;color:var(--primary)">🌱 Companion Planting</h4>
       <ul style="margin-left:20px">
-        ${aiData.companionPlanting.map(pair => `<li>${Array.isArray(pair) ? pair.join(' + ') : pair}</li>`).join('')}
+        ${aiData.companionPlanting.map(pair => {
+          if (Array.isArray(pair)) return `<li>${pair.join(' + ')}</li>`;
+          if (typeof pair === 'object') {
+            const vals = Object.values(pair).filter(v => typeof v === 'string');
+            return vals.length ? `<li>${vals.join(' + ')}</li>` : '';
+          }
+          return `<li>${String(pair)}</li>`;
+        }).join('')}
       </ul>
     ` : ''}
     

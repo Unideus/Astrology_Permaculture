@@ -46,7 +46,9 @@ app.post('/api/geocode', async (req, res) => {
     }
 
     for (const query of queries) {
-      const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+      // Always append USA to prevent ambiguous international results
+      const usaQuery = query.includes('USA') ? query : `${query}, USA`;
+      const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(usaQuery)}&limit=1`;
       
       try {
         const response = await fetch(nominatimUrl, {
@@ -213,6 +215,7 @@ CLIMATE CONSTRAINTS (STRICT):
 - For zone 10a: citrus, avocado, mango, banana, papaya, passionfruit, guava, fig, pineapple, coconut, okra, sweet potato, taro, and tropical greens are appropriate
 - DO NOT suggest: almond, walnut, chestnut, pecan, apple, pear, cherry, peach, apricot, plum (these need winter chill and won't survive/produce in zone 10a)
 - STRICTLY use ONLY the plants in the provided registry list. DO NOT invent names like Dragon Fruit, Cinnamon, Nutmeg, Cardamom, Lychee, Durian, or any plant not explicitly in your provided data.
+- For zones 6 or lower: DO NOT suggest Mediterranean perennials (Rosemary, Lavender, Sage, Thyme, Oregano) as permanent outdoor supporting species — these are frost-tender and will not survive a hard freeze. Use cold-hardy alternatives instead.
 - All guild supporting plants must be real, growable species from your verified plant list.
 - If a plant is not in your data, do not mention it. Substitute with a known compatible alternative instead.`;
   }
