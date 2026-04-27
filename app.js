@@ -193,6 +193,11 @@ class PermacultureApp {
     
     // ── PREFLIGHT: config, primary salt, star name ─────────────────────────
     const config = scaleConfig[scale] || scaleConfig.backyard;
+
+    // Quantity multiplier: scale determines how many plants per layer
+    const scaleDepthMap = { 'balcony': 1, 'backyard': 3, 'homestead': 5, 'farm': 10, 'community': 10 };
+    const planDepth = scaleDepthMap[scale] || 3;
+
     const primarySalt = uniqueSalts.length > 0 ? uniqueSalts[0].cell_salt : null;
     
     // Compute star name before branching so it's available in return block
@@ -250,7 +255,7 @@ class PermacultureApp {
         }
         return true;
       });
-      const selectedNFixers = (viableNFixers.length >= 2 ? viableNFixers.slice(0, 2) : nFixers.slice(0, 2));
+      const selectedNFixers = (viableNFixers.length >= 2 ? viableNFixers.slice(0, 2) : nFixers.slice(0, planDepth));
       
       year0Tasks.push({
         task: 'Support Species (N-Fixers)',
@@ -322,7 +327,7 @@ class PermacultureApp {
       }
       return true;
     });
-    const selectedSubCanopy = viableSaltSC.slice(0, 3);
+    const selectedSubCanopy = viableSaltSC.slice(0, planDepth * 2);
     
     // Herbaceous plants sharing zodiac salt (fill if not enough sub-canopy)
     const herbSaltPlants = primarySalt
@@ -337,7 +342,7 @@ class PermacultureApp {
     
     // Combine to get 3 total for year 1
     const year1Candidates = [...selectedSubCanopy, ...viableSaltHerb];
-    const year1Selected = year1Candidates.slice(0, 3);
+    const year1Selected = year1Candidates.slice(0, planDepth * 2);
     
     year1Tasks.push({
       task: 'Salt-Linked Plants (Sub-Canopy & Herbaceous)',
@@ -355,7 +360,7 @@ class PermacultureApp {
     const dynAcc = this.filterPlants({ zone: siteZone, layer: 'herbaceous', salt: primarySalt });
     const viableDyn = dynAcc.filter(p => p.permaculture_role?.functions?.includes('potassium_mining') ||
                                           p.permaculture_role?.functions?.includes('biomass'));
-    const selectedDyn = viableDyn.slice(0, 2);
+    const selectedDyn = viableDyn.slice(0, planDepth);
     
     year1Tasks.push({
       task: 'Dynamic Accumulators',
@@ -379,7 +384,7 @@ class PermacultureApp {
       year1Tasks.push({
         task: 'Vine Trellises',
         timing: 'Spring',
-        plants: viableVine.slice(0, 2).map(p => p.common_name),
+        plants: viableVine.slice(0, planDepth).map(p => p.common_name),
         details: 'Install on pergolas or between trees. Grapes on south-facing trellises for maximum sun.',
         guild_note: `Vines use vertical space above the herbaceous layer. Don't let them smother the star player.`
       });
@@ -400,7 +405,7 @@ class PermacultureApp {
     year2Tasks.push({
       task: 'Ground Cover & Living Mulch',
       timing: 'Spring/Fall',
-      plants: viableGC.slice(0, 3).map(p => p.common_name),
+      plants: viableGC.slice(0, planDepth * 2).map(p => p.common_name),
       details: 'Suppress weeds, fix nitrogen, support pollinators. Mow before seed set if needed. ' +
                'Living mulch fills bare soil between trees and herbs.',
       guild_note: `Ground cover is the immune system of the soil. Keep it diverse.`
@@ -418,7 +423,7 @@ class PermacultureApp {
     year2Tasks.push({
       task: 'Root Layer (Bulbs & Tubers)',
       timing: 'Early Spring or Fall',
-      plants: viableRoot.slice(0, 3).map(p => p.common_name),
+      plants: viableRoot.slice(0, planDepth * 2).map(p => p.common_name),
       details: 'Deep-rooted storage crops. Harvest in fall/winter. ' +
                'Some (garlic, onion) also serve as pest deterrents in guilds.',
       guild_note: `Root layer uses space below. Most root vegetables prefer well-drained soil.`
@@ -436,7 +441,7 @@ class PermacultureApp {
     year2Tasks.push({
       task: 'Guild Completion & First Harvests',
       timing: 'Throughout season',
-      plants: viableRemaining.slice(0, 5).map(p => p.common_name),
+      plants: viableRemaining.slice(0, planDepth * 3).map(p => p.common_name),
       details: 'Fill remaining niches with guild-compatible plants. ' +
                `Begin harvesting herbs and early production crops by season end.`,
       guild_note: `By year 2, the guild is producing food. Year 3+ is full production.`
