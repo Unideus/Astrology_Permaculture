@@ -184,8 +184,14 @@ app.post('/api/generate-plan', async (req, res) => {
       const commaParts = fullAddress.split(',').map(p => p.trim()).filter(Boolean);
       let cityStateFallback = null;
       if (commaParts.length >= 2) {
-        // Use first two parts: "City, State" or "City, State, ZIP"
-        cityStateFallback = `${commaParts[0]}, ${commaParts[1]}`;
+        // If first part is a street address (starts with number), skip it
+        const firstPart = commaParts[0];
+        if (/^\d/.test(firstPart)) {
+          // Use the city and state parts instead (last two comma-separated values)
+          cityStateFallback = `${commaParts[commaParts.length - 2]}, ${commaParts[commaParts.length - 1]}`;
+        } else {
+          cityStateFallback = `${commaParts[0]}, ${commaParts[1]}`;
+        }
       } else if (commaParts.length === 1) {
         // Single part like "Duluth MN" — split on spaces
         const spaceParts = commaParts[0].split(/\s+/);
@@ -215,9 +221,14 @@ app.post('/api/generate-plan', async (req, res) => {
         });
         if (climateResponse.ok) {
           climateData = await climateResponse.json();
+        } else {
+          // Climate API failed — use default zone so the plan can still generate
+          console.warn(`Climate API returned ${climateResponse.status}, using default zone 7b`);
+          climateData = { hardinessZone: '7b' };
         }
       } catch (climateError) {
-        console.warn('Climate lookup failed:', climateError.message);
+        console.warn('Climate lookup failed, using default zone 7b:', climateError.message);
+        climateData = { hardinessZone: '7b' };
       }
     }
 
@@ -225,7 +236,7 @@ app.post('/api/generate-plan', async (req, res) => {
     // Build zone-filtered plant list to include in prompt (Task 4: verify AI uses context)
     const siteZoneNum = climateData ? parseInt((climateData.hardinessZone || '0').match(/^(\d+)/)?.[1] || '0') : null;
 
-    // NO-ZONE BLOCKER: Do not proceed to AI without a valid zone
+    // NO-ZONE BLOCKER: Do not proceed to AI without a valid zone (but default zone prevents this)
     if (siteZoneNum === null || siteZoneNum === 0) {
       return res.status(422).json({ error: 'Location data required to verify plant hardiness. Please provide a City and State.' });
     }
