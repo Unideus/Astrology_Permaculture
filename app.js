@@ -153,10 +153,193 @@ class PermacultureApp {
                     `Supplementing ${uniqueSalts.length} cell salt${uniqueSalts.length > 1 ? 's' : ''}.`
       },
       recommendedPlants,
+      guild: this.generate7LayerGuild(uniqueSalts, climateData),
       threeYearPlan: plan,
       moonCalendar: this.getMoonPlantingCalendar(),
       soilRecommendations: soilTest ? this.analyzeSoil(soilTest) : null
     };
+  }
+
+  // ── 7-LAYER UNIVERSAL EDIBLE GUILD GENERATOR ────────────────────────────
+  // Generates a 7-layer guild based on climate zone, Köppen code, and cell salts.
+  // Each layer gets the best plant: A-Tier (salt match) preferred, B-Tier (best local edible) as fallback.
+  // NEVER leaves a layer blank.
+  generate7LayerGuild(uniqueSalts, climateData) {
+    const LAYERS = [
+      { id: 'layer1_canopy',        name: 'Canopy',       registryLayers: ['canopy'],                        heightDesc: '>20ft mature height' },
+      { id: 'layer2_low_tree',      name: 'Low Tree',     registryLayers: ['sub_canopy', 'low_tree'],        heightDesc: '10-20ft' },
+      { id: 'layer3_shrub',         name: 'Shrub',        registryLayers: ['shrub'],                        heightDesc: '3-10ft' },
+      { id: 'layer4_herbaceous',    name: 'Herbaceous',   registryLayers: ['herbaceous'],                    heightDesc: 'Large perennials/annuals' },
+      { id: 'layer5_ground_cover',  name: 'Soil Surface', registryLayers: ['ground_cover', 'herbaceous'],    heightDesc: 'Living mulch/groundcover' },
+      { id: 'layer6_rhizosphere',   name: 'Rhizosphere',  registryLayers: ['root'],                         heightDesc: 'Roots/tubers' },
+      { id: 'layer7_vertical',      name: 'Vertical',     registryLayers: ['vine'],                          heightDesc: 'Vines/climbers' },
+    ];
+
+    // Extract climate context
+    let siteZone = null;
+    let siteKoppen = null;
+    if (climateData) {
+      if (climateData.hardinessZone) {
+        const zm = climateData.hardinessZone.match(/^(\d+)/);
+        if (zm) siteZone = parseInt(zm[1]);
+      }
+      siteKoppen = climateData.koppenCode || null;
+    }
+
+    // Determine climate affinity from Köppen
+    let affinityTarget = null;
+    if (siteKoppen) {
+      if (siteKoppen.startsWith('A') || siteKoppen.startsWith('Cf') || siteKoppen.startsWith('Df')) {
+        affinityTarget = 'humid';
+      } else if (siteKoppen.startsWith('B') || siteKoppen.startsWith('Cs')) {
+        affinityTarget = 'arid';
+      }
+    }
+
+    // Collect all salt names for matching
+    const saltNames = uniqueSalts.map(s => s.cell_salt);
+    const saltKeys = saltNames.map(s => s.toLowerCase().replace(/ /g, '_'));
+
+    // Build lookup: salt key → set of plant IDs from biodynamic_map
+    const saltPlantSets = {};
+    for (const sk of saltKeys) {
+      const mineralData = this.biodynamicMap.mineral_to_plants[sk];
+      if (mineralData && mineralData.plants) {
+        saltPlantSets[sk] = new Set(mineralData.plants.map(p => p.toLowerCase().replace(/\s+/g, '_')));
+      }
+    }
+
+    const guild = {};
+    const assignedIds = new Set();  // cross-layer dedup: no plant as primary in multiple layers
+
+    for (const layerDef of LAYERS) {
+      // Step 1: CLIMATE GATE — collect up to 10 candidates per layer
+      let candidates = [];
+      const usedIds = new Set();
+
+      for (const regLayer of layerDef.registryLayers) {
+        const plants = this.filterPlants({ zone: siteZone, layer: regLayer });
+        // Apply affinity filter
+        const viable = plants.filter(p => {
+          if (affinityTarget && p.climate_affinity && p.climate_affinity !== 'any') {
+            return p.climate_affinity === affinityTarget;
+          }
+          return true;
+        });
+        // Also collect non-affinity-matched as fallback order
+        for (const p of viable) {
+          if (!usedIds.has(p.id) && candidates.length < 10) {
+            usedIds.add(p.id);
+            candidates.push(p);
+          }
+        }
+        // If still under 10, fill from non-viable (affinity mismatch)
+        for (const p of plants) {
+          if (!usedIds.has(p.id) && candidates.length < 10) {
+            usedIds.add(p.id);
+            candidates.push(p);
+          }
+        }
+      }
+
+      // Step 2: SALT SCORING — classify each candidate
+      const scored = candidates.map(plant => {
+        const plantSalts = (plant.bio_logic?.salts || []).map(s => s.toLowerCase().replace(/ /g, '_'));
+        const plantId = plant.id.toLowerCase().replace(/\s+/g, '_');
+
+        // Check if plant's bio_logic salts match any deficient salt
+        let matchedSalt = null;
+        for (let i = 0; i < saltKeys.length; i++) {
+          if (plantSalts.includes(saltKeys[i])) {
+            matchedSalt = saltNames[i];
+            break;
+          }
+        }
+
+        // Also check biodynamic_map mineral_to_plants reverse lookup
+        if (!matchedSalt) {
+          for (let i = 0; i < saltKeys.length; i++) {
+            const set = saltPlantSets[saltKeys[i]];
+            if (set && set.has(plantId)) {
+              matchedSalt = saltNames[i];
+              break;
+            }
+          }
+        }
+
+        return {
+          id: plant.id,
+          name: plant.common_name,
+          layer: layerDef.name,
+          layer_id: layerDef.id,
+          height: layerDef.heightDesc,
+          tier: matchedSalt ? 'A' : 'B',
+          salt_content: matchedSalt || null,
+          tier_label: matchedSalt ? 'A-Tier' : 'B-Tier — Best Local Fit',
+          botanical_name: plant.botanical_name || null,
+          climate_affinity: plant.climate_affinity || 'any',
+          zones: plant.climate_profile?.zones || [],
+        };
+      });
+
+      // Sort: A-Tier first, then B-Tier
+      scored.sort((a, b) => {
+        if (a.tier !== b.tier) return a.tier === 'A' ? -1 : 1;
+        return 0;
+      });
+
+      // Step 3: FILLING THE LAYERS — never blank
+      // Primary selection: top A-Tier (not already assigned), or top B-Tier if no A-Tier exists
+      let primary = null;
+      for (const s of scored) {
+        if (!assignedIds.has(s.id)) {
+          primary = s;
+          assignedIds.add(s.id);
+          break;
+        }
+      }
+      // If all scored candidates are already assigned, pick the first anyway (never blank)
+      if (!primary && scored.length > 0) {
+        primary = scored[0];
+      }
+
+      // If no candidates at all from registry, create a placeholder B-Tier
+      if (!primary) {
+        guild[layerDef.id] = {
+          id: 'placeholder_' + layerDef.id,
+          name: 'No registry match — requires manual selection',
+          layer: layerDef.name,
+          layer_id: layerDef.id,
+          height: layerDef.heightDesc,
+          tier: 'B',
+          salt_content: null,
+          tier_label: 'B-Tier — Best Local Fit',
+          botanical_name: null,
+          climate_affinity: 'any',
+          zones: [],
+          candidates: [],
+          note: 'Registry has no plants for this layer in your zone. Add plants to master_registry.json or select manually.',
+        };
+        continue;
+      }
+
+      guild[layerDef.id] = {
+        id: primary.id,
+        name: primary.name,
+        layer: primary.layer,
+        layer_id: primary.layer_id,
+        height: primary.height,
+        tier: primary.tier,
+        salt_content: primary.salt_content,
+        tier_label: primary.tier_label,
+        botanical_name: primary.botanical_name,
+        climate_affinity: primary.climate_affinity,
+        zones: primary.zones,
+        candidates: scored.slice(0, 10),  // full candidate list for reference
+      };
+    }
+
+    return guild;
   }
 
   // Generate 3-year implementation plan using registry queries
@@ -630,7 +813,7 @@ class PermacultureApp {
       });
     });
     
-    if (!year.timeframe) year.timeframe = 'Months 0-12';
+    const year = { timeframe: 'Months 0-12' };
     
     return {
       year0: {
