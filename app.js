@@ -309,6 +309,7 @@ class PermacultureApp {
           name: selected.plant.common_name,
           tier: selected.matched ? 'A' : 'B',
           salt_content: selected.matched ? selected.plant.bio_logic?.salts?.find(s => s.toLowerCase().replace(/ /g, '_') === selected.matched) || selected.matched : null,
+          minerals: selected.plant.bio_logic?.salts || [],
           selection_reason: selected.matched ? 'cell salt match' : 'zone/climate fallback',
           functions: selected.plant.permaculture_role?.functions || [],
           roles: selected.plant.permaculture_role?.functions || []
@@ -323,6 +324,7 @@ class PermacultureApp {
           id: anchorPlant.id,
           name: anchorPlant.common_name,
           tier: 'Anchor',
+          minerals: anchorPlant.bio_logic?.salts || [],
           selection_reason: userAnchorIds.has(anchor.parentId) ? 'Chosen by you' : 'Suggested anchor',
           functions: anchorPlant.permaculture_role?.functions || [],
           roles: anchorPlant.permaculture_role?.functions || []
@@ -337,6 +339,7 @@ class PermacultureApp {
             id: viable[0].id,
             name: viable[0].common_name,
             tier: 'B',
+            minerals: viable[0].bio_logic?.salts || [],
             selection_reason: 'zone/climate fallback',
             functions: viable[0].permaculture_role?.functions || [],
             roles: viable[0].permaculture_role?.functions || []
@@ -491,6 +494,7 @@ class PermacultureApp {
           height: layerDef.heightDesc,
           tier: matchedSalt ? 'A' : 'B',
           salt_content: matchedSalt || null,
+          minerals: plant.bio_logic?.salts || [],
           tier_label: matchedSalt ? 'A-Tier' : 'B-Tier — Best Local Fit',
           botanical_name: plant.botanical_name || null,
           climate_affinity: plant.climate_affinity || 'any',
@@ -542,6 +546,7 @@ class PermacultureApp {
           height: layerDef.heightDesc,
           tier: 'B',
           salt_content: null,
+          minerals: [],
           tier_label: 'B-Tier — Best Local Fit',
           botanical_name: null,
           climate_affinity: 'any',
@@ -560,6 +565,7 @@ class PermacultureApp {
         height: primary.height,
         tier: primary.tier,
         salt_content: primary.salt_content,
+        minerals: primary.minerals || [],
         tier_label: primary.tier_label,
         botanical_name: primary.botanical_name,
         climate_affinity: primary.climate_affinity,

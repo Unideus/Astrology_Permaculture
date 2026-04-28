@@ -781,28 +781,44 @@ function renderSevenLayerGuild(guild) {
   const renderLayerMeta = (layer) => {
     if (!layer || typeof layer !== 'object' || Array.isArray(layer)) return '';
 
-    let reason = '';
+    let label = '';
+    let badgeClass = '';
     if (layer.tier === 'Anchor') {
-      reason = layer.selection_reason || 'User-selected canopy anchor';
+      const isChosen = layer.selection_reason === 'Chosen by you';
+      label = (isChosen ? 'Chosen by you' : 'Suggested') + ' · Canopy anchor';
+      badgeClass = isChosen ? 'chosen-by-you' : 'suggested-anchor';
     } else if (layer.tier === 'A') {
-      reason = 'Mineral profile match' + (layer.salt_content ? ': ' + layer.salt_content : '');
+      label = 'Mineral match' + (layer.salt_content ? ' · ' + layer.salt_content : '');
+      badgeClass = 'mineral-match';
     } else if (layer.tier === 'B') {
-      reason = 'Climate-fit support plant';
+      label = 'Climate fit · Support plant';
+      badgeClass = 'climate-fit';
     } else if (layer.selection_reason) {
-      reason = layer.selection_reason;
+      label = layer.selection_reason;
     }
 
+    const minerals = layer.minerals || layer.cell_salts || [];
+    const displayedMinerals = Array.isArray(minerals)
+      ? minerals.filter(mineral => String(mineral).toLowerCase() !== String(layer.salt_content || '').toLowerCase())
+      : [];
+    const mineralText = displayedMinerals.length
+      ? displayedMinerals.join(', ')
+      : '';
     const roles = layer.functions || layer.roles || [];
     const roleText = Array.isArray(roles) && roles.length
       ? roles.map(role => String(role).replace(/_/g, ' ')).join(', ')
       : '';
+    const mineralLabel = layer.salt_content ? 'Other minerals: ' : 'Minerals: ';
+    const mineralValue = mineralText || 'None listed';
+    const roleValue = roleText || 'None listed';
 
     const metaParts = [];
-    if (reason) metaParts.push(escapeHtml(reason));
-    if (roleText) metaParts.push('Role: ' + escapeHtml(roleText));
+    if (label) metaParts.push('<span class="guild-badge ' + escapeHtml(badgeClass) + '">' + escapeHtml(label) + '</span>');
+    metaParts.push('<span>' + escapeHtml(mineralLabel) + escapeHtml(mineralValue) + '</span>');
+    metaParts.push('<span>Role: ' + escapeHtml(roleValue) + '</span>');
 
     return metaParts.length
-      ? '<span style="font-size:0.85em;color:#666">' + metaParts.join('<br>') + '</span>'
+      ? '<div class="guild-plant-meta">' + metaParts.join('') + '</div>'
       : '';
   };
 

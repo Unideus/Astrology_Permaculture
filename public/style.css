@@ -730,3 +730,41 @@ footer {
 .btn-danger:hover {
   background: #b71c1c;
 }
+
+.guild-plant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #5f6f62;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.guild-badge {
+  align-self: flex-start;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 5px 8px;
+}
+
+.guild-badge.chosen-by-you {
+  background: #dff3e4;
+  color: #1b6e35;
+}
+
+.guild-badge.mineral-match {
+  background: #dbeafe;
+  color: #1d4f91;
+}
+
+.guild-badge.climate-fit {
+  background: #fff1c7;
+  color: #7a5200;
+}
+
+.guild-badge.suggested-anchor {
+  background: #eceff1;
+  color: #455a64;
+}
