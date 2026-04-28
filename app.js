@@ -1,6 +1,7 @@
 // Permaculture Design App - Main Application Logic
 const fs = require('fs');
 const path = require('path');
+const AnchorRegistry = require('./anchor_registry.js');
 
 class PermacultureApp {
   constructor() {
@@ -155,11 +156,111 @@ class PermacultureApp {
                     `Supplementing ${uniqueSalts.length} cell salt${uniqueSalts.length > 1 ? 's' : ''}.`
       },
       recommendedPlants,
-      guild: this.generate7LayerGuild(uniqueSalts, climateData, desiredPlants),
+      guild: this.generate3Guilds(uniqueSalts, climateData, desiredPlants),
       threeYearPlan: plan,
       moonCalendar: this.getMoonPlantingCalendar(),
       soilRecommendations: soilTest ? this.analyzeSoil(soilTest) : null
     };
+  }
+
+  // ── 3-GUILD GENERATOR (HOMESTEAD) ──────────────────────────────────────────
+  // Generates 3 unique guilds based on userDesiredPlants using anchor registry.
+  // Each guild has its own Layer 1 anchor and 7-layer composition.
+  generate3Guilds(uniqueSalts, climateData, desiredPlants = []) {
+    const siteZone = climateData?.hardinessZone?.match(/^(\d+)/)?.[1] || 9;
+    const siteKoppen = climateData?.koppenCode || 'Csb';
+    const ar = new AnchorRegistry();
+    
+    // Normalize userDesiredPlants to parent_ids
+    const desiredList = Array.isArray(desiredPlants) ? desiredPlants : (desiredPlants || '').split(',');
+    const anchors = desiredList.map(p => p.trim()).filter(Boolean);
+    const anchorIds = anchors.map(p => ar.normalizePlantInput(p)).filter(Boolean);
+    
+    // If not enough anchors, add ecological defaults
+    const defaultAnchors = ['apple', 'pear', 'apricot'];
+    for (const da of defaultAnchors) {
+      if (anchorIds.length >= 3) break;
+      if (!anchorIds.includes(da)) anchorIds.push(da);
+    }
+    
+    // Get best fit for each anchor
+    const selectedAnchors = anchorIds.map(id => {
+      const best = ar.getBestFit(id, parseInt(siteZone), siteKoppen);
+      return best || { parentId: id, layer: 'sub_canopy', variety: 'Standard' };
+    });
+    
+    // Generate 3 guilds
+    const guilds = selectedAnchors.map((anchor, idx) => {
+      const layers = {};
+      
+      // Layer 1: anchor (from registry)
+      const anchorPlant = this.masterRegistry[anchorIds[idx]] || selectedAnchors[idx];
+      if (anchor && anchor.parentId && anchor.parentId in this.masterRegistry) {
+        const anchorPlant = this.masterRegistry[anchor.parentId];
+        layers['layer1_canopy'] = anchorPlant.common_name + ' [id: ' + anchorPlant.id + ']';
+      } else {
+        // Fallback: find best canopy plant for this zone
+        const canopyPlants = this.filterPlants({ zone: parseInt(siteZone), layer: 'canopy' });
+        const viable = canopyPlants.filter(p => p.climate_affinity === 'humid' || !p.climate_affinity);
+        if (viable.length > 0) {
+          layers['layer1_canopy'] = viable[0].common_name + ' [id: ' + viable[0].id + ']';
+        } else {
+          layers['layer1_canopy'] = 'None';
+        }
+      }
+      
+      // Layer 2: Low Tree
+      const layer2 = this.filterPlants({ zone: parseInt(siteZone), layer: 'sub_canopy' });
+      const viable2 = layer2.filter(p => p.climate_affinity === 'humid' || !p.climate_affinity);
+      if (viable2.length > 0) {
+        layers['layer2_low_tree'] = viable2[0].common_name + ' [id: ' + viable2[0].id + ']';
+      } else {
+        layers['layer2_low_tree'] = 'None';
+      }
+      
+      // Layer 3: Shrub
+      const layer3 = this.filterPlants({ zone: parseInt(siteZone), layer: 'shrub' });
+      const viable3 = layer3.filter(p => p.climate_affinity === 'humid' || !p.climate_affinity);
+      if (viable3.length > 0) {
+        layers['layer3_shrub'] = viable3[0].common_name + ' [id: ' + viable3[0].id + ']';
+      } else {
+        layers['layer3_shrub'] = 'None';
+      }
+      
+      // Layers 4-7: Fill with salt-matched plants
+      const saltKeys = uniqueSalts.map(s => s.cell_salt.toLowerCase().replace(/ /g, '_'));
+      const assignedIds = new Set();
+      
+      for (const [lid, ldef] of Object.entries({ layer4: 'herbaceous', layer5: 'ground_cover', layer6: 'root', layer7: 'vine' })) {
+        const candidates = this.filterPlants({ zone: parseInt(siteZone), layer: ldef });
+        const scored = candidates.filter(p => {
+          if (assignedIds.has(p.id)) return false;
+          if (p.climate_affinity && p.climate_affinity !== 'any' && p.climate_affinity !== 'humid') return false;
+          return true;
+        }).map(p => {
+          const plantSalts = (p.bio_logic?.salts || []).map(s => s.toLowerCase().replace(/ /g, '_'));
+          const matched = saltKeys.find(sk => plantSalts.includes(sk));
+          return { id: p.id, name: p.common_name, tier: matched ? 'A' : 'B', salt: matched };
+        }).sort((a, b) => (a.tier === 'A' ? -1 : 1) - (b.tier === 'A' ? -1 : 1));
+        
+        const selected = scored[0];
+        if (selected) {
+          layers[lid] = selected.name + ' [id: ' + selected.id + ']';
+          assignedIds.add(selected.id);
+        } else {
+          layers[lid] = 'None';
+        }
+      }
+      
+      return {
+        name: anchorIds[idx] + ' Guild',
+        layers: layers,
+        anchor: anchorIds[idx],
+        variety: anchor.variety || 'Standard'
+      };
+    });
+    
+    return guilds;
   }
 
   // ── 7-LAYER UNIVERSAL EDIBLE GUILD GENERATOR ────────────────────────────
