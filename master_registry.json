@@ -110,7 +110,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "dynamic_accumulator",
+        "pollinator_forage",
+        "edible_greens"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -189,7 +193,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield",
+        "nutrient_accumulator"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -227,7 +235,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "pollinator_forage",
+        "biomass",
+        "soil_building"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -305,7 +317,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "root_crop",
+        "soil_opening",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -879,7 +895,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "root_crop",
+        "soil_opening",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1514,6 +1534,40 @@
       "guild_compat": []
     },
     "climate_affinity": "any"
+  },
+  "maypop_passionflower": {
+    "id": "maypop_passionflower",
+    "common_name": "Maypop Passionflower",
+    "botanical_name": "Passiflora incarnata",
+    "taxonomy": {
+      "type": "perennial_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "vertical_growth"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
   },
   "cashew": {
     "id": "cashew",
