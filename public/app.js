@@ -783,17 +783,26 @@ function renderSevenLayerGuild(guild) {
 
     let reason = '';
     if (layer.tier === 'Anchor') {
-      reason = layer.selection_reason || 'Guild canopy anchor';
+      reason = layer.selection_reason || 'User-selected canopy anchor';
     } else if (layer.tier === 'A') {
-      reason = 'A-Tier: ' + (layer.salt_content || 'cell salt match');
+      reason = 'Mineral profile match' + (layer.salt_content ? ': ' + layer.salt_content : '');
     } else if (layer.tier === 'B') {
-      reason = 'B-Tier: ' + (layer.selection_reason || 'zone/climate fallback');
+      reason = 'Climate-fit support plant';
     } else if (layer.selection_reason) {
       reason = layer.selection_reason;
     }
 
-    return reason
-      ? '<span style="font-size:0.85em;color:#666">[id: ' + escapeHtml(layer.id || '') + '] — ' + escapeHtml(reason) + '</span>'
+    const roles = layer.functions || layer.roles || [];
+    const roleText = Array.isArray(roles) && roles.length
+      ? roles.map(role => String(role).replace(/_/g, ' ')).join(', ')
+      : '';
+
+    const metaParts = [];
+    if (reason) metaParts.push(escapeHtml(reason));
+    if (roleText) metaParts.push('Role: ' + escapeHtml(roleText));
+
+    return metaParts.length
+      ? '<span style="font-size:0.85em;color:#666">' + metaParts.join('<br>') + '</span>'
       : '';
   };
 

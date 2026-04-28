@@ -219,9 +219,29 @@ class PermacultureApp {
     const ar = new AnchorRegistry();
     
     // Normalize userDesiredPlants to parent_ids
-    const desiredList = Array.isArray(desiredPlants) ? desiredPlants : (desiredPlants || '').split(',');
+    const desiredList = Array.isArray(desiredPlants) ? desiredPlants : (desiredPlants || '').split(/[,;\n\r]+/);
     const anchors = desiredList.map(p => p.trim()).filter(Boolean);
-    const anchorIds = anchors.map(p => ar.normalizePlantInput(p)).filter(Boolean);
+    const anchorWarnings = [];
+    const normalizeAnchorInput = (input) => {
+      const normalized = ar.normalizePlantInput(input);
+      if (normalized) return normalized;
+
+      const inputKey = input.toLowerCase();
+      const registryMatch = Object.values(this.masterRegistry).find(plant => {
+        const commonName = (plant.common_name || '').toLowerCase();
+        const botanicalName = (plant.botanical_name || '').toLowerCase();
+        return plant.id.toLowerCase() === inputKey ||
+               commonName === inputKey ||
+               botanicalName === inputKey;
+      });
+
+      if (registryMatch) return registryMatch.id;
+
+      anchorWarnings.push(`Could not find "${input}" in the plant registry; a suggested anchor was used instead.`);
+      return null;
+    };
+    const anchorIds = anchors.map(p => normalizeAnchorInput(p)).filter(Boolean);
+    const userAnchorIds = new Set(anchorIds);
     
     // If not enough anchors, add ecological defaults
     const defaultAnchors = ['apple_', 'pear_', 'apricot'];
@@ -289,7 +309,9 @@ class PermacultureApp {
           name: selected.plant.common_name,
           tier: selected.matched ? 'A' : 'B',
           salt_content: selected.matched ? selected.plant.bio_logic?.salts?.find(s => s.toLowerCase().replace(/ /g, '_') === selected.matched) || selected.matched : null,
-          selection_reason: selected.matched ? 'cell salt match' : 'zone/climate fallback'
+          selection_reason: selected.matched ? 'cell salt match' : 'zone/climate fallback',
+          functions: selected.plant.permaculture_role?.functions || [],
+          roles: selected.plant.permaculture_role?.functions || []
         };
       };
       
@@ -301,7 +323,9 @@ class PermacultureApp {
           id: anchorPlant.id,
           name: anchorPlant.common_name,
           tier: 'Anchor',
-          selection_reason: 'User-selected canopy anchor'
+          selection_reason: userAnchorIds.has(anchor.parentId) ? 'Chosen by you' : 'Suggested anchor',
+          functions: anchorPlant.permaculture_role?.functions || [],
+          roles: anchorPlant.permaculture_role?.functions || []
         };
         assignedIds.add(anchorPlant.id);
       } else {
@@ -313,7 +337,9 @@ class PermacultureApp {
             id: viable[0].id,
             name: viable[0].common_name,
             tier: 'B',
-            selection_reason: 'zone/climate fallback'
+            selection_reason: 'zone/climate fallback',
+            functions: viable[0].permaculture_role?.functions || [],
+            roles: viable[0].permaculture_role?.functions || []
           };
           assignedIds.add(viable[0].id);
         } else {
@@ -336,7 +362,8 @@ class PermacultureApp {
         name: anchorIds[idx] + ' Guild',
         layers: layers,
         anchor: anchorIds[idx],
-        variety: anchor.variety || 'Standard'
+        variety: anchor.variety || 'Standard',
+        warnings: anchorWarnings
       };
     });
     
@@ -468,6 +495,8 @@ class PermacultureApp {
           botanical_name: plant.botanical_name || null,
           climate_affinity: plant.climate_affinity || 'any',
           zones: plant.climate_profile?.zones || [],
+          functions: plant.permaculture_role?.functions || [],
+          roles: plant.permaculture_role?.functions || [],
         };
       });
 
@@ -535,6 +564,8 @@ class PermacultureApp {
         botanical_name: primary.botanical_name,
         climate_affinity: primary.climate_affinity,
         zones: primary.zones,
+        functions: primary.functions || [],
+        roles: primary.roles || primary.functions || [],
         candidates: scored.slice(0, 10),  // full candidate list for reference
       };
     }

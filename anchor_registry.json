@@ -547,6 +547,62 @@
         }
       }
     },
+    "peach": {
+      "common_names": [
+        "Peach",
+        "Peach Tree",
+        "Prunus persica"
+      ],
+      "botanical": "Prunus persica",
+      "layers": {
+        "sub_canopy": {
+          "zones": [
+            5,
+            6,
+            7,
+            8
+          ],
+          "chilling_required": 200,
+          "koppen_affinity": [
+            "Cfa",
+            "Csa",
+            "Csb"
+          ],
+          "variants": [
+            {
+              "name": "Florida Prince",
+              "zones": [
+                8,
+                9,
+                10
+              ],
+              "chilling_hours": 150,
+              "koppen_affinity": [
+                "Cfa",
+                "Csa",
+                "Csb"
+              ],
+              "salt_content": "Potassium Chloride"
+            },
+            {
+              "name": "Tropic Beauty",
+              "zones": [
+                8,
+                9,
+                10
+              ],
+              "chilling_hours": 150,
+              "koppen_affinity": [
+                "Cfa",
+                "Csa",
+                "Csb"
+              ],
+              "salt_content": "Potassium Chloride"
+            }
+          ]
+        }
+      }
+    },
     "pear_": {
       "common_names": [
         "Pear",
