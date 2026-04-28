@@ -748,43 +748,85 @@ window.addEventListener('keydown', (e) => {
 // ── 7-LAYER GUILD RENDERER ──────────────────────────────────────────────────
 function renderSevenLayerGuild(guild) {
   if (!guild || typeof guild !== 'object') return;
-  
-  const layerLabels = {
-    layer1_canopy: '🌳 Layer 1 — Canopy (>20ft)',
-    layer2_low_tree: '🌿 Layer 2 — Low Tree (10-20ft)',
-    layer3_shrub: '🫐 Layer 3 — Shrub (3-10ft)',
-    layer4_herbaceous: '🌱 Layer 4 — Herbaceous',
-    layer5_ground_cover: '🍀 Layer 5 — Soil Surface',
-    layer6_rhizosphere: '🥔 Layer 6 — Rhizosphere',
-    layer7_vertical: '🧗 Layer 7 — Vertical (Vines)'
+
+  const guilds = Array.isArray(guild) ? guild : [guild];
+  const layerDefinitions = [
+    { label: '1. Canopy', keys: ['layer1_canopy'] },
+    { label: '2. Sub-Canopy', keys: ['layer2_low_tree'] },
+    { label: '3. Shrub', keys: ['layer3_shrub'] },
+    { label: '4. Herbaceous', keys: ['layer4_herbaceous', 'layer4'] },
+    { label: '5. Ground Cover', keys: ['layer5_ground_cover', 'layer6_soil_surface', 'layer5'] },
+    { label: '6. Root', keys: ['layer6_rhizosphere', 'layer5_rhizosphere', 'layer6'] },
+    { label: '7. Vine', keys: ['layer7_vertical', 'layer7'] }
+  ];
+
+  const getLayerValue = (guildItem, keys) => {
+    const layers = guildItem.layers || guildItem;
+    for (const key of keys) {
+      if (layers[key]) return layers[key];
+    }
+    return null;
+  };
+
+  const renderLayerPlant = (layer) => {
+    if (!layer) return 'No plants selected yet';
+    if (typeof layer === 'string') {
+      const value = layer.trim();
+      return value && value.toLowerCase() !== 'none' ? value : 'No plants selected yet';
+    }
+    if (Array.isArray(layer)) return layer.length ? layer.join(', ') : 'No plants selected yet';
+    return layer.name || layer.plant || layer.common_name || 'No plants selected yet';
+  };
+
+  const renderLayerMeta = (layer) => {
+    if (!layer || typeof layer !== 'object' || Array.isArray(layer)) return '';
+
+    let reason = '';
+    if (layer.tier === 'Anchor') {
+      reason = layer.selection_reason || 'Guild canopy anchor';
+    } else if (layer.tier === 'A') {
+      reason = 'A-Tier: ' + (layer.salt_content || 'cell salt match');
+    } else if (layer.tier === 'B') {
+      reason = 'B-Tier: ' + (layer.selection_reason || 'zone/climate fallback');
+    } else if (layer.selection_reason) {
+      reason = layer.selection_reason;
+    }
+
+    return reason
+      ? '<span style="font-size:0.85em;color:#666">[id: ' + escapeHtml(layer.id || '') + '] — ' + escapeHtml(reason) + '</span>'
+      : '';
+  };
+
+  const formatGuildTitle = (guildItem, index) => {
+    const rawTitle = guildItem.name || guildItem.anchor || `Guild ${index + 1}`;
+    return String(rawTitle)
+      .replace(/_/g, ' ')
+      .replace(/\s+Guild$/i, '')
+      .trim()
+      .replace(/\b\w/g, char => char.toUpperCase()) + ' Guild';
   };
 
   const htmlParts = [];
-  htmlParts.push('<div class="seven-layer-card" style="background:#e8f5e9;border:1px solid #4caf50;border-radius:8px;padding:16px;margin:16px 0;">');
-  htmlParts.push('  <h3 style="margin:0 0 12px 0;">🌿 7-Layer Edible Guild</h3>');
-  htmlParts.push('  <p style="margin:0 0 12px 0;color:#666;">A-Tier: matches deficient cell salt | B-Tier: best local edible fallback</p>');
-  htmlParts.push('  <div class="layer-grid" style="display:grid;gap:8px;">');
 
-  for (const [key, label] of Object.entries(layerLabels)) {
-    const layer = guild[key];
-    if (!layer) continue;
-    const tierBadge = layer.tier === 'A' 
-      ? '<span style="background:#4caf50;color:#fff;padding:2px 8px;border-radius:4px;font-size:0.75em">A-Tier</span>'
-      : '<span style="background:#ff9800;color:#fff;padding:2px 8px;border-radius:4px;font-size:0.75em">B-Tier</span>';
-    const saltLine = layer.salt_content ? '<p style="margin:4px 0 0 0;font-size:0.85em;color:#555"><strong>Salt:</strong> ' + escapeHtml(layer.salt_content) + '</p>' : '';
-    htmlParts.push('    <div style="display:flex;flex-direction:column;gap:4px;background:#f9f9f9;border-radius:6px;padding:10px 12px;">');
-    htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(label) + '</strong>');
-    htmlParts.push('      <span style="font-size:1.1em;">' + escapeHtml(layer.name) + '</span>');
-    htmlParts.push('      <span style="font-size:0.85em;color:#666">[id: ' + escapeHtml(layer.id) + ']</span>');
-    htmlParts.push('      <div style="display:flex;gap:8px;align-items:center;">');
-    htmlParts.push('        ' + tierBadge);
-    if (saltLine) htmlParts.push('        ' + saltLine);
-    htmlParts.push('      </div>');
-    htmlParts.push('    </div>');
-  }
+  guilds.forEach((guildItem, index) => {
+    const title = formatGuildTitle(guildItem, index);
+    htmlParts.push('<div class="seven-layer-card" style="background:#e8f5e9;border:1px solid #4caf50;border-radius:8px;padding:16px;margin:16px 0;">');
+    htmlParts.push('  <h4 style="margin:0 0 12px 0;">' + escapeHtml(title) + '</h4>');
+    htmlParts.push('  <div class="layer-grid" style="display:grid;gap:8px;">');
 
-  htmlParts.push('  </div>');
-  htmlParts.push('</div>');
-  
+    layerDefinitions.forEach(layerDef => {
+      const layer = getLayerValue(guildItem, layerDef.keys);
+      htmlParts.push('    <div style="display:flex;flex-direction:column;gap:4px;background:#f9f9f9;border-radius:6px;padding:10px 12px;">');
+      htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(layerDef.label) + '</strong>');
+      htmlParts.push('      <span style="font-size:1.05em;">' + escapeHtml(renderLayerPlant(layer)) + '</span>');
+      const meta = renderLayerMeta(layer);
+      if (meta) htmlParts.push('      ' + meta);
+      htmlParts.push('    </div>');
+    });
+
+    htmlParts.push('  </div>');
+    htmlParts.push('</div>');
+  });
+
   document.getElementById('sevenLayerGuild').innerHTML = htmlParts.join('\n');
 }

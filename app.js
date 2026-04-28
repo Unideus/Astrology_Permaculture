@@ -124,7 +124,8 @@ class PermacultureApp {
       familyMembers = [],
       scale,
       soilTest = null,
-      desiredPlants = []
+      userDesiredPlants,
+      desiredPlants = userDesiredPlants || []
     } = userData;
     
     // Combine all sun signs
@@ -141,6 +142,8 @@ class PermacultureApp {
     
     // Generate 3-year plan — now uses registry queries with climate + salt context
     const plan = this.generateThreeYearPlan(scale, climateData, uniqueSalts, soilTest);
+    const guild = this.generate3Guilds(uniqueSalts, climateData, desiredPlants);
+    this.syncThreeYearPlanWithGuildCanopies(plan, guild, scale);
     
     return {
       siteInfo: {
@@ -156,7 +159,7 @@ class PermacultureApp {
                     `Supplementing ${uniqueSalts.length} cell salt${uniqueSalts.length > 1 ? 's' : ''}.`
       },
       recommendedPlants,
-      guild: this.generate3Guilds(uniqueSalts, climateData, desiredPlants),
+      guild,
       threeYearPlan: plan,
       moonCalendar: this.getMoonPlantingCalendar(),
       soilRecommendations: soilTest ? this.analyzeSoil(soilTest) : null
@@ -166,6 +169,50 @@ class PermacultureApp {
   // ── 3-GUILD GENERATOR (HOMESTEAD) ──────────────────────────────────────────
   // Generates 3 unique guilds based on userDesiredPlants using anchor registry.
   // Each guild has its own Layer 1 anchor and 7-layer composition.
+  syncThreeYearPlanWithGuildCanopies(plan, guild, scale) {
+    if (!plan?.year0?.tasks || !Array.isArray(guild)) return;
+
+    const canopyNames = guild
+      .map(g => g.layers?.layer1_canopy)
+      .filter(Boolean)
+      .map(layer => typeof layer === 'object' ? layer.name : String(layer).split('[')[0].trim())
+      .filter(name => name && name.toLowerCase() !== 'none');
+
+    const uniqueCanopies = [...new Set(canopyNames)];
+    if (uniqueCanopies.length === 0) return;
+
+    const formatList = (items) => {
+      if (items.length <= 2) return items.join(' and ');
+      return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+    };
+
+    const canopyList = formatList(uniqueCanopies);
+    const canopyTask = plan.year0.tasks.find(t => /canopy|tree.?plant/i.test(t.task || ''));
+
+    if (uniqueCanopies.length > 1 || scale === 'homestead') {
+      plan.year0.focus = `Establish ${canopyList} as the canopy anchors`;
+      if (canopyTask) {
+        canopyTask.task = 'Canopy Tree Planting - Plant Primary Anchors';
+        canopyTask.plants = uniqueCanopies;
+        canopyTask.details = `${canopyList} are the primary canopy anchors for the guild system. Plant with spacing appropriate to each species and site conditions.`;
+        canopyTask.guild_note = 'These canopy anchors come directly from the generated guild canopies.';
+        canopyTask.botanical = null;
+        canopyTask.cellSalts = [];
+        canopyTask.climateAffinity = 'guild-derived';
+      }
+    } else {
+      plan.year0.focus = `Establish ${uniqueCanopies[0]} as the system anchor`;
+      if (canopyTask) {
+        canopyTask.plants = [uniqueCanopies[0]];
+        canopyTask.details = `${uniqueCanopies[0]} is the primary canopy anchor for the guild system. Plant with spacing appropriate to the species and site conditions.`;
+        canopyTask.guild_note = 'This canopy anchor comes directly from the generated guild canopy.';
+        canopyTask.botanical = null;
+        canopyTask.cellSalts = [];
+        canopyTask.climateAffinity = 'guild-derived';
+      }
+    }
+  }
+
   generate3Guilds(uniqueSalts, climateData, desiredPlants = []) {
     const siteZone = climateData?.hardinessZone?.match(/^(\d+)/)?.[1] || 9;
     const siteKoppen = climateData?.koppenCode || 'Csb';
@@ -177,7 +224,7 @@ class PermacultureApp {
     const anchorIds = anchors.map(p => ar.normalizePlantInput(p)).filter(Boolean);
     
     // If not enough anchors, add ecological defaults
-    const defaultAnchors = ['apple', 'pear', 'apricot'];
+    const defaultAnchors = ['apple_', 'pear_', 'apricot'];
     for (const da of defaultAnchors) {
       if (anchorIds.length >= 3) break;
       if (!anchorIds.includes(da)) anchorIds.push(da);
@@ -189,67 +236,100 @@ class PermacultureApp {
       return best || { parentId: id, layer: 'sub_canopy', variety: 'Standard' };
     });
     
+    const usedByLayer = new Map();
+
     // Generate 3 guilds
     const guilds = selectedAnchors.map((anchor, idx) => {
       const layers = {};
+      const saltKeys = uniqueSalts.map(s => s.cell_salt.toLowerCase().replace(/ /g, '_'));
+      const assignedIds = new Set();
+      const climatePriority = (() => {
+        if (siteKoppen.startsWith('A') || siteKoppen.startsWith('Cf') || siteKoppen.startsWith('Df')) return 'humid';
+        if (siteKoppen.startsWith('B') || siteKoppen.startsWith('Cs')) return 'arid';
+        return null;
+      })();
+
+      const selectLayerPlant = (registryLayers, layerUsageKey) => {
+        const layerList = Array.isArray(registryLayers) ? registryLayers : [registryLayers];
+        const previouslyUsed = usedByLayer.get(layerUsageKey) || new Set();
+        const candidates = layerList.flatMap(layer =>
+          this.filterPlants({ zone: parseInt(siteZone), layer })
+        );
+
+        const scored = candidates
+          .filter(p => !assignedIds.has(p.id))
+          .map(p => {
+            const plantSalts = (p.bio_logic?.salts || []).map(s => s.toLowerCase().replace(/ /g, '_'));
+            const matched = saltKeys.find(sk => plantSalts.includes(sk));
+            const affinity = p.climate_affinity || 'any';
+            const climateScore = !climatePriority || affinity === 'any' || affinity === climatePriority ? 0 : 1;
+            const wasUsedInLayer = previouslyUsed.has(p.id);
+            return { plant: p, matched, climateScore, wasUsedInLayer };
+          })
+          .sort((a, b) => {
+            const priority = item => {
+              if (!item.wasUsedInLayer && item.matched) return 0;
+              if (!item.wasUsedInLayer && !item.matched) return 1;
+              if (item.wasUsedInLayer && item.matched) return 2;
+              return 3;
+            };
+            const priorityDiff = priority(a) - priority(b);
+            if (priorityDiff !== 0) return priorityDiff;
+            return a.climateScore - b.climateScore;
+          });
+
+        const selected = scored[0];
+        if (!selected) return 'No registry candidate for this layer';
+
+        assignedIds.add(selected.plant.id);
+        previouslyUsed.add(selected.plant.id);
+        usedByLayer.set(layerUsageKey, previouslyUsed);
+        return {
+          id: selected.plant.id,
+          name: selected.plant.common_name,
+          tier: selected.matched ? 'A' : 'B',
+          salt_content: selected.matched ? selected.plant.bio_logic?.salts?.find(s => s.toLowerCase().replace(/ /g, '_') === selected.matched) || selected.matched : null,
+          selection_reason: selected.matched ? 'cell salt match' : 'zone/climate fallback'
+        };
+      };
       
       // Layer 1: anchor (from registry)
       const anchorPlant = this.masterRegistry[anchorIds[idx]] || selectedAnchors[idx];
       if (anchor && anchor.parentId && anchor.parentId in this.masterRegistry) {
         const anchorPlant = this.masterRegistry[anchor.parentId];
-        layers['layer1_canopy'] = anchorPlant.common_name + ' [id: ' + anchorPlant.id + ']';
+        layers['layer1_canopy'] = {
+          id: anchorPlant.id,
+          name: anchorPlant.common_name,
+          tier: 'Anchor',
+          selection_reason: 'User-selected canopy anchor'
+        };
+        assignedIds.add(anchorPlant.id);
       } else {
         // Fallback: find best canopy plant for this zone
         const canopyPlants = this.filterPlants({ zone: parseInt(siteZone), layer: 'canopy' });
         const viable = canopyPlants.filter(p => p.climate_affinity === 'humid' || !p.climate_affinity);
         if (viable.length > 0) {
-          layers['layer1_canopy'] = viable[0].common_name + ' [id: ' + viable[0].id + ']';
+          layers['layer1_canopy'] = {
+            id: viable[0].id,
+            name: viable[0].common_name,
+            tier: 'B',
+            selection_reason: 'zone/climate fallback'
+          };
+          assignedIds.add(viable[0].id);
         } else {
-          layers['layer1_canopy'] = 'None';
+          layers['layer1_canopy'] = 'No registry candidate for this layer';
         }
       }
       
       // Layer 2: Low Tree
-      const layer2 = this.filterPlants({ zone: parseInt(siteZone), layer: 'sub_canopy' });
-      const viable2 = layer2.filter(p => p.climate_affinity === 'humid' || !p.climate_affinity);
-      if (viable2.length > 0) {
-        layers['layer2_low_tree'] = viable2[0].common_name + ' [id: ' + viable2[0].id + ']';
-      } else {
-        layers['layer2_low_tree'] = 'None';
-      }
+      layers['layer2_low_tree'] = selectLayerPlant(['sub_canopy', 'low_tree'], 'layer2_low_tree');
       
       // Layer 3: Shrub
-      const layer3 = this.filterPlants({ zone: parseInt(siteZone), layer: 'shrub' });
-      const viable3 = layer3.filter(p => p.climate_affinity === 'humid' || !p.climate_affinity);
-      if (viable3.length > 0) {
-        layers['layer3_shrub'] = viable3[0].common_name + ' [id: ' + viable3[0].id + ']';
-      } else {
-        layers['layer3_shrub'] = 'None';
-      }
+      layers['layer3_shrub'] = selectLayerPlant('shrub', 'layer3_shrub');
       
       // Layers 4-7: Fill with salt-matched plants
-      const saltKeys = uniqueSalts.map(s => s.cell_salt.toLowerCase().replace(/ /g, '_'));
-      const assignedIds = new Set();
-      
-      for (const [lid, ldef] of Object.entries({ layer4: 'herbaceous', layer5: 'ground_cover', layer6: 'root', layer7: 'vine' })) {
-        const candidates = this.filterPlants({ zone: parseInt(siteZone), layer: ldef });
-        const scored = candidates.filter(p => {
-          if (assignedIds.has(p.id)) return false;
-          if (p.climate_affinity && p.climate_affinity !== 'any' && p.climate_affinity !== 'humid') return false;
-          return true;
-        }).map(p => {
-          const plantSalts = (p.bio_logic?.salts || []).map(s => s.toLowerCase().replace(/ /g, '_'));
-          const matched = saltKeys.find(sk => plantSalts.includes(sk));
-          return { id: p.id, name: p.common_name, tier: matched ? 'A' : 'B', salt: matched };
-        }).sort((a, b) => (a.tier === 'A' ? -1 : 1) - (b.tier === 'A' ? -1 : 1));
-        
-        const selected = scored[0];
-        if (selected) {
-          layers[lid] = selected.name + ' [id: ' + selected.id + ']';
-          assignedIds.add(selected.id);
-        } else {
-          layers[lid] = 'None';
-        }
+      for (const [lid, ldef] of Object.entries({ layer4: 'herbaceous', layer5: ['ground_cover', 'herbaceous'], layer6: 'root', layer7: 'vine' })) {
+        layers[lid] = selectLayerPlant(ldef, lid);
       }
       
       return {
