@@ -306,6 +306,20 @@ class PermacultureApp {
         }
       }
       // If all scored candidates are already assigned, pick the first anyway (never blank)
+      if (!primary && scored.length > 0) {
+        primary = scored[0];
+      }
+      
+      // For Layer 1, prioritize user-desired plants if available
+      if (layerDef.id === 'layer1_canopy' && desiredPlantIds.size > 0) {
+        for (const s of scored) {
+          if (desiredPlantIds.has(s.id.toLowerCase())) {
+            primary = s;
+            assignedIds.add(s.id);
+            break;
+          }
+        }
+      }
 
       // If no candidates at all from registry, create a placeholder B-Tier
       if (!primary) {
