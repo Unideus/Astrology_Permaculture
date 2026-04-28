@@ -146,7 +146,8 @@ class PermacultureApp {
         address,
         scale,
         sunSign,
-        familyMembers
+        familyMembers,
+        userDesiredPlants: userData.userDesiredPlants || []
       },
       cellSalts: {
         deficient: uniqueSalts,
