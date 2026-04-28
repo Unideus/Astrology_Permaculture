@@ -3033,5 +3033,238 @@
       "guild_compat": []
     },
     "climate_affinity": "any"
+  },
+  "loquat": {
+    "id": "loquat",
+    "common_name": "Loquat",
+    "botanical_name": "Eriobotrya japonica",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "pineapple_guava": {
+    "id": "pineapple_guava",
+    "common_name": "Pineapple Guava",
+    "botanical_name": "Acca sellowiana",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_shrub_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "japanese_persimmon": {
+    "id": "japanese_persimmon",
+    "common_name": "Japanese Persimmon",
+    "botanical_name": "Diospyros kaki",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "deciduous_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "late_season_yield",
+        "wildlife_food"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "moringa": {
+    "id": "moringa",
+    "common_name": "Moringa",
+    "botanical_name": "Moringa oleifera",
+    "taxonomy": {
+      "type": "edible_leaf_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "fast_growing_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_leaves",
+        "biomass",
+        "chop_and_drop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "rabbiteye_blueberry": {
+    "id": "rabbiteye_blueberry",
+    "common_name": "Rabbiteye Blueberry",
+    "botanical_name": "Vaccinium virgatum",
+    "taxonomy": {
+      "type": "fruiting_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "deciduous_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "berry_production",
+        "pollinator_forage",
+        "acid_soil_crop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "roselle": {
+    "id": "roselle",
+    "common_name": "Roselle",
+    "botanical_name": "Hibiscus sabdariffa",
+    "taxonomy": {
+      "type": "edible_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "warm_season_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_calyx",
+        "edible_leaves",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "pigeon_pea": {
+    "id": "pigeon_pea",
+    "common_name": "Pigeon Pea",
+    "botanical_name": "Cajanus cajan",
+    "taxonomy": {
+      "type": "n_fixer_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "short_lived_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "edible_seed",
+        "chop_and_drop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
   }
 }
