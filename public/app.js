@@ -119,6 +119,13 @@ async function generatePlan() {
     console.log('=== AI RESPONSE ===');
     console.log(JSON.stringify(generatedPlan, null, 2));
 
+    // Display 7-Layer Guild (if available)
+    if (generatedPlan.guild) {
+      const card = document.getElementById('sevenLayerGuildCard');
+      if (card) card.style.display = 'block';
+      renderSevenLayerGuild(generatedPlan.guild);
+    }
+
     // Display results
     displayResults(generatedPlan);
 
@@ -193,13 +200,17 @@ function displayResults(plan) {
 
   // AI Guilds — clear container before every render to prevent ghost data
   document.getElementById('aiGuilds').innerHTML = '';
-  if (plan.aiGenerated) {
+  // Suppress AI guild card when 7-layer guild exists — 7-layer is the authoritative source
+  if (plan.aiGenerated && !plan.guild) {
     document.getElementById('aiGuildsCard').style.display = 'block';
     renderAIGuilds(plan.aiGenerated);
-  } else {
-    // AI failed to generate guilds — show error, do NOT use fallback
+  } else if (!plan.guild) {
+    // AI failed to generate guilds AND no 7-layer guild — show error
     document.getElementById('aiGuildsCard').style.display = 'block';
     document.getElementById('aiGuilds').innerHTML = '<p style="color:#d32f2f;font-weight:bold;padding:12px;background:#ffebee;border:1px solid #ef5350;border-radius:4px;">⚠️ AI failed to generate guilds.</p>';
+  } else {
+    // 7-layer guild exists, suppress AI card
+    document.getElementById('aiGuildsCard').style.display = 'none';
   }
 
   // Cell Salts
@@ -737,3 +748,47 @@ window.addEventListener('click', (e) => {
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeSavedSites();
 });
+
+// ── 7-LAYER GUILD RENDERER ──────────────────────────────────────────────────
+function renderSevenLayerGuild(guild) {
+  if (!guild || typeof guild !== 'object') return;
+  
+  const layerLabels = {
+    layer1_canopy: '🌳 Layer 1 — Canopy (>20ft)',
+    layer2_low_tree: '🌿 Layer 2 — Low Tree (10-20ft)',
+    layer3_shrub: '🫐 Layer 3 — Shrub (3-10ft)',
+    layer4_herbaceous: '🌱 Layer 4 — Herbaceous',
+    layer5_ground_cover: '🍀 Layer 5 — Soil Surface',
+    layer6_rhizosphere: '🥔 Layer 6 — Rhizosphere',
+    layer7_vertical: '🧗 Layer 7 — Vertical (Vines)'
+  };
+
+  const htmlParts = [];
+  htmlParts.push('<div class="seven-layer-card" style="background:#e8f5e9;border:1px solid #4caf50;border-radius:8px;padding:16px;margin:16px 0;">');
+  htmlParts.push('  <h3 style="margin:0 0 12px 0;">🌿 7-Layer Edible Guild</h3>');
+  htmlParts.push('  <p style="margin:0 0 12px 0;color:#666;">A-Tier: matches deficient cell salt | B-Tier: best local edible fallback</p>');
+  htmlParts.push('  <div class="layer-grid" style="display:grid;gap:8px;">');
+
+  for (const [key, label] of Object.entries(layerLabels)) {
+    const layer = guild[key];
+    if (!layer) continue;
+    const tierBadge = layer.tier === 'A' 
+      ? '<span style="background:#4caf50;color:#fff;padding:2px 8px;border-radius:4px;font-size:0.75em">A-Tier</span>'
+      : '<span style="background:#ff9800;color:#fff;padding:2px 8px;border-radius:4px;font-size:0.75em">B-Tier</span>';
+    const saltLine = layer.salt_content ? '<p style="margin:4px 0 0 0;font-size:0.85em;color:#555"><strong>Salt:</strong> ' + escapeHtml(layer.salt_content) + '</p>' : '';
+    htmlParts.push('    <div style="display:flex;flex-direction:column;gap:4px;background:#f9f9f9;border-radius:6px;padding:10px 12px;">');
+    htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(label) + '</strong>');
+    htmlParts.push('      <span style="font-size:1.1em;">' + escapeHtml(layer.name) + '</span>');
+    htmlParts.push('      <span style="font-size:0.85em;color:#666">[id: ' + escapeHtml(layer.id) + ']</span>');
+    htmlParts.push('      <div style="display:flex;gap:8px;align-items:center;">');
+    htmlParts.push('        ' + tierBadge);
+    if (saltLine) htmlParts.push('        ' + saltLine);
+    htmlParts.push('      </div>');
+    htmlParts.push('    </div>');
+  }
+
+  htmlParts.push('  </div>');
+  htmlParts.push('</div>');
+  
+  document.getElementById('sevenLayerGuild').innerHTML = htmlParts.join('\n');
+}
