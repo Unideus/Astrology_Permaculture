@@ -1,0 +1,303 @@
+{
+  "description": "Master Anchor Registry for Layer 1 Canopy trees with variety-specific data",
+  "version": "1.0",
+  "anchors": {
+    "apple": {
+      "common_names": ["Apple", "Apple Tree", "Malus domestica"],
+      "botanical": "Malus domestica",
+      "layers": {
+        "canopy": {
+          "zones": [3, 4, 5, 6, 7],
+          "chilling_required": 800,
+          "koppen_affinity": ["Dfb", "Cfb", "Csb"],
+          "variants": [
+            {
+              "name": "Honeycrisp",
+              "zones": [3, 4, 5, 6, 7],
+              "chilling_hours": 800,
+              "koppen_affinity": ["Dfb", "Cfb", "Csb"],
+              "salt_content": "Potassium Phosphate"
+            }
+          ]
+        },
+        "sub_canopy": {
+          "zones": [3, 4, 5, 6, 7, 8, 9],
+          "chilling_required": 200,
+          "koppen_affinity": ["Csa", "Csb", "Bsh", "Cfa"],
+          "variants": [
+            {
+              "name": "Anna",
+              "zones": [8, 9, 10],
+              "chilling_hours": 200,
+              "koppen_affinity": ["Csa", "Csb", "Bsh"],
+              "salt_content": "Potassium Phosphate"
+            },
+            {
+              "name": "Gala",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 400,
+              "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+              "salt_content": "Potassium Phosphate"
+            }
+          ]
+        }
+      }
+    },
+    "pear": {
+      "common_names": ["Pear", "Pear Tree", "Pyrus communis"],
+      "botanical": "Pyrus communis",
+      "layers": {
+        "sub_canopy": {
+          "zones": [4, 5, 6, 7, 8],
+          "chilling_required": 400,
+          "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+          "variants": [
+            {
+              "name": "Bartlett",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 400,
+              "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+              "salt_content": "Potassium Sulfate"
+            },
+            {
+              "name": "Kieffer",
+              "zones": [5, 6, 7, 8, 9, 10],
+              "chilling_hours": 200,
+              "koppen_affinity": ["Cfa", "Csa", "Csb"],
+              "salt_content": "Potassium Sulfate"
+            }
+          ]
+        }
+      }
+    },
+    "cherry": {
+      "common_names": ["Cherry", "Cherry Tree", "Prunus avium", "Prunus cerasus"],
+      "botanical": "Prunus spp.",
+      "layers": {
+        "sub_canopy": {
+          "zones": [4, 5, 6, 7, 8],
+          "chilling_required": 800,
+          "koppen_affinity": ["Cfb", "Csb"],
+          "variants": [
+            {
+              "name": "Bing",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 800,
+              "koppen_affinity": ["Cfb", "Csb"],
+              "salt_content": "Potassium Phosphate"
+            },
+            {
+              "name": "Stella",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 500,
+              "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+              "salt_content": "Potassium Phosphate"
+            }
+          ]
+        }
+      }
+    },
+    "apricot": {
+      "common_names": ["Apricot", "Apricot Tree", "Prunus armeniaca"],
+      "botanical": "Prunus armeniaca",
+      "layers": {
+        "canopy": {
+          "zones": [5, 6, 7, 8, 9],
+          "chilling_required": 400,
+          "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+          "variants": [
+            {
+              "name": "Blenheim",
+              "zones": [6, 7, 8, 9, 10],
+              "chilling_hours": 400,
+              "koppen_affinity": ["Csb", "Csa", "Cfa"],
+              "salt_content": "Potassium Chloride"
+            },
+            {
+              "name": "Goldcot",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 500,
+              "koppen_affinity": ["Cfb", "Csb"],
+              "salt_content": "Potassium Chloride"
+            }
+          ]
+        }
+      }
+    },
+    "walnut": {
+      "common_names": ["Walnut", "Black Walnut", "Juglans nigra"],
+      "botanical": "Juglans nigra",
+      "layers": {
+        "canopy": {
+          "zones": [4, 5, 6, 7, 8, 9],
+          "chilling_required": 400,
+          "koppen_affinity": ["Dfb", "Cfb", "Cfa"],
+          "variants": [
+            {
+              "name": "Black Walnut",
+              "zones": [4, 5, 6, 7, 8, 9],
+              "chilling_hours": 400,
+              "koppen_affinity": ["Dfb", "Cfb", "Cfa"],
+              "salt_content": "Potassium Chloride"
+            }
+          ]
+        }
+      }
+    },
+    "chestnut": {
+      "common_names": ["Chestnut", "American Chestnut", "Castanea dentata"],
+      "botanical": "Castanea dentata",
+      "layers": {
+        "canopy": {
+          "zones": [4, 5, 6, 7, 8],
+          "chilling_required": 400,
+          "koppen_affinity": ["Dfb", "Cfb", "Cfa"],
+          "variants": [
+            {
+              "name": "Chinese Chestnut",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 300,
+              "koppen_affinity": ["Cfb", "Cfa", "Csb"],
+              "salt_content": "Calcium Phosphate"
+            }
+          ]
+        }
+      }
+    },
+    "mulberry": {
+      "common_names": ["Mulberry", "Mulberry Tree", "Morus spp."],
+      "botanical": "Morus spp.",
+      "layers": {
+        "sub_canopy": {
+          "zones": [5, 6, 7, 8, 9],
+          "chilling_required": 200,
+          "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+          "variants": [
+            {
+              "name": "Illinois Everbearing",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 200,
+              "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+              "salt_content": "Calcium Fluoride"
+            },
+            {
+              "name": "Pakistan",
+              "zones": [7, 8, 9, 10],
+              "chilling_hours": 100,
+              "koppen_affinity": ["Cfa", "Csa", "Csb"],
+              "salt_content": "Calcium Fluoride"
+            }
+          ]
+        }
+      }
+    },
+    "persimmon": {
+      "common_names": ["Persimmon", "Persimmon Tree", "Diospyros virginiana"],
+      "botanical": "Diospyros virginiana",
+      "layers": {
+        "canopy": {
+          "zones": [6, 7, 8, 9, 10],
+          "chilling_required": 100,
+          "koppen_affinity": ["Cfa", "Csa", "Csb", "Bsh"],
+          "variants": [
+            {
+              "name": "Hachiya",
+              "zones": [7, 8, 9, 10],
+              "chilling_hours": 100,
+              "koppen_affinity": ["Csa", "Csb", "Bsh"],
+              "salt_content": "Calcium Fluoride"
+            },
+            {
+              "name": "Fuyu",
+              "zones": [7, 8, 9, 10],
+              "chilling_hours": 100,
+              "koppen_affinity": ["Csa", "Csb", "Bsh"],
+              "salt_content": "Calcium Fluoride"
+            }
+          ]
+        }
+      }
+    },
+    "plum": {
+      "common_names": ["Plum", "Plum Tree", "Prunus spp."],
+      "botanical": "Prunus spp.",
+      "layers": {
+        "sub_canopy": {
+          "zones": [4, 5, 6, 7, 8, 9],
+          "chilling_required": 600,
+          "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+          "variants": [
+            {
+              "name": "Methley",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 250,
+              "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+              "salt_content": "Potassium Phosphate"
+            },
+            {
+              "name": "Santa Rosa",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 500,
+              "koppen_affinity": ["Cfb", "Csb", "Cfa"],
+              "salt_content": "Potassium Phosphate"
+            }
+          ]
+        }
+      }
+    },
+    "fig": {
+      "common_names": ["Fig", "Fig Tree", "Ficus carica"],
+      "botanical": "Ficus carica",
+      "layers": {
+        "sub_canopy": {
+          "zones": [7, 8, 9, 10, 11],
+          "chilling_required": 50,
+          "koppen_affinity": ["Csa", "Csb", "Bsh", "Cfa"],
+          "variants": [
+            {
+              "name": "Black Mission",
+              "zones": [8, 9, 10, 11],
+              "chilling_hours": 50,
+              "koppen_affinity": ["Csa", "Csb", "Bsh"],
+              "salt_content": "Calcium Fluoride"
+            },
+            {
+              "name": "Desert King",
+              "zones": [7, 8, 9, 10],
+              "chilling_hours": 100,
+              "koppen_affinity": ["Csb", "Cfa"],
+              "salt_content": "Calcium Fluoride"
+            }
+          ]
+        }
+      }
+    },
+    "oak": {
+      "common_names": ["Oak", "Live Oak", "Quercus spp."],
+      "botanical": "Quercus spp.",
+      "layers": {
+        "canopy": {
+          "zones": [6, 7, 8, 9],
+          "chilling_required": 200,
+          "koppen_affinity": ["Cfa", "Csa", "Csb"],
+          "variants": [
+            {
+              "name": "Live Oak",
+              "zones": [8, 9, 10],
+              "chilling_hours": 100,
+              "koppen_affinity": ["Csa", "Csb", "Cfa"],
+              "salt_content": "Calcium Phosphate"
+            },
+            {
+              "name": "Nuttall Oak",
+              "zones": [5, 6, 7, 8, 9],
+              "chilling_hours": 300,
+              "koppen_affinity": ["Cfa", "Cfb", "Csa"],
+              "salt_content": "Calcium Phosphate"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

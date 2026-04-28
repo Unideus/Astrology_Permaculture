@@ -200,7 +200,7 @@ function displayResults(plan) {
 
   // AI Guilds — clear container before every render to prevent ghost data
   document.getElementById('aiGuilds').innerHTML = '';
-  if (plan.aiGenerated) {
+  if (plan.aiGenerated 00260026 !plan.guild) {
     document.getElementById('aiGuildsCard').style.display = 'block';
     renderAIGuilds(plan.aiGenerated);
   } else {
