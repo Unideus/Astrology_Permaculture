@@ -569,6 +569,15 @@ app.post('/api/generate-plan', async (req, res) => {
       }
     }
 
+    // Keep the rendered implementation plan aligned with the local guild output.
+    // The Ollama merge above can rewrite Year 0 focus/plants, but the visible
+    // 7-layer guild card is rendered from plan.guild.
+    permaApp.syncThreeYearPlanWithGuildCanopies(
+      plan.threeYearPlan,
+      plan.guild,
+      userData.scale || userData.propertySize || ''
+    );
+
     // Attach location data to plan
     if (locationData) {
       plan.locationData = locationData;
