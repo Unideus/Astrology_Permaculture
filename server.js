@@ -1276,12 +1276,12 @@ app.get('*', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`
-╔═══════════════════════════════════════════════════════════╗
-║     🌱 Permaculture Design Generator Server               ║
-║                                                           ║
-║     Running on: http://localhost:${PORT}                    ║
-║                                                           ║
-║     Press Ctrl+C to stop                                 ║
-╚═══════════════════════════════════════════════════════════╝
+-----------------------------------------------------------
+  Permaculture Design Generator Server
+
+  Running on: http://localhost:${PORT}
+
+  Press Ctrl+C to stop
+-----------------------------------------------------------
   `);
 });
