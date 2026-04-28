@@ -122,7 +122,8 @@ class PermacultureApp {
       sunSign,
       familyMembers = [],
       scale,
-      soilTest = null
+      soilTest = null,
+      desiredPlants = []
     } = userData;
     
     // Combine all sun signs
@@ -153,7 +154,7 @@ class PermacultureApp {
                     `Supplementing ${uniqueSalts.length} cell salt${uniqueSalts.length > 1 ? 's' : ''}.`
       },
       recommendedPlants,
-      guild: this.generate7LayerGuild(uniqueSalts, climateData),
+      guild: this.generate7LayerGuild(uniqueSalts, climateData, desiredPlants),
       threeYearPlan: plan,
       moonCalendar: this.getMoonPlantingCalendar(),
       soilRecommendations: soilTest ? this.analyzeSoil(soilTest) : null
@@ -164,7 +165,7 @@ class PermacultureApp {
   // Generates a 7-layer guild based on climate zone, Köppen code, and cell salts.
   // Each layer gets the best plant: A-Tier (salt match) preferred, B-Tier (best local edible) as fallback.
   // NEVER leaves a layer blank.
-  generate7LayerGuild(uniqueSalts, climateData) {
+  generate7LayerGuild(uniqueSalts, climateData, desiredPlants = []) {
     const LAYERS = [
       { id: 'layer1_canopy',        name: 'Canopy',       registryLayers: ['canopy'],                        heightDesc: '>20ft mature height' },
       { id: 'layer2_low_tree',      name: 'Low Tree',     registryLayers: ['sub_canopy', 'low_tree'],        heightDesc: '10-20ft' },

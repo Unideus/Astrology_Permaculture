@@ -200,17 +200,13 @@ function displayResults(plan) {
 
   // AI Guilds — clear container before every render to prevent ghost data
   document.getElementById('aiGuilds').innerHTML = '';
-  // Suppress AI guild card when 7-layer guild exists — 7-layer is the authoritative source
-  if (plan.aiGenerated && !plan.guild) {
+  if (plan.aiGenerated) {
     document.getElementById('aiGuildsCard').style.display = 'block';
     renderAIGuilds(plan.aiGenerated);
-  } else if (!plan.guild) {
-    // AI failed to generate guilds AND no 7-layer guild — show error
+  } else {
+    // AI failed to generate guilds — show error
     document.getElementById('aiGuildsCard').style.display = 'block';
     document.getElementById('aiGuilds').innerHTML = '<p style="color:#d32f2f;font-weight:bold;padding:12px;background:#ffebee;border:1px solid #ef5350;border-radius:4px;">⚠️ AI failed to generate guilds.</p>';
-  } else {
-    // 7-layer guild exists, suppress AI card
-    document.getElementById('aiGuildsCard').style.display = 'none';
   }
 
   // Cell Salts
