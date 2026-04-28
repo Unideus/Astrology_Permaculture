@@ -212,7 +212,13 @@ class PermacultureApp {
 
     const guild = {};
     const assignedIds = new Set();  // cross-layer dedup: no plant as primary in multiple layers
-
+    
+    // Build lookup for desiredPlants (lowercase for comparison)
+    const desiredPlantIds = new Set((desiredPlants || [])
+      .map(p => p.toLowerCase().trim())
+      .map(p => Object.values(this.masterRegistry).find(x => x.common_name.toLowerCase() === p)?.id || p.replace(/s+/g, '_').toLowerCase())
+      .filter(Boolean));
+    
     for (const layerDef of LAYERS) {
       // Step 1: CLIMATE GATE — collect up to 10 candidates per layer
       let candidates = [];
@@ -300,9 +306,6 @@ class PermacultureApp {
         }
       }
       // If all scored candidates are already assigned, pick the first anyway (never blank)
-      if (!primary && scored.length > 0) {
-        primary = scored[0];
-      }
 
       // If no candidates at all from registry, create a placeholder B-Tier
       if (!primary) {
