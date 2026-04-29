@@ -249,6 +249,7 @@ class PermacultureApp {
       if (anchorIds.length >= 3) break;
       if (!anchorIds.includes(da)) anchorIds.push(da);
     }
+    const selectedAnchorIds = new Set(anchorIds);
     
     // Get best fit for each anchor
     const selectedAnchors = anchorIds.map(id => {
@@ -284,10 +285,12 @@ class PermacultureApp {
             const affinity = p.climate_affinity || 'any';
             const climateScore = !climatePriority || affinity === 'any' || affinity === climatePriority ? 0 : 1;
             const wasUsedInLayer = previouslyUsed.has(p.id);
-            return { plant: p, matched, climateScore, wasUsedInLayer };
+            const isSelectedAnchor = selectedAnchorIds.has(p.id);
+            return { plant: p, matched, climateScore, wasUsedInLayer, isSelectedAnchor };
           })
           .sort((a, b) => {
             const priority = item => {
+              if (item.isSelectedAnchor) return 4;
               if (!item.wasUsedInLayer && item.matched) return 0;
               if (!item.wasUsedInLayer && !item.matched) return 1;
               if (item.wasUsedInLayer && item.matched) return 2;
@@ -723,14 +726,13 @@ class PermacultureApp {
       const selectedNFixers = fillGapsY0(viableNFixers, planDepth, siteZone, affinityTarget, ['shrub', 'herbaceous']);
       
       year0Tasks.push({
-        task: 'Support Species (N-Fixers)',
+        task: 'Support Species & Dynamic Accumulators',
         timing: 'Month 3-6',
         plants: selectedNFixers.map(p => p.common_name),
         botanical: selectedNFixers.map(p => p.botanical_name).filter(Boolean),
         cellSalts: [...new Set(selectedNFixers.flatMap(p => p.bio_logic?.salts || []))],
-        details: 'Fast-growing nitrogen fixers. Chop-and-drop biomass to feed the canopy star player. ' +
-                 'Some yield berries as a bonus. These define the sub-canopy layer.',
-        guild_note: `N-fixers pump nitrogen into the guild. Cut back 3-4x per year for maximum biomass.`
+        details: 'Install nitrogen fixers where available, plus mineral accumulators, pollinator plants, and chop-and-drop biomass species to support canopy establishment.',
+        guild_note: 'Support species build fertility, cycle minerals, attract pollinators, and provide biomass. True nitrogen fixers are included when available.'
       });
       
       // Water infrastructure
