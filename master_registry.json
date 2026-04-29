@@ -682,7 +682,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "vertical_growth",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -959,7 +963,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -997,7 +1004,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1136,7 +1146,10 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "soil_building",
+        "biomass"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1170,7 +1183,10 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "soil_building",
+        "biomass"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "arid"
@@ -1205,7 +1221,10 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "soil_building",
+        "biomass"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1242,7 +1261,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "edible_seed",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "arid"
@@ -1279,7 +1301,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "edible_seed",
+        "biomass",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "arid"
@@ -1886,7 +1912,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1924,7 +1953,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1961,7 +1993,10 @@
       "growth_habit": "biennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1996,7 +2031,10 @@
       "growth_habit": "biennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "leafy_green",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
