@@ -111,7 +111,16 @@ async function generatePlan() {
       body: JSON.stringify(userData)
     });
 
-    if (!response.ok) throw new Error('Failed to generate plan');
+    if (!response.ok) {
+      let message = 'Failed to generate plan';
+      try {
+        const errorData = await response.json();
+        message = errorData.error || errorData.detail || message;
+      } catch (parseError) {
+        // Keep the generic message if the server did not return JSON.
+      }
+      throw new Error(message);
+    }
 
     generatedPlan = await response.json();
 
@@ -808,9 +817,11 @@ function renderSevenLayerGuild(guild) {
     const roleText = Array.isArray(roles) && roles.length
       ? roles.map(role => String(role).replace(/_/g, ' ')).join(', ')
       : '';
-    const mineralLabel = layer.salt_content ? 'Other minerals: ' : 'Minerals: ';
-    const mineralValue = mineralText || 'None listed';
-    const roleValue = roleText || 'None listed';
+    const mineralLabel = layer.salt_content ? 'Other minerals: ' : 'Mineral profile: ';
+    const mineralValue = mineralText
+      ? mineralText
+      : (layer.salt_content ? 'None mapped' : 'Not mapped yet');
+    const roleValue = roleText || 'Not mapped yet';
 
     const metaParts = [];
     if (label) metaParts.push('<span class="guild-badge ' + escapeHtml(badgeClass) + '">' + escapeHtml(label) + '</span>');

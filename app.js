@@ -172,10 +172,50 @@ class PermacultureApp {
   syncThreeYearPlanWithGuildCanopies(plan, guild, scale) {
     if (!plan?.year0?.tasks || !Array.isArray(guild)) return;
 
+    const getLayerName = (layer) => {
+      if (!layer) return null;
+      if (typeof layer === 'object') return layer.name || null;
+      return String(layer).split('[')[0].trim() || null;
+    };
+
+    const uniqueNames = (items) => {
+      const seen = new Set();
+      const names = [];
+      items.forEach(item => {
+        const name = getLayerName(item);
+        if (!name || name.toLowerCase() === 'none') return;
+        const key = name.toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        names.push(name);
+      });
+      return names;
+    };
+
+    const layerPlants = {
+      layer1_canopy: uniqueNames(guild.map(g => g.layers?.layer1_canopy)),
+      layer2_low_tree: uniqueNames(guild.map(g => g.layers?.layer2_low_tree)),
+      layer3_shrub: uniqueNames(guild.map(g => g.layers?.layer3_shrub)),
+      layer4: uniqueNames(guild.map(g => g.layers?.layer4)),
+      layer5: uniqueNames(guild.map(g => g.layers?.layer5)),
+      layer6: uniqueNames(guild.map(g => g.layers?.layer6)),
+      layer7: uniqueNames(guild.map(g => g.layers?.layer7))
+    };
+
+    const mergeLayerPlants = (...layerKeys) => uniqueNames(
+      layerKeys.flatMap(key => layerPlants[key] || [])
+    );
+
+    const syncTaskPlants = (tasks, taskPattern, plants) => {
+      if (!Array.isArray(tasks) || plants.length === 0) return;
+      const task = tasks.find(t => taskPattern.test(t.task || ''));
+      if (task) task.plants = plants;
+    };
+
     const canopyNames = guild
       .map(g => g.layers?.layer1_canopy)
       .filter(Boolean)
-      .map(layer => typeof layer === 'object' ? layer.name : String(layer).split('[')[0].trim())
+      .map(layer => getLayerName(layer))
       .filter(name => name && name.toLowerCase() !== 'none');
 
     const uniqueCanopies = [...new Set(canopyNames)];
@@ -211,6 +251,60 @@ class PermacultureApp {
         canopyTask.climateAffinity = 'guild-derived';
       }
     }
+
+    syncTaskPlants(
+      plan.year0.tasks,
+      /support species|dynamic accumulators/i,
+      mergeLayerPlants('layer3_shrub', 'layer4', 'layer5')
+    );
+
+    syncTaskPlants(
+      plan.year1?.tasks,
+      /salt-linked support plants/i,
+      mergeLayerPlants('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5')
+    );
+
+    syncTaskPlants(
+      plan.year1?.tasks,
+      /mineral cyclers|biomass plants/i,
+      mergeLayerPlants('layer4', 'layer5')
+    );
+
+    syncTaskPlants(
+      plan.year1?.tasks,
+      /vines|vertical/i,
+      mergeLayerPlants('layer7')
+    );
+
+    syncTaskPlants(
+      plan.year2?.tasks,
+      /ground covers|herbaceous soil cover/i,
+      mergeLayerPlants('layer5', 'layer4')
+    );
+
+    syncTaskPlants(
+      plan.year2?.tasks,
+      /root crops|herbaceous fillers/i,
+      mergeLayerPlants('layer6', 'layer4')
+    );
+
+    const allGuildPlants = mergeLayerPlants(
+      'layer1_canopy',
+      'layer2_low_tree',
+      'layer3_shrub',
+      'layer4',
+      'layer5',
+      'layer6',
+      'layer7'
+    );
+    const completionPlants = allGuildPlants.length > 12
+      ? mergeLayerPlants('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5', 'layer6', 'layer7').slice(0, 12)
+      : allGuildPlants;
+    syncTaskPlants(
+      plan.year2?.tasks,
+      /guild completion|first harvests/i,
+      completionPlants
+    );
   }
 
   generate3Guilds(uniqueSalts, climateData, desiredPlants = []) {
@@ -852,14 +946,13 @@ class PermacultureApp {
     }
     
     year1Tasks.push({
-      task: 'Salt-Linked Plants (Sub-Canopy & Herbaceous)',
+      task: 'Salt-Linked Support Plants',
       timing: 'Early Spring after last frost',
       plants: year1Selected.map(p => p.common_name),
       botanical: year1Selected.map(p => p.botanical_name).filter(Boolean),
       cellSalts: [...new Set(year1Selected.flatMap(p => p.bio_logic?.salts || []))],
       primarySalt: primarySalt,
-      details: `Plants selected for alignment with ${primarySalt || 'general'} cell salt needs. ` +
-               `Sub-canopy fills the mid-story; herbaceous provides ground cover and harvest.`,
+      details: 'Establish plants selected for mineral-profile support across sub-canopy, shrub, herbaceous, and annual layers.',
       guild_note: `These plants address the zodiac salt deficiency directly. Their biomass feeds the canopy.`
     });
     
@@ -883,11 +976,10 @@ class PermacultureApp {
     }
     
     year1Tasks.push({
-      task: 'Dynamic Accumulators',
+      task: 'Mineral Cyclers & Biomass Plants',
       timing: 'Spring after last frost',
       plants: selectedDyn.map(p => p.common_name),
-      details: 'Plant at tree drip lines. Deep roots mine potassium, calcium, silica. ' +
-               'Begin chop-and-drop cycles to feed canopy star player.',
+      details: 'Add plants that cycle minerals, build biomass, attract beneficial insects, or provide fast seasonal support.',
       guild_note: `Accumulators are the mineral cyclers. Cut at bloom for maximum biomass nutrient content.`
     });
     
@@ -902,10 +994,10 @@ class PermacultureApp {
       });
       
       year1Tasks.push({
-        task: 'Vine Trellises',
+        task: 'Vines & Vertical/Annual Support Crops',
         timing: 'Spring',
         plants: fillGapsY1(viableVine, planDepth, siteZone, affinityTarget, ['vine', 'herbaceous']).map(p => p.common_name),
-        details: 'Install on pergolas or between trees. Grapes on south-facing trellises for maximum sun.',
+        details: 'Install trellises where needed and establish climbing, sprawling, or annual support crops suited to the site.',
         guild_note: `Vines use vertical space above the herbaceous layer. Don't let them smother the star player.`
       });
     }
@@ -967,11 +1059,10 @@ class PermacultureApp {
     })();
     
     year2Tasks.push({
-      task: 'Ground Cover & Living Mulch',
+      task: 'Ground Covers & Herbaceous Soil Cover',
       timing: 'Spring/Fall',
       plants: gcPlants,
-      details: 'Suppress weeds, fix nitrogen, support pollinators. Mow before seed set if needed. ' +
-               'Living mulch fills bare soil between trees and herbs.',
+      details: 'Establish true ground covers plus low herbaceous crops that protect soil, fill gaps, and support guild establishment.',
       guild_note: `Ground cover is the immune system of the soil. Keep it diverse.`
     });
     
@@ -1008,11 +1099,10 @@ class PermacultureApp {
     })();
     
     year2Tasks.push({
-      task: 'Root Layer (Bulbs & Tubers)',
+      task: 'Root Crops & Herbaceous Fillers',
       timing: 'Early Spring or Fall',
       plants: rootPlants,
-      details: 'Deep-rooted storage crops. Harvest in fall/winter. ' +
-               'Some (garlic, onion) also serve as pest deterrents in guilds.',
+      details: 'Plant root crops where appropriate, with herbaceous fillers used to complete the lower guild layers.',
       guild_note: `Root layer uses space below. Most root vegetables prefer well-drained soil.`
     });
     
