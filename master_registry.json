@@ -508,7 +508,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "pest_deterrent",
+        "edible"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -543,7 +546,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "pest_deterrent",
+        "edible"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1324,7 +1330,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "wildlife_food"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -3361,5 +3371,179 @@
       "guild_compat": []
     },
     "climate_affinity": "humid"
+  },
+  "rosemary": {
+    "id": "rosemary",
+    "common_name": "Rosemary",
+    "botanical_name": "Salvia rosmarinus",
+    "taxonomy": {
+      "type": "evergreen_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "pollinator_forage",
+        "pest_deterrent",
+        "evergreen_structure",
+        "aromatic"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid"
+  },
+  "lavender": {
+    "id": "lavender",
+    "common_name": "Lavender",
+    "botanical_name": "Lavandula angustifolia",
+    "taxonomy": {
+      "type": "aromatic_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "pollinator_forage",
+        "pest_deterrent",
+        "aromatic"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid"
+  },
+  "sage": {
+    "id": "sage",
+    "common_name": "Sage",
+    "botanical_name": "Salvia officinalis",
+    "taxonomy": {
+      "type": "aromatic_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "pollinator_forage",
+        "pest_deterrent",
+        "edible",
+        "aromatic"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid"
+  },
+  "pomegranate": {
+    "id": "pomegranate",
+    "common_name": "Pomegranate",
+    "botanical_name": "Punica granatum",
+    "taxonomy": {
+      "type": "fruiting_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "hedgerow",
+        "drought_tolerance",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid"
+  },
+  "grape": {
+    "id": "grape",
+    "common_name": "Grape",
+    "botanical_name": "Vitis vinifera",
+    "taxonomy": {
+      "type": "fruiting_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "vertical_growth"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid"
   }
 }
