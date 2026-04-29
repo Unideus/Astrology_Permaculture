@@ -12,10 +12,19 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Ollama config
+const ENABLE_AI_ENHANCEMENT = process.env.ENABLE_AI_ENHANCEMENT === 'true';
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'deepseek-v4-flash';
 const OLLAMA_TIMEOUT_MS = parseInt(process.env.OLLAMA_TIMEOUT_MS || '120000', 10);
 const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY || '';
+
+if (ENABLE_AI_ENHANCEMENT) {
+  console.log('AI enhancement enabled:', {
+    ollamaUrl: OLLAMA_URL,
+    ollamaModel: OLLAMA_MODEL,
+    apiKeySet: Boolean(OLLAMA_API_KEY)
+  });
+}
 
 function loadLocalEnv() {
   const envPath = path.join(__dirname, '.env');
@@ -274,45 +283,51 @@ app.post('/api/generate-plan', async (req, res) => {
       return res.status(422).json({ error: 'Location data required to verify plant hardiness. Please provide a City and State.' });
     }
 
-    const filteredPlants = siteZoneNum
-      ? permaApp.filterPlants({ zone: siteZoneNum })
-      : [];
-    
-    const prompt = buildPermaculturePrompt(userData, locationData, climateData, filteredPlants);
-
-    // Call Ollama
     let ollamaPlan = null;
-    let ollamaTimeout = null;
-    try {
-      const ollamaController = new AbortController();
-      ollamaTimeout = setTimeout(() => ollamaController.abort(), OLLAMA_TIMEOUT_MS);
-      const ollamaResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
-        method: 'POST',
-        headers: ollamaHeaders({ 'Content-Type': 'application/json' }),
-        signal: ollamaController.signal,
-        body: JSON.stringify({
-          model: OLLAMA_MODEL,
-          prompt: prompt,
-          stream: false,
-          options: {
-            temperature: 0.7,
-            num_ctx: 4096
-          }
-        })
-      });
+    if (ENABLE_AI_ENHANCEMENT) {
+      const filteredPlants = siteZoneNum
+        ? permaApp.filterPlants({ zone: siteZoneNum })
+        : [];
+      
+      const prompt = buildPermaculturePrompt(userData, locationData, climateData, filteredPlants);
 
-      if (ollamaResponse.ok) {
-        const ollamaData = await ollamaResponse.json();
-        ollamaPlan = parseOllamaResponse(ollamaData.response);
-      } else {
-        const errorText = await ollamaResponse.text();
-        console.warn(`Ollama generation returned ${ollamaResponse.status}: ${errorText}`);
+      let ollamaTimeout = null;
+      try {
+        const ollamaController = new AbortController();
+        ollamaTimeout = setTimeout(() => ollamaController.abort(), OLLAMA_TIMEOUT_MS);
+        const ollamaGenerateUrl = `${OLLAMA_URL}/api/generate`;
+        console.log('Calling AI enhancement:', {
+          endpoint: ollamaGenerateUrl,
+          model: OLLAMA_MODEL,
+          apiKeySet: Boolean(OLLAMA_API_KEY)
+        });
+        const ollamaResponse = await fetch(ollamaGenerateUrl, {
+          method: 'POST',
+          headers: ollamaHeaders({ 'Content-Type': 'application/json' }),
+          signal: ollamaController.signal,
+          body: JSON.stringify({
+            model: OLLAMA_MODEL,
+            prompt: prompt,
+            stream: false,
+            options: {
+              temperature: 0.7,
+              num_ctx: 4096
+            }
+          })
+        });
+
+        if (ollamaResponse.ok) {
+          const ollamaData = await ollamaResponse.json();
+          ollamaPlan = parseOllamaResponse(ollamaData.response);
+        } else {
+          console.warn('AI enhancement unavailable; using rule-based plan.');
+        }
+      } catch (ollamaError) {
+        console.warn('AI enhancement unavailable; using rule-based plan.');
+        ollamaPlan = null;
+      } finally {
+        if (ollamaTimeout) clearTimeout(ollamaTimeout);
       }
-    } catch (ollamaError) {
-      console.warn('Ollama generation failed:', ollamaError.message);
-      ollamaPlan = null;
-    } finally {
-      if (ollamaTimeout) clearTimeout(ollamaTimeout);
     }
 
     // Climate data already fetched above for Ollama prompt — reuse it.
@@ -966,6 +981,16 @@ app.get('/api/health', (req, res) => {
 
 // Ollama connectivity check
 app.get('/api/ollama/status', async (req, res) => {
+  if (!ENABLE_AI_ENHANCEMENT) {
+    return res.json({
+      status: 'disabled',
+      message: 'AI enhancement is disabled; using rule-based plan generation.',
+      ollamaUrl: OLLAMA_URL,
+      model: OLLAMA_MODEL,
+      apiKeySet: Boolean(OLLAMA_API_KEY)
+    });
+  }
+
   let timeout = null;
   try {
     const controller = new AbortController();
