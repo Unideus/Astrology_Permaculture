@@ -380,7 +380,15 @@ class PermacultureApp {
             const climateScore = !climatePriority || affinity === 'any' || affinity === climatePriority ? 0 : 1;
             const wasUsedInLayer = previouslyUsed.has(p.id);
             const isSelectedAnchor = selectedAnchorIds.has(p.id);
-            return { plant: p, matched, climateScore, wasUsedInLayer, isSelectedAnchor };
+            const functions = p.permaculture_role?.functions || [];
+            const layerFitScore = (() => {
+              if (layerUsageKey !== 'layer5') return 0;
+              if (p.taxonomy?.layer === 'ground_cover') return 0;
+              if (functions.includes('ground_cover')) return 1;
+              if (functions.includes('living_mulch')) return 2;
+              return 3;
+            })();
+            return { plant: p, matched, climateScore, wasUsedInLayer, isSelectedAnchor, layerFitScore };
           })
           .sort((a, b) => {
             const priority = item => {
@@ -390,6 +398,10 @@ class PermacultureApp {
               if (item.wasUsedInLayer && item.matched) return 2;
               return 3;
             };
+            if (layerUsageKey === 'layer5') {
+              const layerFitDiff = a.layerFitScore - b.layerFitScore;
+              if (layerFitDiff !== 0) return layerFitDiff;
+            }
             const priorityDiff = priority(a) - priority(b);
             if (priorityDiff !== 0) return priorityDiff;
             return a.climateScore - b.climateScore;
