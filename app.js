@@ -388,7 +388,14 @@ class PermacultureApp {
               if (functions.includes('living_mulch')) return 2;
               return 3;
             })();
-            return { plant: p, matched, climateScore, wasUsedInLayer, isSelectedAnchor, layerFitScore };
+            const layer5SelectionScore = (() => {
+              if (layerUsageKey !== 'layer5') return 0;
+              if (!wasUsedInLayer && climateScore === 0) return layerFitScore;
+              if (wasUsedInLayer && climateScore === 0 && layerFitScore < 3) return 4 + layerFitScore;
+              if (layerFitScore < 3) return 7 + layerFitScore;
+              return 10;
+            })();
+            return { plant: p, matched, climateScore, wasUsedInLayer, isSelectedAnchor, layerFitScore, layer5SelectionScore };
           })
           .sort((a, b) => {
             const priority = item => {
@@ -399,7 +406,7 @@ class PermacultureApp {
               return 3;
             };
             if (layerUsageKey === 'layer5') {
-              const layerFitDiff = a.layerFitScore - b.layerFitScore;
+              const layerFitDiff = a.layer5SelectionScore - b.layer5SelectionScore;
               if (layerFitDiff !== 0) return layerFitDiff;
             }
             const priorityDiff = priority(a) - priority(b);
