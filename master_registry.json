@@ -3126,6 +3126,7 @@
       "functions": [
         "nitrogen_fixation",
         "living_mulch",
+        "ground_cover",
         "pollinator_forage"
       ],
       "guild_compat": []

@@ -35,6 +35,12 @@ function isClimateCompatible(plant, climate) {
 }
 
 function isLayerCompatible(plant, layerGroup) {
+  if (layerGroup.label === 'ground_cover') {
+    const functions = plant.permaculture_role?.functions || [];
+    return plant.taxonomy?.layer === 'ground_cover' ||
+      functions.includes('ground_cover') ||
+      functions.includes('living_mulch');
+  }
   return layerGroup.layers.includes(plant.taxonomy?.layer);
 }
 
