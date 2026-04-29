@@ -1597,7 +1597,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "vertical_growth",
+        "pollinator_forage",
+        "medicinal"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1662,7 +1666,10 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "nut_production",
+        "evergreen_structure"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -1697,7 +1704,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -1732,7 +1743,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -1767,7 +1782,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -1802,7 +1821,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -2151,7 +2174,10 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "dynamic_accumulator",
+        "soil_building"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -2188,7 +2214,10 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "seasonal_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -2265,7 +2294,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "ground_cover",
+        "living_mulch",
+        "fruit_production"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -2573,7 +2606,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "nitrogen_fixation",
+        "edible_seed",
+        "soil_building"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
