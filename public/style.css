@@ -26,6 +26,20 @@ body {
   min-height: 100vh;
 }
 
+body.dark-mode {
+  --primary: #81c784;
+  --primary-dark: #a5d6a7;
+  --secondary: #bcaaa4;
+  --accent: #ffb74d;
+  --bg: #151916;
+  --card-bg: #202620;
+  --text: #eef4ed;
+  --text-light: #b8c5b8;
+  --border: #3c463d;
+  --shadow: 0 2px 12px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, #121712 0%, #252116 100%);
+}
+
 .container {
   max-width: 900px;
   margin: 0 auto;
@@ -86,6 +100,19 @@ header h1 {
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s;
+}
+
+body.dark-mode .form-group input[type="text"],
+body.dark-mode .form-group input[type="number"],
+body.dark-mode .form-group select,
+body.dark-mode textarea {
+  background: #161d17;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.dark-mode .form-group input::placeholder {
+  color: #879487;
 }
 
 .form-group input:focus,
@@ -767,4 +794,122 @@ footer {
 .guild-badge.suggested-anchor {
   background: #eceff1;
   color: #455a64;
+}
+
+body.dark-mode header {
+  background: #1f3f28;
+  color: #f4fff4;
+}
+
+body.dark-mode .btn {
+  background: #343d35;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+body.dark-mode .btn-primary {
+  background: #2f6b3b;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-primary:hover {
+  background: #3f7f4a;
+}
+
+body.dark-mode .btn-secondary {
+  background: #6d5b52;
+  color: #ffffff;
+}
+
+body.dark-mode .btn-header {
+  background: rgba(255,255,255,0.13);
+  border-color: rgba(255,255,255,0.32);
+  color: #f4fff4;
+}
+
+body.dark-mode .btn-header:hover {
+  background: rgba(255,255,255,0.22);
+}
+
+body.dark-mode .form-section,
+body.dark-mode .results-section,
+body.dark-mode .modal-content {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+body.dark-mode .result-card,
+body.dark-mode .plant-item,
+body.dark-mode .year-section,
+body.dark-mode .moon-card,
+body.dark-mode .family-member,
+body.dark-mode .task-item,
+body.dark-mode .saved-site-item,
+body.dark-mode .sun-time-item {
+  background: #1a211b;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+body.dark-mode .saved-site-item:hover {
+  background: #202920;
+}
+
+body.dark-mode .family-section,
+body.dark-mode .sun-position,
+body.dark-mode .note {
+  background: #1b241c;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+body.dark-mode .plant-item p,
+body.dark-mode .guild-plant-meta,
+body.dark-mode .saved-site-info p,
+body.dark-mode .family-description,
+body.dark-mode .form-group small {
+  color: var(--text-light);
+}
+
+body.dark-mode .seven-layer-card,
+body.dark-mode .guild-card {
+  background: #172218 !important;
+  border-color: #4f8a55 !important;
+  color: var(--text);
+}
+
+body.dark-mode .layer-grid > div {
+  background: #202920 !important;
+  color: var(--text);
+}
+
+body.dark-mode .seven-layer-card h4,
+body.dark-mode .guild-card h4 {
+  color: #dff4df;
+}
+
+body.dark-mode .guild-badge.chosen-by-you {
+  background: #214a2c;
+  color: #bdf2c7;
+}
+
+body.dark-mode .guild-badge.mineral-match {
+  background: #1d3656;
+  color: #b8d9ff;
+}
+
+body.dark-mode .guild-badge.climate-fit {
+  background: #4a3718;
+  color: #ffd98a;
+}
+
+body.dark-mode .guild-badge.suggested-anchor {
+  background: #303a3d;
+  color: #d7e2e5;
+}
+
+body.dark-mode .sun-recommendations li,
+body.dark-mode .modal-header {
+  border-color: var(--border);
 }

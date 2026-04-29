@@ -1,6 +1,27 @@
 // Client-side Permaculture App Logic
 let familyMemberCount = 0;
 let generatedPlan = null;
+const THEME_STORAGE_KEY = 'permacultureTheme';
+
+function applyTheme(theme) {
+  const isDark = theme === 'dark';
+  document.body.classList.toggle('dark-mode', isDark);
+
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) {
+    toggle.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+  }
+}
+
+function toggleTheme() {
+  const nextTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+  localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+  applyTheme(nextTheme);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light');
+});
 
 function goToStep2() {
   const address = document.getElementById('address').value;
