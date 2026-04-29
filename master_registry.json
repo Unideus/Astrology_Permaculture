@@ -882,7 +882,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "edible_stem",
+        "early_spring_harvest",
+        "permanent_bed"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -1493,7 +1497,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "aromatic",
+        "medicinal",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "any"
@@ -1564,7 +1572,10 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "medicinal",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "humid"
@@ -1620,6 +1631,7 @@
     },
     "climate_profile": {
       "zones": [
+        6,
         7,
         8,
         9,
