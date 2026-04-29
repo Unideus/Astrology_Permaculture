@@ -1,16 +1,49 @@
 // Permaculture Design App Server
 const express = require('express');
 const path = require('path');
+const fsSync = require('fs');
 const fs = require('fs').promises;
 const PermacultureApp = require('./app.js');
 const { KoppenLookup } = require('koppen-climate-lookup');
+
+loadLocalEnv();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Ollama config
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5-coder:14b';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'deepseek-v4-flash';
+const OLLAMA_TIMEOUT_MS = parseInt(process.env.OLLAMA_TIMEOUT_MS || '120000', 10);
+const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY || '';
+
+function loadLocalEnv() {
+  const envPath = path.join(__dirname, '.env');
+  if (!fsSync.existsSync(envPath)) return;
+
+  const lines = fsSync.readFileSync(envPath, 'utf-8').split(/\r?\n/);
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+
+    const separatorIndex = trimmed.indexOf('=');
+    if (separatorIndex === -1) return;
+
+    const key = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim().replace(/^['"]|['"]$/g, '');
+    if (key && process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  });
+}
+
+function ollamaHeaders(extraHeaders = {}) {
+  const headers = { ...extraHeaders };
+  if (OLLAMA_API_KEY) {
+    headers.Authorization = `Bearer ${OLLAMA_API_KEY}`;
+  }
+  return headers;
+}
 
 // ── Tender perennial blacklist (USDA zone-sensitive) ──────────────────────
 const TENDER_PERENNIALS = [
@@ -249,10 +282,14 @@ app.post('/api/generate-plan', async (req, res) => {
 
     // Call Ollama
     let ollamaPlan = null;
+    let ollamaTimeout = null;
     try {
+      const ollamaController = new AbortController();
+      ollamaTimeout = setTimeout(() => ollamaController.abort(), OLLAMA_TIMEOUT_MS);
       const ollamaResponse = await fetch(`${OLLAMA_URL}/api/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: ollamaHeaders({ 'Content-Type': 'application/json' }),
+        signal: ollamaController.signal,
         body: JSON.stringify({
           model: OLLAMA_MODEL,
           prompt: prompt,
@@ -267,22 +304,21 @@ app.post('/api/generate-plan', async (req, res) => {
       if (ollamaResponse.ok) {
         const ollamaData = await ollamaResponse.json();
         ollamaPlan = parseOllamaResponse(ollamaData.response);
+      } else {
+        const errorText = await ollamaResponse.text();
+        console.warn(`Ollama generation returned ${ollamaResponse.status}: ${errorText}`);
       }
     } catch (ollamaError) {
       console.warn('Ollama generation failed:', ollamaError.message);
       ollamaPlan = null;
+    } finally {
+      if (ollamaTimeout) clearTimeout(ollamaTimeout);
     }
 
-    // Homestead scale requires AI guilds — return error if Ollama unavailable
+    // Climate data already fetched above for Ollama prompt — reuse it.
+    // If Ollama is unavailable, continue with the deterministic local guild
+    // generator so homestead plans still work offline.
     const scale = userData.scale || userData.propertySize;
-    if (!ollamaPlan && scale === 'homestead') {
-      return res.status(503).json({
-        error: 'Guild generation unavailable. Please try again or use a different location.',
-        detail: 'AI-powered guild generation requires the Ollama service to be available.'
-      });
-    }
-
-    // Climate data already fetched above for Ollama prompt — reuse it
     // Generate fallback plan with climate filtering
     const plan = permaApp.generatePlan(userData, climateData);
 
@@ -926,6 +962,47 @@ function parseOllamaResponse(response) {
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Ollama connectivity check
+app.get('/api/ollama/status', async (req, res) => {
+  let timeout = null;
+  try {
+    const controller = new AbortController();
+    timeout = setTimeout(() => controller.abort(), 5000);
+    const response = await fetch(`${OLLAMA_URL}/api/tags`, {
+      headers: ollamaHeaders(),
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      return res.status(502).json({
+        status: 'unavailable',
+        ollamaUrl: OLLAMA_URL,
+        model: OLLAMA_MODEL,
+        error: `Ollama returned HTTP ${response.status}`
+      });
+    }
+
+    const data = await response.json();
+    const models = Array.isArray(data.models) ? data.models.map(model => model.name) : [];
+
+    res.json({
+      status: models.includes(OLLAMA_MODEL) ? 'ready' : 'model_missing',
+      ollamaUrl: OLLAMA_URL,
+      model: OLLAMA_MODEL,
+      availableModels: models
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'unavailable',
+      ollamaUrl: OLLAMA_URL,
+      model: OLLAMA_MODEL,
+      error: error.message
+    });
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
 });
 
 // =========================================================
