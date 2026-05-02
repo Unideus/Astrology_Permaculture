@@ -1091,10 +1091,10 @@
   "sour_cherry": {
     "id": "sour_cherry",
     "common_name": "Sour Cherry",
-    "botanical_name": null,
+    "botanical_name": "Prunus cerasus",
     "taxonomy": {
       "type": "fruit_tree",
-      "layer": "canopy"
+      "layer": "low_tree"
     },
     "bio_logic": {
       "salts": [
@@ -1114,10 +1114,15 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "hedgerow"
+      ],
       "guild_compat": []
     },
-    "climate_affinity": "any"
+    "climate_affinity": "any",
+    "pollination_note": "Cultivar-dependent; many sour cherries are self-fertile, but yields can improve with compatible cultivars."
   },
   "oats": {
     "id": "oats",
@@ -1317,7 +1322,7 @@
   "fig": {
     "id": "fig",
     "common_name": "Fig",
-    "botanical_name": null,
+    "botanical_name": "Ficus carica",
     "taxonomy": {
       "type": "fruit_tree",
       "layer": "low_tree"
@@ -1345,11 +1350,13 @@
     "permaculture_role": {
       "functions": [
         "fruit_production",
-        "pollinator_forage"
+        "pollinator_forage",
+        "drought_tolerance"
       ],
       "guild_compat": []
     },
-    "climate_affinity": "arid"
+    "climate_affinity": "arid",
+    "cultivation_note": "Hardiness is cultivar-dependent; hardy selections may overwinter in protected Zone 6 sites."
   },
   "mulberry": {
     "id": "mulberry",
@@ -2904,8 +2911,11 @@
     "permaculture_role": {
       "functions": [
         "fruit_production",
+        "berry_production",
         "shade_tolerance",
-        "high_anthocyanin"
+        "high_anthocyanin",
+        "pollinator_forage",
+        "hedgerow"
       ],
       "guild_compat": []
     },
@@ -3235,11 +3245,14 @@
       "functions": [
         "nitrogen_fixation",
         "berry_production",
-        "windbreak"
+        "windbreak",
+        "hedgerow",
+        "drought_tolerance"
       ],
       "guild_compat": []
     },
-    "climate_affinity": "arid"
+    "climate_affinity": "arid",
+    "pollination_note": "Dioecious; needs male and female plants for fruit."
   },
   "goumi_": {
     "id": "goumi_",
@@ -3271,7 +3284,8 @@
       "functions": [
         "nitrogen_fixation",
         "berry_production",
-        "chop_and_drop"
+        "chop_and_drop",
+        "pollinator_forage"
       ],
       "guild_compat": []
     },
@@ -3683,5 +3697,445 @@
       "guild_compat": []
     },
     "climate_affinity": "arid"
+  },
+  "hardy_kiwi": {
+    "id": "hardy_kiwi",
+    "common_name": "Hardy Kiwi / Kiwiberry",
+    "botanical_name": "Actinidia arguta",
+    "taxonomy": {
+      "type": "fruiting_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "vertical_growth",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Usually requires male and female plants; one male can pollinate multiple females."
+  },
+  "black_raspberry": {
+    "id": "black_raspberry",
+    "common_name": "Black Raspberry",
+    "botanical_name": "Rubus occidentalis",
+    "taxonomy": {
+      "type": "bramble",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "berry_production",
+        "pollinator_forage",
+        "wildlife_food",
+        "thorn_security"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "saskatoon_serviceberry": {
+    "id": "saskatoon_serviceberry",
+    "common_name": "Saskatoon Berry / Serviceberry",
+    "botanical_name": "Amelanchier alnifolia",
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "berry_production",
+        "pollinator_forage",
+        "wildlife_food",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "pollination_note": "Often self-fertile, but better yields with another cultivar."
+  },
+  "honeyberry": {
+    "id": "honeyberry",
+    "common_name": "Honeyberry / Haskap",
+    "botanical_name": "Lonicera caerulea",
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "berry_production",
+        "pollinator_forage",
+        "early_fruit",
+        "cold_hardy"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Requires two compatible varieties or cultivars for good fruit set."
+  },
+  "aronia": {
+    "id": "aronia",
+    "common_name": "Aronia / Chokeberry",
+    "botanical_name": "Aronia melanocarpa",
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "berry_production",
+        "pollinator_forage",
+        "wildlife_food",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "cornelian_cherry": {
+    "id": "cornelian_cherry",
+    "common_name": "Cornelian Cherry",
+    "botanical_name": "Cornus mas",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "early_bloom_pollinator",
+        "pollinator_forage",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "gooseberry": {
+    "id": "gooseberry",
+    "common_name": "Gooseberry",
+    "botanical_name": "Ribes uva-crispa",
+    "taxonomy": {
+      "type": "berry_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "berry_production",
+        "pollinator_forage",
+        "thorn_security",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "miracle_berry": {
+    "id": "miracle_berry",
+    "common_name": "Miracle Berry",
+    "botanical_name": "Synsepalum dulcificum",
+    "taxonomy": {
+      "type": "fruiting_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "novelty_crop",
+        "acid_soil_crop",
+        "evergreen_structure"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "cultivation_note": "Tropical/subtropical and frost-sensitive; container candidate outside warm zones."
+  },
+  "asian_pear": {
+    "id": "asian_pear",
+    "common_name": "Asian Pear",
+    "botanical_name": "Pyrus pyrifolia",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "sub_canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": "200-800",
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "pollination_note": "Many varieties need or benefit from compatible pear pollination."
+  },
+  "jujube": {
+    "id": "jujube",
+    "common_name": "Jujube / Asian Date",
+    "botanical_name": "Ziziphus jujuba",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "drought_tolerance",
+        "wildlife_food"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid",
+    "pollination_note": "Cultivar-dependent; some are self-fertile and some benefit from another cultivar."
+  },
+  "beach_plum": {
+    "id": "beach_plum",
+    "common_name": "Beach Plum",
+    "botanical_name": "Prunus maritima",
+    "taxonomy": {
+      "type": "fruiting_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "hedgerow",
+        "wildlife_food",
+        "drought_tolerance"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "arid",
+    "cultivation_note": "Coastal, sandy, drought-tolerant plum; distinct from honeyberry/haskap."
+  },
+  "che_fruit": {
+    "id": "che_fruit",
+    "common_name": "Chinese Mulberry / Che Fruit",
+    "botanical_name": "Maclura tricuspidata",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "drought_tolerance",
+        "wildlife_food"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "pollination_note": "Cultivar-dependent; some plants are dioecious, while some named cultivars may be self-fertile."
   }
 }
