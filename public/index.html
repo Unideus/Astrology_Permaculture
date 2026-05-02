@@ -117,6 +117,11 @@
       <!-- Results -->
       <section class="results-section hidden" id="results">
         <h2>Your Permaculture Plan</h2>
+        <div id="saveStateIndicator" class="save-state-indicator hidden"></div>
+        <div class="results-save-controls">
+          <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled>Save Changes</button>
+          <button id="saveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()">Save As New</button>
+        </div>
         
         <div class="result-card">
           <h3>📍 Site Information</h3>
@@ -162,8 +167,8 @@
 
         <div class="btn-group">
           <button class="btn" onclick="startOver()">Start Over</button>
-          <button class="btn btn-secondary" onclick="saveSite()">💾 Save Site</button>
-          <button class="btn btn-primary" onclick="downloadPlan()">📥 Download PDF</button>
+          <button class="btn btn-secondary" onclick="saveAsNewSite()">💾 Save As New</button>
+          <button class="btn btn-primary" onclick="downloadPlan()">Print / Save PDF</button>
         </div>
       </section>
     </main>

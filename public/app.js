@@ -1,6 +1,12 @@
 // Client-side Permaculture App Logic
 let familyMemberCount = 0;
 let generatedPlan = null;
+let currentSavedSite = null;
+let planDirty = false;
+let planSaveStatus = null;
+const dirtyGuildLayers = new Set();
+const originalGuildLayers = new Map();
+let activeGuildEditIndex = null;
 const THEME_STORAGE_KEY = 'permacultureTheme';
 const GUILD_LAYER_DEFINITIONS = [
   { label: '1. Canopy', canonicalKey: 'layer1_canopy', keys: ['layer1_canopy'] },
@@ -170,20 +176,16 @@ async function generatePlan() {
     }
 
     generatedPlan = await response.json();
-
-    // Debug: log raw AI response so we can inspect what came back
-    console.log('=== AI RESPONSE ===');
-    console.log(JSON.stringify(generatedPlan, null, 2));
-
-    // Display 7-Layer Guild (if available)
-    if (generatedPlan.guild) {
-      const card = document.getElementById('sevenLayerGuildCard');
-      if (card) card.style.display = 'block';
-      renderSevenLayerGuild(generatedPlan.guild);
-    }
+    currentSavedSite = null;
+    planDirty = false;
+    planSaveStatus = null;
+    dirtyGuildLayers.clear();
+    originalGuildLayers.clear();
+    activeGuildEditIndex = null;
 
     // Display results
     displayResults(generatedPlan);
+    updateSaveStateIndicator();
 
   } catch (error) {
     alert('Error generating plan: ' + error.message);
@@ -256,6 +258,20 @@ function displayResults(plan) {
 
   // AI Guilds — clear container before every render to prevent ghost data
   document.getElementById('aiGuilds').innerHTML = '';
+  document.getElementById('sevenLayerGuild').innerHTML = '';
+
+  const sevenLayerGuildCard = document.getElementById('sevenLayerGuildCard');
+  const hasGuild = Array.isArray(plan.guild)
+    ? plan.guild.length > 0
+    : Boolean(plan.guild && typeof plan.guild === 'object');
+
+  if (hasGuild) {
+    if (sevenLayerGuildCard) sevenLayerGuildCard.style.display = 'block';
+    renderSevenLayerGuild(plan.guild);
+  } else if (sevenLayerGuildCard) {
+    sevenLayerGuildCard.style.display = 'none';
+  }
+
   // Suppress AI guild card when 7-layer guild exists
   if (plan.aiGenerated && !plan.guild) {
     document.getElementById('aiGuildsCard').style.display = 'block';
@@ -307,9 +323,7 @@ function displayResults(plan) {
   const planData = plan.threeYearPlan;
 
   // Extract ALL 3 guild anchors for brute-force injection (ARRAY-BASED RENDER + ALL-ANCHOR)
-  const guildAnchors = (plan.aiGenerated?.guilds || [])
-    .map(g => g.layers?.layer1_canopy?.split('[')[0].trim())
-    .filter(Boolean);
+  const guildAnchors = getPlanGuildCanopyNames(plan);
   const scale = planData.year0.focus?.includes('Homestead') ? 'homestead' : '';
 
   // ARRAY-BASED RENDER (TIMELINE): Force chronological index order 0-4.
@@ -573,20 +587,101 @@ function renderAIGuilds(aiData) {
 }
 
 function startOver() {
+  currentSavedSite = null;
+  planDirty = false;
+  planSaveStatus = null;
+  dirtyGuildLayers.clear();
+  originalGuildLayers.clear();
+  activeGuildEditIndex = null;
+  updateSaveStateIndicator();
   location.reload();
 }
 
-function saveSite() {
-  if (!generatedPlan) {
-    alert('No plan to save. Generate a plan first.');
+function updateSaveControls() {
+  const saveChangesBtn = document.getElementById('saveChangesBtn');
+  const saveAsNewBtn = document.getElementById('saveAsNewBtn');
+  if (saveChangesBtn) {
+    const canSaveChanges = Boolean(currentSavedSite?.siteId && planDirty);
+    saveChangesBtn.disabled = !canSaveChanges;
+    saveChangesBtn.classList.toggle('hidden', !canSaveChanges);
+  }
+  if (saveAsNewBtn) {
+    saveAsNewBtn.disabled = !generatedPlan;
+  }
+}
+
+function hasPendingGuildEdits(guildIndex) {
+  return [...dirtyGuildLayers].some(key => key.startsWith(`${guildIndex}:`));
+}
+
+function clearPendingGuildEdits(guildIndex) {
+  [...dirtyGuildLayers]
+    .filter(key => key.startsWith(`${guildIndex}:`))
+    .forEach(key => dirtyGuildLayers.delete(key));
+  [...originalGuildLayers.keys()]
+    .filter(key => key.startsWith(`${guildIndex}:`))
+    .forEach(key => originalGuildLayers.delete(key));
+}
+
+function saveGuildEdits(guildIndex) {
+  clearPendingGuildEdits(guildIndex);
+  renderSevenLayerGuild(generatedPlan?.guild);
+  updateSaveStateIndicator();
+}
+
+function updateSaveStateIndicator() {
+  const indicator = document.getElementById('saveStateIndicator');
+  if (!indicator) {
+    updateSaveControls();
     return;
   }
 
-  const siteId = prompt('Enter a name for this site:', generatedPlan.siteInfo.address.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase());
-  if (!siteId) return;
+  indicator.classList.remove('dirty', 'saved');
 
-  const siteData = {
-    name: generatedPlan.siteInfo.address,
+  if (planDirty) {
+    indicator.textContent = currentSavedSite?.name
+      ? `Unsaved changes to saved site: ${currentSavedSite.name}`
+      : 'Unsaved changes';
+    indicator.classList.add('dirty');
+    indicator.classList.remove('hidden');
+    updateSaveControls();
+    return;
+  }
+
+  if (currentSavedSite?.name && planSaveStatus === 'saved') {
+    indicator.textContent = `Saved: ${currentSavedSite.name}`;
+    indicator.classList.add('saved');
+    indicator.classList.remove('hidden');
+    updateSaveControls();
+    return;
+  }
+
+  if (currentSavedSite?.name) {
+    indicator.textContent = `Loaded saved site: ${currentSavedSite.name}`;
+    indicator.classList.add('saved');
+    indicator.classList.remove('hidden');
+    updateSaveControls();
+    return;
+  }
+
+  indicator.textContent = 'Not saved yet';
+  indicator.classList.remove('hidden');
+  updateSaveControls();
+}
+
+function makeSiteIdFromName(name) {
+  const slug = String(name)
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+  return `${slug || 'saved-site'}-${Date.now()}`;
+}
+
+function buildSiteData(siteName, createdAt = null) {
+  const now = new Date().toISOString();
+  return {
+    name: siteName,
     description: `Permaculture plan for ${generatedPlan.siteInfo.scale} scale`,
     location: {
       address: generatedPlan.siteInfo.address,
@@ -598,28 +693,87 @@ function saveSite() {
       familyMembers: generatedPlan.siteInfo.familyMembers
     },
     plan: generatedPlan,
-    created: new Date().toISOString()
+    created: createdAt || now,
+    updated: now
   };
+}
 
-  fetch(`/api/sites/${encodeURIComponent(siteId)}`, {
+function persistSite(siteId, siteName, options = {}) {
+  const savedAt = new Date().toISOString();
+  const siteData = buildSiteData(siteName, options.createdAt || currentSavedSite?.createdAt || null);
+
+  return fetch(`/api/sites/${encodeURIComponent(siteId)}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(siteData)
   })
   .then(res => res.json())
   .then(data => {
-    if (data.success) {
-      alert('Site saved successfully!');
-    } else {
-      alert('Error: ' + data.error);
+    if (!data.success) {
+      throw new Error(data.error || 'Site save failed');
     }
-  })
+
+    currentSavedSite = {
+      siteId,
+      name: siteName,
+      createdAt: siteData.created,
+      updatedAt: savedAt
+    };
+    planDirty = false;
+    planSaveStatus = 'saved';
+    dirtyGuildLayers.clear();
+    originalGuildLayers.clear();
+    activeGuildEditIndex = null;
+    displayResults(generatedPlan);
+    updateSaveStateIndicator();
+    return data;
+  });
+}
+
+function saveSite() {
+  saveAsNewSite();
+}
+
+function saveAsNewSite() {
+  if (!generatedPlan) {
+    alert('No plan to save. Generate a plan first.');
+    return;
+  }
+
+  const rawSiteName = prompt('Enter a name for this site:', generatedPlan.siteInfo.address.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase());
+  const siteName = rawSiteName ? rawSiteName.trim() : '';
+  if (!siteName) return;
+
+  const siteId = makeSiteIdFromName(siteName);
+  persistSite(siteId, siteName, { createdAt: new Date().toISOString() })
+    .then(() => {
+      alert('Site saved successfully!');
+      if (!document.getElementById('savedSitesModal')?.classList.contains('hidden')) showSavedSites();
+    })
   .catch(err => alert('Error saving site: ' + err.message));
 }
 
+function saveChanges() {
+  if (!generatedPlan) {
+    alert('No plan to save. Generate a plan first.');
+    return;
+  }
+
+  if (!currentSavedSite?.siteId) {
+    saveAsNewSite();
+    return;
+  }
+
+  persistSite(currentSavedSite.siteId, currentSavedSite.name, { createdAt: currentSavedSite.createdAt })
+    .then(() => {
+      alert('Changes saved successfully!');
+      if (!document.getElementById('savedSitesModal')?.classList.contains('hidden')) showSavedSites();
+    })
+    .catch(err => alert('Error saving changes: ' + err.message));
+}
+
 function downloadPlan() {
-  // For now, just show alert - will implement PDF generation
-  alert('PDF download coming soon! For now, you can screenshot or print this page (Ctrl+P / Cmd+P)');
+  alert('Use your browser print dialog (Ctrl+P / Cmd+P), then choose "Save as PDF" as the destination.');
 }
 
 
@@ -707,12 +861,20 @@ function showSavedSites() {
         return;
       }
 
-      listContainer.innerHTML = sites.map(site => `
+      const sortedSites = [...sites].sort((a, b) => {
+        const aTime = new Date(a.updated || a.created || 0).getTime() || 0;
+        const bTime = new Date(b.updated || b.created || 0).getTime() || 0;
+        return bTime - aTime;
+      });
+
+      listContainer.innerHTML = sortedSites.map(site => `
         <div class="saved-site-item">
           <div class="saved-site-info">
             <h4>${escapeHtml(site.name || 'Unnamed Site')}</h4>
             <p>${escapeHtml(site.description || 'No description')}</p>
-            <p class="site-meta">${site.created ? 'Created: ' + formatDate(site.created) : ''}</p>
+            <p class="site-meta">
+              ${site.updated ? 'Updated: ' + formatDate(site.updated) : (site.created ? 'Created: ' + formatDate(site.created) : '')}
+            </p>
           </div>
           <div class="saved-site-actions">
             <button class="btn btn-primary" onclick="loadSite('${escapeHtml(site.siteId)}')">📂 Open</button>
@@ -743,6 +905,17 @@ function loadSite(siteId) {
         return;
       }
       generatedPlan = plan;
+      currentSavedSite = {
+        siteId: siteData.siteId || siteId,
+        name: siteData.name || siteId,
+        createdAt: siteData.created || null,
+        updatedAt: siteData.updated || null
+      };
+      planDirty = false;
+      planSaveStatus = null;
+      dirtyGuildLayers.clear();
+      originalGuildLayers.clear();
+      activeGuildEditIndex = null;
 
       // Hide all form sections, show results
       document.getElementById('step1').classList.add('hidden');
@@ -751,6 +924,7 @@ function loadSite(siteId) {
 
       // Render the plan
       displayResults(plan);
+      updateSaveStateIndicator();
 
       // Close modal
       closeSavedSites();
@@ -813,6 +987,66 @@ function getGuildLayerPlantLabel(layer) {
   return layer.name || layer.plant || layer.common_name || 'No plants selected yet';
 }
 
+function getPlanGuildCanopyNames(plan) {
+  const rawGuild = plan?.guild;
+  const guilds = Array.isArray(rawGuild) ? rawGuild : (rawGuild ? [rawGuild] : []);
+  const seen = new Set();
+  const names = [];
+
+  guilds.forEach(guildItem => {
+    const canopy = getGuildLayerValue(guildItem, ['layer1_canopy']);
+    const name = getGuildLayerPlantLabel(canopy);
+    if (!name || name === 'No plants selected yet' || name.toLowerCase() === 'none') return;
+
+    const key = name.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    names.push(name);
+  });
+
+  return names;
+}
+
+function syncThreeYearPlanCanopiesFromGuild(plan) {
+  const year0 = plan?.threeYearPlan?.year0;
+  if (!year0 || !Array.isArray(year0.tasks)) return;
+
+  const canopyNames = getPlanGuildCanopyNames(plan);
+  if (!canopyNames.length) return;
+
+  const formatList = (items) => {
+    if (items.length <= 2) return items.join(' and ');
+    return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+  };
+
+  const canopyList = formatList(canopyNames);
+  const canopyTask = year0.tasks.find(task => /canopy|tree.?plant/i.test(task.task || ''));
+
+  if (canopyNames.length > 1) {
+    year0.focus = `Establish ${canopyList} as the canopy anchors`;
+    if (canopyTask) {
+      canopyTask.task = 'Canopy Tree Planting - Plant Primary Anchors';
+      canopyTask.plants = canopyNames;
+      canopyTask.details = `${canopyList} are the primary canopy anchors for the guild system. Plant with spacing appropriate to each species and site conditions.`;
+    }
+  } else {
+    year0.focus = `Establish ${canopyNames[0]} as the system anchor`;
+    if (canopyTask) {
+      canopyTask.plants = [canopyNames[0]];
+      canopyTask.details = `${canopyNames[0]} is the primary canopy anchor for the guild system. Plant with spacing appropriate to the species and site conditions.`;
+    }
+  }
+
+  if (canopyTask) {
+    canopyTask.guild_note = canopyNames.length > 1
+      ? 'These canopy anchors come directly from the current guild canopies.'
+      : 'This canopy anchor comes directly from the current guild canopy.';
+    canopyTask.botanical = null;
+    canopyTask.cellSalts = [];
+    canopyTask.climateAffinity = 'guild-derived';
+  }
+}
+
 function getSelectedGuildLayer() {
   const modal = document.getElementById('guildEditModal');
   const select = document.getElementById('guildLayerSelect');
@@ -865,7 +1099,12 @@ function getGuildTitle(guildItem, index) {
     .replace(/\b\w/g, char => char.toUpperCase()) + ' Guild';
 }
 
-function openGuildEditModal(guildIndex) {
+function toggleGuildEditMode(guildIndex) {
+  activeGuildEditIndex = activeGuildEditIndex === guildIndex ? null : guildIndex;
+  renderSevenLayerGuild(generatedPlan?.guild);
+}
+
+function openGuildEditModal(guildIndex, layerKey = null) {
   const guilds = getCurrentGuilds();
   const guildItem = guilds[guildIndex];
   const modal = document.getElementById('guildEditModal');
@@ -878,7 +1117,9 @@ function openGuildEditModal(guildIndex) {
   select.innerHTML = GUILD_LAYER_DEFINITIONS
     .map(layerDef => `<option value="${escapeHtml(layerDef.canonicalKey)}">${escapeHtml(layerDef.label)}</option>`)
     .join('');
-  select.value = GUILD_LAYER_DEFINITIONS[0].canonicalKey;
+  select.value = layerKey || GUILD_LAYER_DEFINITIONS[0].canonicalKey;
+  const layerField = select.closest('.form-group');
+  if (layerField) layerField.classList.toggle('hidden', Boolean(layerKey));
 
   updateGuildEditPreview();
   modal.classList.remove('hidden');
@@ -968,8 +1209,17 @@ function applyGuildLayerEdit() {
   const replacement = candidates.find(candidate => candidate.id === replacementSelect.value);
   if (!replacement) return;
 
+  const dirtyKey = `${guildIndex}:${layerDef.canonicalKey}`;
+  const originalLayer = getGuildLayerValue(guildItem, layerDef.keys);
+  if (!originalGuildLayers.has(dirtyKey)) {
+    originalGuildLayers.set(dirtyKey, originalLayer == null ? null : JSON.parse(JSON.stringify(originalLayer)));
+  }
+
   if (!guildItem.layers) guildItem.layers = {};
   guildItem.layers[layerDef.canonicalKey] = replacement;
+  planDirty = true;
+  planSaveStatus = null;
+  dirtyGuildLayers.add(dirtyKey);
   layerDef.keys
     .filter(key => key !== layerDef.canonicalKey)
     .forEach(key => delete guildItem.layers[key]);
@@ -977,15 +1227,22 @@ function applyGuildLayerEdit() {
   if (layerDef.canonicalKey === 'layer1_canopy') {
     guildItem.name = `${replacement.name} Guild`;
     if (replacement.id) guildItem.anchor = replacement.id;
+    syncThreeYearPlanCanopiesFromGuild(generatedPlan);
+    displayResults(generatedPlan);
+  } else {
+    renderSevenLayerGuild(generatedPlan.guild);
   }
 
-  renderSevenLayerGuild(generatedPlan.guild);
+  updateSaveStateIndicator();
   closeGuildEditModal();
 }
 
 function closeGuildEditModal() {
   const modal = document.getElementById('guildEditModal');
   if (modal) modal.classList.add('hidden');
+  const select = document.getElementById('guildLayerSelect');
+  const layerField = select?.closest('.form-group');
+  if (layerField) layerField.classList.remove('hidden');
 }
 
 // Close modal on click outside
@@ -1075,6 +1332,16 @@ function renderSevenLayerGuild(guild) {
       : '';
   };
 
+  const renderComparisonColumn = (label, layer, className) => {
+    const plantName = renderLayerPlant(layer);
+    const meta = renderLayerMeta(layer);
+    return '<div class="guild-comparison-column ' + className + '">' +
+      '<div class="guild-comparison-label">' + escapeHtml(label) + '</div>' +
+      '<div class="guild-comparison-plant">' + escapeHtml(plantName) + '</div>' +
+      (meta || '<div class="guild-plant-meta"><span>Mineral profile: Not mapped yet</span><span>Role: Not mapped yet</span></div>') +
+    '</div>';
+  };
+
   const formatGuildTitle = (guildItem, index) => {
     const rawTitle = guildItem.name || guildItem.anchor || `Guild ${index + 1}`;
     return String(rawTitle)
@@ -1088,20 +1355,36 @@ function renderSevenLayerGuild(guild) {
 
   guilds.forEach((guildItem, index) => {
     const title = formatGuildTitle(guildItem, index);
-    htmlParts.push('<div class="seven-layer-card" style="background:var(--info-bg);border:1px solid var(--success-border);border-radius:8px;padding:16px;margin:16px 0;">');
+    const hasPendingEdits = hasPendingGuildEdits(index);
+    const isEditMode = activeGuildEditIndex === index;
+    htmlParts.push('<div class="seven-layer-card guild-card' + (hasPendingEdits ? ' pending-edit' : '') + (isEditMode ? ' edit-mode' : '') + '">');
     htmlParts.push('  <div class="guild-card-header">');
     htmlParts.push('    <h4 style="margin:0;">' + escapeHtml(title) + '</h4>');
-    htmlParts.push('    <button class="btn btn-guild-edit" type="button" data-guild-index="' + index + '" onclick="openGuildEditModal(' + index + ')">Edit</button>');
+    htmlParts.push('    <div class="guild-card-actions">');
+    htmlParts.push('      <button class="btn btn-guild-save' + (hasPendingEdits ? '' : ' hidden') + '" type="button" data-guild-index="' + index + '" onclick="saveGuildEdits(' + index + ')"' + (hasPendingEdits ? '' : ' disabled') + '>Save Guild</button>');
+    htmlParts.push('      <button class="btn btn-guild-edit" type="button" data-guild-index="' + index + '" onclick="toggleGuildEditMode(' + index + ')">' + (isEditMode ? 'Done' : 'Edit') + '</button>');
+    htmlParts.push('    </div>');
     htmlParts.push('  </div>');
+    if (isEditMode) htmlParts.push('  <p class="guild-edit-hint">Select a layer to edit</p>');
     htmlParts.push('  <div class="layer-grid" style="display:grid;gap:8px;">');
 
     layerDefinitions.forEach(layerDef => {
       const layer = getLayerValue(guildItem, layerDef.keys);
-      htmlParts.push('    <div style="display:flex;flex-direction:column;gap:4px;background:var(--panel-bg);border-radius:6px;padding:10px 12px;">');
-      htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(layerDef.label) + '</strong>');
-      htmlParts.push('      <span style="font-size:1.05em;">' + escapeHtml(renderLayerPlant(layer)) + '</span>');
-      const meta = renderLayerMeta(layer);
-      if (meta) htmlParts.push('      ' + meta);
+      const dirtyKey = `${index}:${layerDef.canonicalKey}`;
+      const hasUnsavedLayerEdit = dirtyGuildLayers.has(dirtyKey);
+      htmlParts.push('    <div class="guild-layer-card layer-card' + (hasUnsavedLayerEdit ? ' pending-edit' : '') + (isEditMode ? ' selectable' : '') + '"' + (isEditMode ? ' role="button" tabindex="0" data-guild-index="' + index + '" data-layer-key="' + escapeHtml(layerDef.canonicalKey) + '" onclick="openGuildEditModal(' + index + ', \'' + escapeHtml(layerDef.canonicalKey) + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openGuildEditModal(' + index + ', \'' + escapeHtml(layerDef.canonicalKey) + '\');}"' : '') + '>');
+      htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(layerDef.label) + (hasUnsavedLayerEdit ? ' <span class="unsaved-edit-badge">Unsaved edit</span>' : '') + '</strong>');
+      if (hasUnsavedLayerEdit) {
+        const originalLayer = originalGuildLayers.has(dirtyKey) ? originalGuildLayers.get(dirtyKey) : null;
+        htmlParts.push('      <div class="guild-layer-comparison">');
+        htmlParts.push('        ' + renderComparisonColumn('Original', originalLayer, 'original'));
+        htmlParts.push('        ' + renderComparisonColumn('Pending', layer, 'pending'));
+        htmlParts.push('      </div>');
+      } else {
+        htmlParts.push('      <span style="font-size:1.05em;">' + escapeHtml(renderLayerPlant(layer)) + '</span>');
+        const meta = renderLayerMeta(layer);
+        if (meta) htmlParts.push('      ' + meta);
+      }
       htmlParts.push('    </div>');
     });
 

@@ -1070,9 +1070,10 @@ function layerFitLabel(plant, layerKey) {
   if (layerKey !== 'layer5') return null;
   const functions = plant.permaculture_role?.functions || [];
   if (plant.taxonomy?.layer === 'ground_cover') return 'true ground cover';
-  if (functions.includes('ground_cover')) return 'same layer role';
+  if (functions.includes('ground_cover')) return 'ground-cover role';
   if (functions.includes('living_mulch')) return 'living mulch';
-  return 'fallback';
+  if (plant.taxonomy?.layer === 'herbaceous') return 'herbaceous fallback';
+  return 'other fallback';
 }
 
 function rankCandidate({ plant, layerKey, climatePriority, currentRoles, currentSalt, currentMinerals, usedIds }) {
@@ -1100,13 +1101,13 @@ function rankCandidate({ plant, layerKey, climatePriority, currentRoles, current
   if (sharedRoles.length) matchLabels.push('same role');
   if (sameSaltMatch) matchLabels.push('mineral match');
   else if (sharedMinerals.length) matchLabels.push('shared minerals');
-  if (fitLabel && fitLabel !== 'same layer role') matchLabels.push(fitLabel);
+  if (fitLabel) matchLabels.push(fitLabel);
   if (functions.includes('nitrogen_fixation')) matchLabels.push('nitrogen fixer');
   if (functions.includes('living_mulch') && !matchLabels.includes('living mulch')) matchLabels.push('living mulch');
   if (functions.includes('pollinator_forage')) matchLabels.push('pollinator forage');
   if (climateFit) matchLabels.push('climate fit');
   if (isAlreadyUsed) matchLabels.push('already used');
-  if (!hasPurposeMatch && !climateFit) matchLabels.push('fallback');
+  if (layerKey !== 'layer5' && !hasPurposeMatch && !climateFit) matchLabels.push('fallback');
 
   const uniqueLabels = [...new Set(matchLabels)];
   const score =
