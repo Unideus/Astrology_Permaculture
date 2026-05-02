@@ -108,15 +108,19 @@ function removeFamilyMember(btn) {
   familyMemberCount--;
 }
 
-// Toggle soil test form
-document.getElementById('hasSoilTest').addEventListener('change', function() {
-  const form = document.getElementById('soilTestForm');
-  if (this.checked) {
-    form.classList.remove('hidden');
-  } else {
-    form.classList.add('hidden');
-  }
-});
+// Soil test inputs are intentionally disabled until the integration is ready.
+const soilTestToggle = document.getElementById('hasSoilTest');
+if (soilTestToggle) {
+  soilTestToggle.addEventListener('change', function() {
+    const form = document.getElementById('soilTestForm');
+    if (!form) return;
+    if (this.checked) {
+      form.classList.remove('hidden');
+    } else {
+      form.classList.add('hidden');
+    }
+  });
+}
 
 async function generatePlan() {
   // Gather all data
@@ -137,8 +141,8 @@ async function generatePlan() {
     }
   });
 
-  // Get soil test if provided
-  if (document.getElementById('hasSoilTest').checked) {
+  // Soil test integration is coming soon; only submit this if legacy controls exist.
+  if (document.getElementById('hasSoilTest')?.checked) {
     userData.soilTest = {
       ph: parseFloat(document.getElementById('soilPH').value) || null,
       nitrogen: parseInt(document.getElementById('soilNitrogen').value) || null,
@@ -773,7 +777,7 @@ function saveChanges() {
 }
 
 function downloadPlan() {
-  alert('Use your browser print dialog (Ctrl+P / Cmd+P), then choose "Save as PDF" as the destination.');
+  alert('Native PDF export is coming soon. For now, use your browser print dialog (Ctrl+P / Cmd+P), then choose "Save as PDF" as the destination.');
 }
 
 

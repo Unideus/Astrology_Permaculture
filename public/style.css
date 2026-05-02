@@ -415,6 +415,31 @@ select:-webkit-autofill:focus {
   font-size: 0.95rem;
 }
 
+.coming-soon-card {
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  color: var(--text);
+  margin: 18px 0 24px;
+  padding: 18px 20px;
+}
+
+.coming-soon-card h3 {
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.coming-soon-card p,
+.coming-soon-note {
+  color: var(--text-light);
+}
+
+.coming-soon-note {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
 .family-member {
   background: var(--panel-bg-alt);
   padding: 15px;

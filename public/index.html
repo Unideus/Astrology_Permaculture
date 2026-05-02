@@ -76,36 +76,11 @@
 
       <!-- Step 2: Soil Test -->
       <section class="form-section hidden" id="step2">
-        <h2>Step 3: Soil Test (Optional)</h2>
-        <p>Upload or enter soil test data for precise amendment recommendations</p>
+        <h2>Step 2: Review & Generate</h2>
 
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="hasSoilTest"> I have soil test data
-          </label>
-        </div>
-
-        <div id="soilTestForm" class="hidden">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="soilPH">pH Level</label>
-              <input type="number" id="soilPH" step="0.1" min="3" max="10" placeholder="e.g., 6.5">
-            </div>
-            <div class="form-group">
-              <label for="soilNitrogen">Nitrogen (ppm)</label>
-              <input type="number" id="soilNitrogen" placeholder="e.g., 25">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="soilPhosphorus">Phosphorus (ppm)</label>
-              <input type="number" id="soilPhosphorus" placeholder="e.g., 20">
-            </div>
-            <div class="form-group">
-              <label for="soilPotassium">Potassium (ppm)</label>
-              <input type="number" id="soilPotassium" placeholder="e.g., 150">
-            </div>
-          </div>
+        <div class="coming-soon-card">
+          <h3>Soil Test Integration — Coming Soon</h3>
+          <p>We’re preparing soil-test upload and interpretation tools. For now, generate the plan without soil-test inputs.</p>
         </div>
 
         <div class="btn-group">
@@ -170,6 +145,7 @@
           <button class="btn btn-secondary" onclick="saveAsNewSite()">💾 Save As New</button>
           <button class="btn btn-primary" onclick="downloadPlan()">Print / Save PDF</button>
         </div>
+        <p class="coming-soon-note">Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”</p>
       </section>
     </main>
 
