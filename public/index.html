@@ -11,6 +11,10 @@
     <header>
       <h1>🌱 Permaculture Design Generator</h1>
       <p class="subtitle">Cell Salt-Based Planting Plans</p>
+      <div class="prototype-notice" role="note">
+        <strong>Prototype / Early Access</strong>
+        <span>Plant recommendations and saved guild edits are active. Soil test interpretation and true PDF export are coming soon.</span>
+      </div>
       <button class="btn btn-header" onclick="showSavedSites()">📂 My Saved Sites</button>
       <button class="btn btn-header" id="themeToggle" type="button" onclick="toggleTheme()">🌙 Dark mode</button>
     </header>
@@ -68,7 +72,7 @@
         <div class="form-group">
           <label for="userDesiredPlants">Desired Canopy Trees / Plants (optional)</label>
           <input type="text" id="userDesiredPlants" placeholder="e.g., Apple, Peach, Pawpaw">
-          <small>If blank, the AI will auto-select the highest-yielding tree for your zone</small>
+          <small>Enter one or more desired canopy plants, separated by commas. Example: apple, peach, pear. Leave blank for suggested anchors.</small>
         </div>
 
         <button class="btn btn-primary" onclick="goToStep2()">Next →</button>
@@ -96,6 +100,10 @@
         <div class="results-save-controls">
           <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled>Save Changes</button>
           <button id="saveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()">Save As New</button>
+        </div>
+        <div class="prototype-feedback-card">
+          <strong>Testing this?</strong>
+          <span>Note confusing recommendations, missing plants, bad zone matches, or features you expected. Early feedback will guide the next registry and editing passes.</span>
         </div>
         
         <div class="result-card">
@@ -150,6 +158,7 @@
     </main>
 
     <footer>
+      <p><span id="appVersionLabel" class="app-version-label">Prototype v0.1</span></p>
       <p>Based on Schüssler Cell Salts & Biodynamic Agriculture</p>
     </footer>
   </div>

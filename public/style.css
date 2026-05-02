@@ -184,6 +184,32 @@ header h1 {
   opacity: 0.9;
 }
 
+.prototype-notice {
+  max-width: 740px;
+  margin: 14px auto 18px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  color: inherit;
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.prototype-notice strong,
+.prototype-notice span {
+  display: block;
+}
+
+.prototype-notice strong {
+  margin-bottom: 2px;
+}
+
+.prototype-notice span {
+  opacity: 0.94;
+}
+
 .form-section {
   background: var(--card-bg);
   padding: 30px;
@@ -377,6 +403,27 @@ select:-webkit-autofill:focus {
 
 .results-save-controls .hidden {
   display: none;
+}
+
+.prototype-feedback-card {
+  display: grid;
+  gap: 3px;
+  margin: 0 0 24px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--info-border);
+  border-radius: 8px;
+  background: var(--panel-bg-alt);
+  color: var(--text);
+}
+
+.prototype-feedback-card strong {
+  color: var(--primary);
+}
+
+.prototype-feedback-card span {
+  color: var(--text-light);
+  font-size: 0.92rem;
 }
 
 .unsaved-edit-badge {
@@ -726,6 +773,18 @@ footer {
   padding: 30px;
   color: var(--text-light);
   font-size: 0.9rem;
+}
+
+.app-version-label {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--panel-bg-alt);
+  color: var(--text-light);
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 /* Loading spinner */
@@ -1496,5 +1555,18 @@ body.dark-mode .moon-card {
     --shadow: none;
     background: #ffffff !important;
     color: #212121 !important;
+  }
+
+  .prototype-notice,
+  .prototype-feedback-card,
+  .app-version-label {
+    background: #ffffff !important;
+    color: #212121 !important;
+    border-color: #d0d0d0 !important;
+  }
+
+  .prototype-notice span,
+  .prototype-feedback-card span {
+    color: #555555 !important;
   }
 }

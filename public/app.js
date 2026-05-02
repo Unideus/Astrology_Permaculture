@@ -7,6 +7,7 @@ let planSaveStatus = null;
 const dirtyGuildLayers = new Set();
 const originalGuildLayers = new Map();
 let activeGuildEditIndex = null;
+const APP_VERSION = 'Prototype v0.1';
 const THEME_STORAGE_KEY = 'permacultureTheme';
 const GUILD_LAYER_DEFINITIONS = [
   { label: '1. Canopy', canonicalKey: 'layer1_canopy', keys: ['layer1_canopy'] },
@@ -47,6 +48,10 @@ function getPreferredTheme() {
 
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(getPreferredTheme());
+  const appVersionLabel = document.getElementById('appVersionLabel');
+  if (appVersionLabel) {
+    appVersionLabel.textContent = APP_VERSION;
+  }
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!localStorage.getItem(THEME_STORAGE_KEY)) {
