@@ -186,6 +186,35 @@
     </div>
   </div>
 
+  <!-- Guild Layer Edit Modal -->
+  <div id="guildEditModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="guildEditTitle">Edit Guild Layer</h2>
+        <button class="btn-close" type="button" onclick="closeGuildEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="guildLayerSelect">Layer to edit</label>
+          <select id="guildLayerSelect" onchange="updateGuildEditPreview()"></select>
+        </div>
+        <div class="guild-edit-preview">
+          <p class="guild-edit-label">Current plant</p>
+          <p id="guildCurrentPlant" class="guild-edit-current">No plants selected yet</p>
+        </div>
+        <div class="form-group">
+          <label for="guildReplacementSelect">Replacement plant</label>
+          <select id="guildReplacementSelect"></select>
+          <small id="guildReplacementStatus">Choose a layer to load compatible plants.</small>
+        </div>
+        <div class="btn-group">
+          <button class="btn" type="button" onclick="closeGuildEditModal()">Cancel</button>
+          <button class="btn btn-primary" type="button" onclick="applyGuildLayerEdit()">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js?v=8"></script>
 </body>
 </html>
