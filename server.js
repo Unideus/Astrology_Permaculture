@@ -1030,6 +1030,207 @@ app.get('/api/ollama/status', async (req, res) => {
   }
 });
 
+const GUILD_LAYER_REGISTRY_LAYERS = {
+  layer1_canopy: ['canopy'],
+  layer2_low_tree: ['sub_canopy', 'low_tree'],
+  layer3_shrub: ['shrub'],
+  layer4: ['herbaceous'],
+  layer5: ['ground_cover', 'herbaceous'],
+  layer6: ['root'],
+  layer7: ['vine']
+};
+
+function climatePriorityFromKoppen(koppen = '') {
+  if (koppen.startsWith('A') || koppen.startsWith('Cf') || koppen.startsWith('Df')) return 'humid';
+  if (koppen.startsWith('B') || koppen.startsWith('Cs')) return 'arid';
+  return null;
+}
+
+function layerFitScoreForCandidate(plant, layerKey) {
+  if (layerKey !== 'layer5') return 0;
+  const functions = plant.permaculture_role?.functions || [];
+  if (plant.taxonomy?.layer === 'ground_cover') return 0;
+  if (functions.includes('ground_cover')) return 1;
+  if (functions.includes('living_mulch')) return 2;
+  return 3;
+}
+
+function parseCsvSet(value = '') {
+  return new Set(String(value)
+    .split(',')
+    .map(item => item.trim())
+    .filter(Boolean));
+}
+
+function normalizeSalt(value = '') {
+  return String(value).toLowerCase().replace(/[\s_-]+/g, '_');
+}
+
+function layerFitLabel(plant, layerKey) {
+  if (layerKey !== 'layer5') return null;
+  const functions = plant.permaculture_role?.functions || [];
+  if (plant.taxonomy?.layer === 'ground_cover') return 'true ground cover';
+  if (functions.includes('ground_cover')) return 'same layer role';
+  if (functions.includes('living_mulch')) return 'living mulch';
+  return 'fallback';
+}
+
+function rankCandidate({ plant, layerKey, climatePriority, currentRoles, currentSalt, currentMinerals, usedIds }) {
+  const functions = plant.permaculture_role?.functions || [];
+  const salts = plant.bio_logic?.salts || [];
+  const affinity = plant.climate_affinity || 'any';
+  const climateFit = !climatePriority || affinity === 'any' || affinity === climatePriority;
+  const isAlreadyUsed = usedIds.has(plant.id);
+  const sharedRoles = functions.filter(role => currentRoles.has(role));
+  const currentSaltKey = normalizeSalt(currentSalt);
+  const sameSaltMatch = Boolean(currentSaltKey) && salts.some(salt => normalizeSalt(salt) === currentSaltKey);
+  const sharedMinerals = salts.filter(salt => currentMinerals.has(salt) || currentMinerals.has(normalizeSalt(salt)));
+  const layerFitScore = layerFitScoreForCandidate(plant, layerKey);
+  const layerSortScore = (() => {
+    if (layerKey !== 'layer5') return layerFitScore;
+    if (!isAlreadyUsed && climateFit) return layerFitScore;
+    if (isAlreadyUsed && climateFit && layerFitScore < 3) return 4 + layerFitScore;
+    if (layerFitScore < 3) return 7 + layerFitScore;
+    return 10;
+  })();
+  const fitLabel = layerFitLabel(plant, layerKey);
+  const hasPurposeMatch = sharedRoles.length > 0 || sameSaltMatch || sharedMinerals.length > 0;
+
+  const matchLabels = [];
+  if (sharedRoles.length) matchLabels.push('same role');
+  if (sameSaltMatch) matchLabels.push('mineral match');
+  else if (sharedMinerals.length) matchLabels.push('shared minerals');
+  if (fitLabel && fitLabel !== 'same layer role') matchLabels.push(fitLabel);
+  if (functions.includes('nitrogen_fixation')) matchLabels.push('nitrogen fixer');
+  if (functions.includes('living_mulch') && !matchLabels.includes('living mulch')) matchLabels.push('living mulch');
+  if (functions.includes('pollinator_forage')) matchLabels.push('pollinator forage');
+  if (climateFit) matchLabels.push('climate fit');
+  if (isAlreadyUsed) matchLabels.push('already used');
+  if (!hasPurposeMatch && !climateFit) matchLabels.push('fallback');
+
+  const uniqueLabels = [...new Set(matchLabels)];
+  const score =
+    (layerSortScore * 1000) +
+    (climateFit ? 0 : 200) +
+    (sharedRoles.length ? -120 - (sharedRoles.length * 10) : 0) +
+    (sameSaltMatch ? -90 : 0) +
+    (!sameSaltMatch && sharedMinerals.length ? -45 - (sharedMinerals.length * 5) : 0) +
+    (isAlreadyUsed ? 300 : 0);
+
+  return {
+    climateFit,
+    isAlreadyUsed,
+    sharedRoles,
+    sameSaltMatch,
+    sharedMinerals,
+    layerFitScore,
+    layerSortScore,
+    score,
+    matchLabels: uniqueLabels
+  };
+}
+
+function plantToGuildLayer(plant, climatePriority = null, ranking = null) {
+  const functions = plant.permaculture_role?.functions || [];
+  const salts = plant.bio_logic?.salts || [];
+  const climateMatches = !climatePriority || !plant.climate_affinity || plant.climate_affinity === 'any' || plant.climate_affinity === climatePriority;
+
+  return {
+    id: plant.id,
+    name: plant.common_name,
+    tier: salts.length ? 'A' : 'B',
+    salt_content: salts[0] || null,
+    minerals: salts,
+    selection_reason: climateMatches ? 'zone/climate replacement' : 'zone fallback replacement',
+    functions,
+    roles: functions,
+    climate_affinity: plant.climate_affinity || 'any',
+    taxonomy_layer: plant.taxonomy?.layer || null,
+    score: ranking?.score ?? null,
+    matchLabels: ranking?.matchLabels || [],
+    sharedRoles: ranking?.sharedRoles || [],
+    isAlreadyUsed: Boolean(ranking?.isAlreadyUsed),
+    climateFit: ranking?.climateFit ?? climateMatches,
+    sharedMinerals: ranking?.sharedMinerals || [],
+    sameSaltMatch: Boolean(ranking?.sameSaltMatch)
+  };
+}
+
+app.get('/api/guild-layer-candidates', (req, res) => {
+  try {
+    const { layerKey, zone, koppen, excludeId, currentRoles, currentSalt, currentMinerals, usedIds } = req.query;
+    const registryLayers = GUILD_LAYER_REGISTRY_LAYERS[layerKey];
+    const zoneNumber = Number.parseInt(zone, 10);
+
+    if (!registryLayers) {
+      return res.status(400).json({ error: 'Invalid layer key' });
+    }
+
+    if (!Number.isFinite(zoneNumber)) {
+      return res.status(400).json({ error: 'Valid USDA zone number required' });
+    }
+
+    const climatePriority = climatePriorityFromKoppen(String(koppen || ''));
+    const currentRoleSet = parseCsvSet(currentRoles);
+    const currentMineralSet = parseCsvSet(currentMinerals);
+    const normalizedMineralSet = new Set([...currentMineralSet].map(normalizeSalt));
+    const usedIdSet = parseCsvSet(usedIds);
+    const candidatesById = new Map();
+
+    registryLayers.forEach(layer => {
+      permaApp.filterPlants({ zone: zoneNumber, layer }).forEach(plant => {
+        candidatesById.set(plant.id, plant);
+      });
+    });
+
+    const candidates = Array.from(candidatesById.values())
+      .filter(plant => !excludeId || plant.id !== excludeId)
+      .map(plant => {
+        const ranking = rankCandidate({
+          plant,
+          layerKey,
+          climatePriority,
+          currentRoles: currentRoleSet,
+          currentSalt,
+          currentMinerals: new Set([...currentMineralSet, ...normalizedMineralSet]),
+          usedIds: usedIdSet
+        });
+        return {
+          plant,
+          ranking
+        };
+      })
+      .sort((a, b) => {
+        const layerDiff = a.ranking.layerSortScore - b.ranking.layerSortScore;
+        if (layerDiff !== 0) return layerDiff;
+        const climateDiff = Number(!a.ranking.climateFit) - Number(!b.ranking.climateFit);
+        if (climateDiff !== 0) return climateDiff;
+        const roleDiff = b.ranking.sharedRoles.length - a.ranking.sharedRoles.length;
+        if (roleDiff !== 0) return roleDiff;
+        const saltDiff = Number(!a.ranking.sameSaltMatch) - Number(!b.ranking.sameSaltMatch);
+        if (saltDiff !== 0) return saltDiff;
+        const mineralDiff = b.ranking.sharedMinerals.length - a.ranking.sharedMinerals.length;
+        if (mineralDiff !== 0) return mineralDiff;
+        const usedDiff = Number(a.ranking.isAlreadyUsed) - Number(b.ranking.isAlreadyUsed);
+        if (usedDiff !== 0) return usedDiff;
+        const scoreDiff = a.ranking.score - b.ranking.score;
+        if (scoreDiff !== 0) return scoreDiff;
+        return a.plant.common_name.localeCompare(b.plant.common_name);
+      })
+      .map(({ plant, ranking }) => plantToGuildLayer(plant, climatePriority, ranking));
+
+    res.json({
+      layerKey,
+      zone: zoneNumber,
+      koppen: koppen || null,
+      candidates
+    });
+  } catch (error) {
+    console.error('Guild candidate lookup error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // =========================================================
 // TIER 1: SITE SAVE/LOAD
 // =========================================================

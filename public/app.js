@@ -2,10 +2,21 @@
 let familyMemberCount = 0;
 let generatedPlan = null;
 const THEME_STORAGE_KEY = 'permacultureTheme';
+const GUILD_LAYER_DEFINITIONS = [
+  { label: '1. Canopy', canonicalKey: 'layer1_canopy', keys: ['layer1_canopy'] },
+  { label: '2. Sub-Canopy', canonicalKey: 'layer2_low_tree', keys: ['layer2_low_tree'] },
+  { label: '3. Shrub', canonicalKey: 'layer3_shrub', keys: ['layer3_shrub'] },
+  { label: '4. Herbaceous', canonicalKey: 'layer4', keys: ['layer4', 'layer4_herbaceous'] },
+  { label: '5. Ground Cover', canonicalKey: 'layer5', keys: ['layer5', 'layer5_ground_cover', 'layer6_soil_surface'] },
+  { label: '6. Root', canonicalKey: 'layer6', keys: ['layer6', 'layer6_rhizosphere', 'layer5_rhizosphere'] },
+  { label: '7. Vine', canonicalKey: 'layer7', keys: ['layer7', 'layer7_vertical'] }
+];
 
 function applyTheme(theme) {
   const isDark = theme === 'dark';
   document.body.classList.toggle('dark-mode', isDark);
+  document.body.classList.toggle('theme-dark', isDark);
+  document.body.classList.toggle('theme-light', !isDark);
 
   const toggle = document.getElementById('themeToggle');
   if (toggle) {
@@ -19,8 +30,23 @@ function toggleTheme() {
   applyTheme(nextTheme);
 }
 
+function getPreferredTheme() {
+  const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  if (savedTheme === 'dark' || savedTheme === 'light') {
+    return savedTheme;
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  applyTheme(localStorage.getItem(THEME_STORAGE_KEY) === 'dark' ? 'dark' : 'light');
+  applyTheme(getPreferredTheme());
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (!localStorage.getItem(THEME_STORAGE_KEY)) {
+      applyTheme(getPreferredTheme());
+    }
+  });
 });
 
 function goToStep2() {
@@ -205,7 +231,7 @@ function displayResults(plan) {
     climateHTML += `<p class="note" style="margin-left:8px;font-size:0.8em;">Based on ${fd.light.dataYears || 0} years of data (1991–2020)</p>`;
   }
   if (climate.source) {
-    climateHTML += `<p class="note" style="font-size:0.85em;color:#666;">Source: ${climate.source}${climate.koppenDistanceKm ? ` (nearest Köppen point ${climate.koppenDistanceKm} km away)` : ''}</p>`;
+    climateHTML += `<p class="note" style="font-size:0.85em;color:var(--text-light);">Source: ${climate.source}${climate.koppenDistanceKm ? ` (nearest Köppen point ${climate.koppenDistanceKm} km away)` : ''}</p>`;
   }
   
   document.getElementById('siteInfo').innerHTML = `
@@ -216,8 +242,8 @@ function displayResults(plan) {
       `<p><strong>Family Members:</strong> ${plan.siteInfo.familyMembers.map(m => m.sunSign).join(', ')}</p>` : ''}
     ${loc.latitude ? `<p><strong>Coordinates:</strong> ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°W</p>` : ''}
     ${loc.formattedAddress ? `<p><strong>Geocoded:</strong> ${loc.formattedAddress}</p>` : ''}
-    ${climateHTML ? `<div class="climate-info" style="margin-top:12px;padding:10px;background:#e8f5e9;border-left:3px solid #4caf50;border-radius:4px;">${climateHTML}</div>` : ''}
-    ${geoFailed ? `<p class="note" style="background:#ffebee;border-color:#ef5350;">⚠️ <strong>Location warning:</strong> ${loc.error}</p>` : ''}
+    ${climateHTML ? `<div class="climate-info" style="margin-top:12px;padding:10px;background:var(--info-bg);border-left:3px solid var(--success-border);border-radius:4px;">${climateHTML}</div>` : ''}
+    ${geoFailed ? `<p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">⚠️ <strong>Location warning:</strong> ${loc.error}</p>` : ''}
   `;
 
   // Render map and sun analysis
@@ -257,7 +283,7 @@ function displayResults(plan) {
   // If geocoding failed, do NOT show a stale plant list — clear it and warn the user
   if (geoFailed) {
     document.getElementById('recommendedPlants').innerHTML = `
-      <p class="note" style="background:#ffebee;border-color:#ef5350;">
+      <p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">
         ⚠️ <strong>Location unavailable.</strong> Recommended plants require a valid USDA hardiness zone. 
         Please enter a valid City and State (e.g., "Duluth, MN") and try again.
       </p>
@@ -470,7 +496,7 @@ function getSunDesignTip(altitude, direction) {
 function renderAIGuilds(aiData) {
   const guildsDiv = document.getElementById('aiGuilds');
   if (!aiData.guilds || aiData.guilds.length === 0) {
-    guildsDiv.innerHTML = '<p style="color:#d32f2f;font-weight:bold;padding:12px;background:#ffebee;border:1px solid #ef5350;border-radius:4px;">⚠️ AI failed to generate guilds. Please try again.</p>';
+    guildsDiv.innerHTML = '<p style="color:var(--danger-text);font-weight:bold;padding:12px;background:var(--warning-bg);border:1px solid var(--danger-border);border-radius:4px;">⚠️ AI failed to generate guilds. Please try again.</p>';
     return;
   }
 
@@ -490,15 +516,15 @@ function renderAIGuilds(aiData) {
     </div>` : ''}
     <div class="guild-stack">
       ${aiData.guilds.map(guild => `
-        <div class="guild-card" style="border-left:4px solid #4caf50;margin-bottom:24px;padding:12px 16px;background:#f9f9f9;border-radius:6px">
+        <div class="guild-card" style="border-left:4px solid var(--success-border);margin-bottom:24px;padding:12px 16px;background:var(--panel-bg);border-radius:6px">
           <h4 style="margin:0 0 8px 0">🌳 ${guild.name}</h4>
-          ${guild.function ? `<p style="margin:0 0 12px 0;color:#555;font-size:0.9em"><em>${guild.function}</em></p>` : ''}
+          ${guild.function ? `<p style="margin:0 0 12px 0;color:var(--text-light);font-size:0.9em"><em>${guild.function}</em></p>` : ''}
           <div class="layer-table" style="display:grid;gap:4px">
             ${Object.entries(layerLabels).map(([key, label]) => {
               const val = guild.layers ? (guild.layers[key] || '-') : (guild[key] || '-');
               return `
-                <div style="display:grid;grid-template-columns:200px 1fr;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid #eee">
-                  <span style="font-size:0.85em;color:#666">${label}</span>
+                <div style="display:grid;grid-template-columns:200px 1fr;gap:8px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
+                  <span style="font-size:0.85em;color:var(--text-light)">${label}</span>
                   <span style="font-weight:500">${val}</span>
                 </div>
               `;
@@ -696,7 +722,7 @@ function showSavedSites() {
       `).join('');
     })
     .catch(err => {
-      listContainer.innerHTML = `<p class="note" style="color:#d32f2f;">Error loading sites: ${escapeHtml(err.message)}</p>`;
+      listContainer.innerHTML = `<p class="note" style="color:var(--danger-text);">Error loading sites: ${escapeHtml(err.message)}</p>`;
     });
 }
 
@@ -764,15 +790,218 @@ function formatDate(isoString) {
   }
 }
 
+function getCurrentGuilds() {
+  if (!generatedPlan?.guild) return [];
+  return Array.isArray(generatedPlan.guild) ? generatedPlan.guild : [generatedPlan.guild];
+}
+
+function getGuildLayerValue(guildItem, keys) {
+  const layers = guildItem?.layers || guildItem || {};
+  for (const key of keys) {
+    if (layers[key]) return layers[key];
+  }
+  return null;
+}
+
+function getGuildLayerPlantLabel(layer) {
+  if (!layer) return 'No plants selected yet';
+  if (typeof layer === 'string') {
+    const value = layer.trim();
+    return value && value.toLowerCase() !== 'none' ? value : 'No plants selected yet';
+  }
+  if (Array.isArray(layer)) return layer.length ? layer.join(', ') : 'No plants selected yet';
+  return layer.name || layer.plant || layer.common_name || 'No plants selected yet';
+}
+
+function getSelectedGuildLayer() {
+  const modal = document.getElementById('guildEditModal');
+  const select = document.getElementById('guildLayerSelect');
+  if (!modal || !select) return { guildIndex: -1, guildItem: null, layerDef: null, layer: null };
+
+  const guildIndex = Number(modal.dataset.guildIndex);
+  const guildItem = getCurrentGuilds()[guildIndex] || null;
+  const layerDef = GUILD_LAYER_DEFINITIONS.find(def => def.canonicalKey === select.value) || null;
+  const layer = guildItem && layerDef ? getGuildLayerValue(guildItem, layerDef.keys) : null;
+
+  return { guildIndex, guildItem, layerDef, layer };
+}
+
+function getSiteZoneNumber() {
+  const zone = generatedPlan?.climateData?.hardinessZone || '';
+  const match = String(zone).match(/^(\d+)/);
+  return match ? match[1] : '';
+}
+
+function getLayerRoles(layer) {
+  if (!layer || typeof layer !== 'object' || Array.isArray(layer)) return [];
+  const roles = [...(layer.functions || []), ...(layer.roles || [])];
+  return [...new Set(roles.map(role => String(role).trim()).filter(Boolean))];
+}
+
+function getLayerMinerals(layer) {
+  if (!layer || typeof layer !== 'object' || Array.isArray(layer)) return [];
+  return [...new Set((layer.minerals || layer.cell_salts || []).map(mineral => String(mineral).trim()).filter(Boolean))];
+}
+
+function getUsedGuildPlantIds() {
+  const ids = new Set();
+  getCurrentGuilds().forEach(guildItem => {
+    const layers = guildItem?.layers || {};
+    Object.values(layers).forEach(layer => {
+      if (layer && typeof layer === 'object' && !Array.isArray(layer) && layer.id) {
+        ids.add(layer.id);
+      }
+    });
+  });
+  return [...ids];
+}
+
+function getGuildTitle(guildItem, index) {
+  const rawTitle = guildItem?.name || guildItem?.anchor || `Guild ${index + 1}`;
+  return String(rawTitle)
+    .replace(/_/g, ' ')
+    .replace(/\s+Guild$/i, '')
+    .trim()
+    .replace(/\b\w/g, char => char.toUpperCase()) + ' Guild';
+}
+
+function openGuildEditModal(guildIndex) {
+  const guilds = getCurrentGuilds();
+  const guildItem = guilds[guildIndex];
+  const modal = document.getElementById('guildEditModal');
+  const title = document.getElementById('guildEditTitle');
+  const select = document.getElementById('guildLayerSelect');
+  if (!modal || !title || !select || !guildItem) return;
+
+  modal.dataset.guildIndex = String(guildIndex);
+  title.textContent = `Edit ${getGuildTitle(guildItem, guildIndex)}`;
+  select.innerHTML = GUILD_LAYER_DEFINITIONS
+    .map(layerDef => `<option value="${escapeHtml(layerDef.canonicalKey)}">${escapeHtml(layerDef.label)}</option>`)
+    .join('');
+  select.value = GUILD_LAYER_DEFINITIONS[0].canonicalKey;
+
+  updateGuildEditPreview();
+  modal.classList.remove('hidden');
+}
+
+function updateGuildEditPreview() {
+  const currentPlant = document.getElementById('guildCurrentPlant');
+  if (!currentPlant) return;
+
+  const { layer } = getSelectedGuildLayer();
+
+  currentPlant.textContent = getGuildLayerPlantLabel(layer);
+  loadGuildReplacementCandidates();
+}
+
+async function loadGuildReplacementCandidates() {
+  const replacementSelect = document.getElementById('guildReplacementSelect');
+  const status = document.getElementById('guildReplacementStatus');
+  const { layerDef, layer } = getSelectedGuildLayer();
+  const zone = getSiteZoneNumber();
+  const koppen = generatedPlan?.climateData?.koppenCode || '';
+  const currentId = layer && typeof layer === 'object' && !Array.isArray(layer) ? layer.id : '';
+
+  if (!replacementSelect || !status) return;
+  replacementSelect.innerHTML = '';
+
+  if (!layerDef || !zone) {
+    status.textContent = 'Compatible replacements need a generated plan with a USDA zone.';
+    replacementSelect.disabled = true;
+    return;
+  }
+
+  status.textContent = 'Loading compatible replacements...';
+  replacementSelect.disabled = true;
+
+  try {
+    const params = new URLSearchParams({
+      layerKey: layerDef.canonicalKey,
+      zone,
+      koppen
+    });
+    if (currentId) params.set('excludeId', currentId);
+
+    const currentRoles = getLayerRoles(layer);
+    const currentMinerals = getLayerMinerals(layer);
+    const currentSalt = layer && typeof layer === 'object' && !Array.isArray(layer) ? layer.salt_content : '';
+    const usedIds = getUsedGuildPlantIds();
+    if (currentRoles.length) params.set('currentRoles', currentRoles.join(','));
+    if (currentSalt) params.set('currentSalt', currentSalt);
+    if (currentMinerals.length) params.set('currentMinerals', currentMinerals.join(','));
+    if (usedIds.length) params.set('usedIds', usedIds.join(','));
+
+    const response = await fetch(`/api/guild-layer-candidates?${params.toString()}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to load replacement candidates');
+    }
+
+    const data = await response.json();
+    const candidates = Array.isArray(data.candidates) ? data.candidates : [];
+    if (!candidates.length) {
+      status.textContent = 'No compatible replacements found for this layer.';
+      return;
+    }
+
+    replacementSelect.innerHTML = candidates
+      .map(candidate => {
+        const labels = (candidate.matchLabels || []).slice(0, 3).join(', ');
+        const labelText = labels ? ` - ${labels}` : '';
+        return `<option value="${escapeHtml(candidate.id)}">${escapeHtml(candidate.name + labelText)}</option>`;
+      })
+      .join('');
+    replacementSelect.dataset.candidates = JSON.stringify(candidates);
+    replacementSelect.disabled = false;
+    status.textContent = `${candidates.length} compatible replacement${candidates.length === 1 ? '' : 's'} available.`;
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+function applyGuildLayerEdit() {
+  const replacementSelect = document.getElementById('guildReplacementSelect');
+  const { guildIndex, guildItem, layerDef } = getSelectedGuildLayer();
+  if (!replacementSelect || !guildItem || !layerDef || !replacementSelect.value) return;
+
+  const candidates = JSON.parse(replacementSelect.dataset.candidates || '[]');
+  const replacement = candidates.find(candidate => candidate.id === replacementSelect.value);
+  if (!replacement) return;
+
+  if (!guildItem.layers) guildItem.layers = {};
+  guildItem.layers[layerDef.canonicalKey] = replacement;
+  layerDef.keys
+    .filter(key => key !== layerDef.canonicalKey)
+    .forEach(key => delete guildItem.layers[key]);
+
+  if (layerDef.canonicalKey === 'layer1_canopy') {
+    guildItem.name = `${replacement.name} Guild`;
+    if (replacement.id) guildItem.anchor = replacement.id;
+  }
+
+  renderSevenLayerGuild(generatedPlan.guild);
+  closeGuildEditModal();
+}
+
+function closeGuildEditModal() {
+  const modal = document.getElementById('guildEditModal');
+  if (modal) modal.classList.add('hidden');
+}
+
 // Close modal on click outside
 window.addEventListener('click', (e) => {
   const modal = document.getElementById('savedSitesModal');
   if (e.target === modal) closeSavedSites();
+  const guildModal = document.getElementById('guildEditModal');
+  if (e.target === guildModal) closeGuildEditModal();
 });
 
 // Close modal on Escape key
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeSavedSites();
+  if (e.key === 'Escape') {
+    closeSavedSites();
+    closeGuildEditModal();
+  }
 });
 
 // ── 7-LAYER GUILD RENDERER ──────────────────────────────────────────────────
@@ -780,15 +1009,7 @@ function renderSevenLayerGuild(guild) {
   if (!guild || typeof guild !== 'object') return;
 
   const guilds = Array.isArray(guild) ? guild : [guild];
-  const layerDefinitions = [
-    { label: '1. Canopy', keys: ['layer1_canopy'] },
-    { label: '2. Sub-Canopy', keys: ['layer2_low_tree'] },
-    { label: '3. Shrub', keys: ['layer3_shrub'] },
-    { label: '4. Herbaceous', keys: ['layer4_herbaceous', 'layer4'] },
-    { label: '5. Ground Cover', keys: ['layer5_ground_cover', 'layer6_soil_surface', 'layer5'] },
-    { label: '6. Root', keys: ['layer6_rhizosphere', 'layer5_rhizosphere', 'layer6'] },
-    { label: '7. Vine', keys: ['layer7_vertical', 'layer7'] }
-  ];
+  const layerDefinitions = GUILD_LAYER_DEFINITIONS;
 
   const getLayerValue = (guildItem, keys) => {
     const layers = guildItem.layers || guildItem;
@@ -867,13 +1088,16 @@ function renderSevenLayerGuild(guild) {
 
   guilds.forEach((guildItem, index) => {
     const title = formatGuildTitle(guildItem, index);
-    htmlParts.push('<div class="seven-layer-card" style="background:#e8f5e9;border:1px solid #4caf50;border-radius:8px;padding:16px;margin:16px 0;">');
-    htmlParts.push('  <h4 style="margin:0 0 12px 0;">' + escapeHtml(title) + '</h4>');
+    htmlParts.push('<div class="seven-layer-card" style="background:var(--info-bg);border:1px solid var(--success-border);border-radius:8px;padding:16px;margin:16px 0;">');
+    htmlParts.push('  <div class="guild-card-header">');
+    htmlParts.push('    <h4 style="margin:0;">' + escapeHtml(title) + '</h4>');
+    htmlParts.push('    <button class="btn btn-guild-edit" type="button" data-guild-index="' + index + '" onclick="openGuildEditModal(' + index + ')">Edit</button>');
+    htmlParts.push('  </div>');
     htmlParts.push('  <div class="layer-grid" style="display:grid;gap:8px;">');
 
     layerDefinitions.forEach(layerDef => {
       const layer = getLayerValue(guildItem, layerDef.keys);
-      htmlParts.push('    <div style="display:flex;flex-direction:column;gap:4px;background:#f9f9f9;border-radius:6px;padding:10px 12px;">');
+      htmlParts.push('    <div style="display:flex;flex-direction:column;gap:4px;background:var(--panel-bg);border-radius:6px;padding:10px 12px;">');
       htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(layerDef.label) + '</strong>');
       htmlParts.push('      <span style="font-size:1.05em;">' + escapeHtml(renderLayerPlant(layer)) + '</span>');
       const meta = renderLayerMeta(layer);
