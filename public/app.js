@@ -304,7 +304,9 @@ function renderCanopyClimateWarnings(plan = generatedPlan) {
     const alternatives = Array.isArray(warning.alternatives) && warning.alternatives.length
       ? ` Consider ${warning.alternatives.slice(0, 3).join(', ')} as better-fit anchors.`
       : '';
-    return `<div class="implementation-climate-note"><strong>Climate note:</strong> ${escapeHtml(plantName)} was chosen by you, but ${escapeHtml(warning.reason || 'it may be marginal for this mapped site climate.')}${escapeHtml(alternatives)}</div>`;
+    const reason = String(warning.reason || 'it may be marginal for this mapped site climate.')
+      .replace(new RegExp(`^${escapeRegExp(String(plantName))}\\b`, 'i'), 'it');
+    return `<div class="implementation-climate-note"><strong>Climate note:</strong> ${escapeHtml(plantName)} was chosen by you, but ${escapeHtml(reason)}${escapeHtml(alternatives)}</div>`;
   }).join('');
 }
 
@@ -1140,12 +1142,22 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
   const equinoxAlt = (90 - absLat).toFixed(1);
   const zoneNumber = parseInt(String(climate?.hardinessZone || '').match(/^(\d+)/)?.[1] || '0', 10);
   const koppenCode = String(climate?.koppenCode || '');
+  const frostFreeDays = Number(climate?.frostDates?.light?.avgFrostFreeDays || climate?.growingSeasonDays || 0);
   const isTropical = koppenCode.startsWith('A') || zoneNumber >= 12;
+  const isColdSubarctic = /^(Dfc|Dfd|ET|EF)/.test(koppenCode) || (frostFreeDays > 0 && frostFreeDays < 150);
   const isWarmFrostFree = isTropical || zoneNumber >= 10 || climate?.frostDates?.light?.frostFree === true;
   const winterImpact = isWarmFrostFree
     ? 'Lower seasonal light still matters, but frost is unlikely. Use wind protection, mulch, and dry-season irrigation planning for young tropical plants.'
     : 'Low-angle light, long shadows. Southern exposure critical. Protect tender plants from frost.';
-  const recommendationItems = isWarmFrostFree
+  const recommendationItems = isColdSubarctic
+    ? [
+        '<li><strong>South-facing microclimates:</strong> Prioritize the warmest protected sites for fruit trees, berries, and season-extension beds.</li>',
+        '<li><strong>Wind and snow management:</strong> Use fences, hedges, and structures to reduce winter wind, catch insulating snow, and protect young trees.</li>',
+        '<li><strong>Short-season crops:</strong> Favor early-ripening cultivars and short-season annuals; use starts, row cover, low tunnels, or greenhouse space for warm-season crops.</li>',
+        '<li><strong>Wildlife protection:</strong> Fence or cage young trees and berry plantings where moose, deer, rabbits, or voles may browse trunks and shoots.</li>',
+        '<li><strong>Soil warming and drainage:</strong> Use raised beds, mulch timing, and well-drained planting mounds where cold or wet soil delays spring growth.</li>'
+      ]
+    : isWarmFrostFree
     ? [
         '<li><strong>Young tropical trees:</strong> Use mulch, wind protection, and temporary afternoon shade while roots establish.</li>',
         '<li><strong>Dry-season irrigation:</strong> Group thirsty crops where drip lines or rain catchment can support them.</li>',
@@ -1314,6 +1326,10 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+function escapeRegExp(text) {
+  return String(text || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function formatDate(isoString) {
