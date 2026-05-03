@@ -31,7 +31,9 @@
         "potassium_mining",
         "biomass",
         "pollinator_forage",
-        "chop_and_drop"
+        "chop_and_drop",
+        "dynamic_accumulator",
+        "soil_building"
       ],
       "guild_compat": []
     },
@@ -73,7 +75,9 @@
         "nitrogen",
         "iron",
         "magnesium",
-        "compost_activator"
+        "compost_activator",
+        "dynamic_accumulator",
+        "soil_building"
       ],
       "guild_compat": []
     },
@@ -113,7 +117,8 @@
       "functions": [
         "dynamic_accumulator",
         "pollinator_forage",
-        "edible_greens"
+        "edible_greens",
+        "soil_building"
       ],
       "guild_compat": []
     },
@@ -320,11 +325,16 @@
       "functions": [
         "root_crop",
         "soil_opening",
-        "quick_yield"
+        "quick_yield",
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage",
+        "shade"
       ],
       "guild_compat": []
     },
-    "climate_affinity": "humid"
+    "climate_affinity": "humid",
+    "pollination_note": "A/B flowering types and compatible cultivars can improve fruit set."
   },
   "watercress": {
     "id": "watercress",
@@ -3023,7 +3033,8 @@
       "functions": [
         "predatory_insect_habitat",
         "compost_activator",
-        "medicinal"
+        "medicinal",
+        "dynamic_accumulator"
       ],
       "guild_compat": []
     },
@@ -3418,7 +3429,9 @@
       "functions": [
         "edible_leaves",
         "biomass",
-        "chop_and_drop"
+        "chop_and_drop",
+        "edible_leaf",
+        "soil_building"
       ],
       "guild_compat": []
     },
@@ -3485,7 +3498,9 @@
       "functions": [
         "edible_calyx",
         "edible_leaves",
-        "pollinator_forage"
+        "pollinator_forage",
+        "edible_leaf",
+        "hedgerow"
       ],
       "guild_compat": []
     },
@@ -3518,7 +3533,9 @@
       "functions": [
         "nitrogen_fixation",
         "edible_seed",
-        "chop_and_drop"
+        "chop_and_drop",
+        "biomass",
+        "soil_building"
       ],
       "guild_compat": []
     },
@@ -4137,5 +4154,1542 @@
     },
     "climate_affinity": "any",
     "pollination_note": "Cultivar-dependent; some plants are dioecious, while some named cultivars may be self-fertile."
+  },
+  "breadfruit": {
+    "id": "breadfruit",
+    "common_name": "Breadfruit",
+    "botanical_name": "Artocarpus altilis",
+    "taxonomy": {
+      "type": "tropical_staple_tree",
+      "layer": "canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "staple_crop",
+        "shade",
+        "windbreak"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "coconut": {
+    "id": "coconut",
+    "common_name": "Coconut",
+    "botanical_name": "Cocos nucifera",
+    "taxonomy": {
+      "type": "tropical_palm",
+      "layer": "canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "palm"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "windbreak",
+        "shade"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Wind and insect pollinated; tropical and frost-sensitive."
+  },
+  "mango": {
+    "id": "mango",
+    "common_name": "Mango",
+    "botanical_name": "Mangifera indica",
+    "taxonomy": {
+      "type": "tropical_fruit_tree",
+      "layer": "canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "evergreen_structure",
+        "pollinator_forage",
+        "shade"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "jackfruit": {
+    "id": "jackfruit",
+    "common_name": "Jackfruit",
+    "botanical_name": "Artocarpus heterophyllus",
+    "taxonomy": {
+      "type": "tropical_staple_tree",
+      "layer": "canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "staple_crop",
+        "shade",
+        "evergreen_structure"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "macadamia": {
+    "id": "macadamia",
+    "common_name": "Macadamia",
+    "botanical_name": "Macadamia integrifolia",
+    "taxonomy": {
+      "type": "nut_tree",
+      "layer": "canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nut_production",
+        "evergreen_structure",
+        "pollinator_forage",
+        "shade"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "ice_cream_bean": {
+    "id": "ice_cream_bean",
+    "common_name": "Ice Cream Bean / Inga",
+    "botanical_name": "Inga edulis",
+    "taxonomy": {
+      "type": "nitrogen_fixing_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "fruit_production",
+        "shade",
+        "biomass",
+        "chop_and_drop",
+        "soil_building"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "tropical_almond": {
+    "id": "tropical_almond",
+    "common_name": "Tropical Almond",
+    "botanical_name": "Terminalia catappa",
+    "taxonomy": {
+      "type": "tropical_nut_tree",
+      "layer": "canopy"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "deciduous_tropical_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nut_production",
+        "shade",
+        "windbreak",
+        "drought_tolerance"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "cultivation_note": "Check local suitability and spread concerns before planting in sensitive coastal or island ecosystems."
+  },
+  "papaya": {
+    "id": "papaya",
+    "common_name": "Papaya",
+    "botanical_name": "Carica papaya",
+    "taxonomy": {
+      "type": "tropical_fruit_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "short_lived_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "quick_yield",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Sex expression and cross-pollination needs vary by cultivar."
+  },
+  "banana": {
+    "id": "banana",
+    "common_name": "Banana",
+    "botanical_name": "Musa spp.",
+    "taxonomy": {
+      "type": "tropical_perennial_herb",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "clumping_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "staple_crop",
+        "biomass",
+        "chop_and_drop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Usually propagated vegetatively; fruiting depends on cultivar and climate."
+  },
+  "plantain": {
+    "id": "plantain",
+    "common_name": "Plantain Banana",
+    "botanical_name": "Musa x paradisiaca",
+    "taxonomy": {
+      "type": "tropical_perennial_herb",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "clumping_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "staple_crop",
+        "biomass",
+        "chop_and_drop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Usually propagated vegetatively; fruiting depends on cultivar and climate."
+  },
+  "guava": {
+    "id": "guava",
+    "common_name": "Guava",
+    "botanical_name": "Psidium guajava",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "cultivation_note": "Check local spread concerns before planting in sensitive island ecosystems."
+  },
+  "surinam_cherry": {
+    "id": "surinam_cherry",
+    "common_name": "Surinam Cherry",
+    "botanical_name": "Eugenia uniflora",
+    "taxonomy": {
+      "type": "fruiting_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "hedgerow",
+        "wildlife_food"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "cultivation_note": "Check local spread concerns before planting."
+  },
+  "starfruit": {
+    "id": "starfruit",
+    "common_name": "Starfruit / Carambola",
+    "botanical_name": "Averrhoa carambola",
+    "taxonomy": {
+      "type": "fruiting_low_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "cacao": {
+    "id": "cacao",
+    "common_name": "Cacao",
+    "botanical_name": "Theobroma cacao",
+    "taxonomy": {
+      "type": "understory_tree_crop",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "understory_evergreen"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_seed",
+        "shade"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "cultivation_note": "Best as a humid tropical understory crop with wind protection and partial shade."
+  },
+  "coffee": {
+    "id": "coffee",
+    "common_name": "Coffee",
+    "botanical_name": "Coffea arabica",
+    "taxonomy": {
+      "type": "understory_shrub_crop",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_seed",
+        "shade",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "cultivation_note": "Best as a humid, frost-free understory crop."
+  },
+  "pineapple": {
+    "id": "pineapple",
+    "common_name": "Pineapple",
+    "botanical_name": "Ananas comosus",
+    "taxonomy": {
+      "type": "perennial_bromeliad",
+      "layer": "ground_cover"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "rosette_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "ground_cover",
+        "living_mulch",
+        "erosion_control",
+        "drought_tolerance"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "acerola": {
+    "id": "acerola",
+    "common_name": "Acerola / Barbados Cherry",
+    "botanical_name": "Malpighia emarginata",
+    "taxonomy": {
+      "type": "fruiting_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "evergreen_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "hedgerow"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "chaya": {
+    "id": "chaya",
+    "common_name": "Chaya",
+    "botanical_name": "Cnidoscolus aconitifolius",
+    "taxonomy": {
+      "type": "edible_leaf_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_leaf",
+        "biomass",
+        "chop_and_drop",
+        "hedgerow",
+        "living_fence"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "cultivation_note": "Cooked leafy green; do not treat as a raw-use recommendation."
+  },
+  "lemongrass": {
+    "id": "lemongrass",
+    "common_name": "Lemongrass",
+    "botanical_name": "Cymbopogon citratus",
+    "taxonomy": {
+      "type": "perennial_grass",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "clumping_grass"
+    },
+    "permaculture_role": {
+      "functions": [
+        "culinary_herb",
+        "medicinal",
+        "erosion_control",
+        "biomass",
+        "aromatic",
+        "pest_deterrent"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "turmeric": {
+    "id": "turmeric",
+    "common_name": "Turmeric",
+    "botanical_name": "Curcuma longa",
+    "taxonomy": {
+      "type": "rhizome_crop",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "rhizomatous_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "culinary_herb",
+        "medicinal",
+        "edible_root",
+        "rhizome_crop",
+        "aromatic"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "ginger": {
+    "id": "ginger",
+    "common_name": "Ginger",
+    "botanical_name": "Zingiber officinale",
+    "taxonomy": {
+      "type": "rhizome_crop",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "rhizomatous_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "culinary_herb",
+        "medicinal",
+        "edible_root",
+        "rhizome_crop",
+        "aromatic"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "taro": {
+    "id": "taro",
+    "common_name": "Taro / Kalo",
+    "botanical_name": "Colocasia esculenta",
+    "taxonomy": {
+      "type": "tropical_root_crop",
+      "layer": "root"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "corm_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "staple_crop",
+        "edible_root",
+        "root_crop",
+        "moisture_crop",
+        "erosion_control"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "sweet_potato": {
+    "id": "sweet_potato",
+    "common_name": "Sweet Potato",
+    "botanical_name": "Ipomoea batatas",
+    "taxonomy": {
+      "type": "tropical_root_groundcover",
+      "layer": "ground_cover"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "sprawling_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "staple_crop",
+        "edible_root",
+        "ground_cover",
+        "living_mulch",
+        "erosion_control"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "cassava": {
+    "id": "cassava",
+    "common_name": "Cassava",
+    "botanical_name": "Manihot esculenta",
+    "taxonomy": {
+      "type": "tropical_root_crop",
+      "layer": "root"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "staple_crop",
+        "edible_root",
+        "drought_tolerance"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any",
+    "cultivation_note": "Use appropriate preparation practices for edible roots; not a raw-use recommendation."
+  },
+  "ube_yam": {
+    "id": "ube_yam",
+    "common_name": "Yam / Ube",
+    "botanical_name": "Dioscorea alata",
+    "taxonomy": {
+      "type": "tropical_root_vine",
+      "layer": "root"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "twining_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "staple_crop",
+        "edible_root",
+        "vertical_growth"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "arrowroot": {
+    "id": "arrowroot",
+    "common_name": "Arrowroot",
+    "botanical_name": "Maranta arundinacea",
+    "taxonomy": {
+      "type": "rhizome_crop",
+      "layer": "root"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "rhizomatous_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "staple_crop",
+        "edible_root",
+        "soil_building"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "peanut": {
+    "id": "peanut",
+    "common_name": "Peanut",
+    "botanical_name": "Arachis hypogaea",
+    "taxonomy": {
+      "type": "annual_legume",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "annual"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "edible_seed",
+        "soil_building"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "perennial_peanut": {
+    "id": "perennial_peanut",
+    "common_name": "Perennial Peanut",
+    "botanical_name": "Arachis glabrata",
+    "taxonomy": {
+      "type": "perennial_legume_groundcover",
+      "layer": "ground_cover"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "spreading_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "ground_cover",
+        "living_mulch",
+        "soil_building",
+        "erosion_control"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "passionfruit": {
+    "id": "passionfruit",
+    "common_name": "Passionfruit",
+    "botanical_name": "Passiflora edulis",
+    "taxonomy": {
+      "type": "fruiting_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "climbing_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "vertical_growth",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "pollination_note": "Cross-pollination often improves fruit set."
+  },
+  "chayote": {
+    "id": "chayote",
+    "common_name": "Chayote",
+    "botanical_name": "Sechium edule",
+    "taxonomy": {
+      "type": "perennial_vine_crop",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "climbing_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "vertical_growth",
+        "edible_root",
+        "biomass"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "malabar_spinach": {
+    "id": "malabar_spinach",
+    "common_name": "Malabar Spinach",
+    "botanical_name": "Basella alba",
+    "taxonomy": {
+      "type": "edible_leaf_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "twining_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_leaf",
+        "leafy_green",
+        "vertical_growth",
+        "quick_yield"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "winged_bean": {
+    "id": "winged_bean",
+    "common_name": "Winged Bean",
+    "botanical_name": "Psophocarpus tetragonolobus",
+    "taxonomy": {
+      "type": "tropical_legume_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "climbing_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "edible_seed",
+        "edible_leaf",
+        "edible_root",
+        "vertical_growth",
+        "soil_building"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "cranberry_hibiscus": {
+    "id": "cranberry_hibiscus",
+    "common_name": "Cranberry Hibiscus",
+    "botanical_name": "Hibiscus acetosella",
+    "taxonomy": {
+      "type": "edible_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_leaves",
+        "pollinator_forage",
+        "biomass",
+        "quick_yield"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "katuk": {
+    "id": "katuk",
+    "common_name": "Katuk",
+    "botanical_name": "Sauropus androgynus",
+    "taxonomy": {
+      "type": "edible_shrub",
+      "layer": "shrub"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible_leaves",
+        "living_fence",
+        "biomass",
+        "shade_tolerant"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "cultivation_note": "Traditional leafy vegetable; use conservative preparation and local guidance."
+  },
+  "okinawan_spinach": {
+    "id": "okinawan_spinach",
+    "common_name": "Okinawan Spinach",
+    "botanical_name": "Gynura bicolor",
+    "taxonomy": {
+      "type": "perennial_green",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "spreading_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "leafy_green",
+        "ground_cover",
+        "quick_yield",
+        "edible_greens"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "brazilian_spinach": {
+    "id": "brazilian_spinach",
+    "common_name": "Brazilian Spinach",
+    "botanical_name": "Alternanthera sissoo",
+    "taxonomy": {
+      "type": "perennial_green",
+      "layer": "ground_cover"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "spreading_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "leafy_green",
+        "ground_cover",
+        "living_mulch",
+        "edible_greens"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "gotu_kola": {
+    "id": "gotu_kola",
+    "common_name": "Gotu Kola",
+    "botanical_name": "Centella asiatica",
+    "taxonomy": {
+      "type": "creeping_herb",
+      "layer": "ground_cover"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "creeping_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "ground_cover",
+        "living_mulch",
+        "moisture_crop",
+        "medicinal"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "seminole_pumpkin": {
+    "id": "seminole_pumpkin",
+    "common_name": "Seminole Pumpkin",
+    "botanical_name": "Cucurbita moschata",
+    "taxonomy": {
+      "type": "annual_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "sprawling_annual_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "living_mulch",
+        "ground_cover",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "culantro": {
+    "id": "culantro",
+    "common_name": "Culantro",
+    "botanical_name": "Eryngium foetidum",
+    "taxonomy": {
+      "type": "culinary_herb",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "short_lived_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible",
+        "culinary_herb",
+        "shade_tolerant",
+        "quick_yield"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "thai_basil": {
+    "id": "thai_basil",
+    "common_name": "Thai Basil",
+    "botanical_name": "Ocimum basilicum var. thyrsiflora",
+    "taxonomy": {
+      "type": "culinary_herb",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": false,
+      "chill_hours_required": null,
+      "growth_habit": "warm_season_herb"
+    },
+    "permaculture_role": {
+      "functions": [
+        "culinary_herb",
+        "pollinator_forage",
+        "aromatic",
+        "pest_deterrent"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "society_garlic": {
+    "id": "society_garlic",
+    "common_name": "Society Garlic",
+    "botanical_name": "Tulbaghia violacea",
+    "taxonomy": {
+      "type": "perennial_herb",
+      "layer": "herbaceous"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "clumping_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "edible",
+        "pest_deterrent",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "sunshine_mimosa": {
+    "id": "sunshine_mimosa",
+    "common_name": "Sunshine Mimosa",
+    "botanical_name": "Mimosa strigillosa",
+    "taxonomy": {
+      "type": "nitrogen_fixing_ground_cover",
+      "layer": "ground_cover"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "creeping_perennial"
+    },
+    "permaculture_role": {
+      "functions": [
+        "ground_cover",
+        "living_mulch",
+        "nitrogen_fixation",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "vanilla": {
+    "id": "vanilla",
+    "common_name": "Vanilla",
+    "botanical_name": "Vanilla planifolia",
+    "taxonomy": {
+      "type": "tropical_orchid_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        11,
+        12,
+        13
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "climbing_orchid"
+    },
+    "permaculture_role": {
+      "functions": [
+        "culinary_herb",
+        "vertical_growth",
+        "shade"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid",
+    "cultivation_note": "Humid tropical understory vine; pollination and curing are specialized."
   }
 }

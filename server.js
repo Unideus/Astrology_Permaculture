@@ -666,20 +666,25 @@ function buildPermaculturePrompt(userData, locationData, climateData = null, fil
     
     // ── Köppen description translation ─────────────────────────────────────
     const koppenDescriptions = {
-      'Cfa': 'Humid Subtropical — hot humid summers, mild winters with occasional freezes',
-      'Cfb': 'Oceanic/Marine — cool wet summers, mild winters',
-      'Csa': 'Hot-Summer Mediterranean — dry summers, mild wet winters',
-      'Csb': 'Warm-Summer Mediterranean — dry summers, cool wet winters',
+      'Cfa': 'Humid subtropical climate',
+      'Cfb': 'Oceanic climate',
+      'Csa': 'Hot-summer Mediterranean climate',
+      'Csb': 'Warm-summer Mediterranean climate',
       'Cwa': 'Humid Subtropical (Monsoon) — hot summers, dry winters',
-      'Dfa': 'Hot-Humid Continental — hot summers, cold winters with deep freezes',
-      'Dfb': 'Warm-Humid Continental — warm summers, cold snowy winters',
+      'Dfa': 'Hot-summer humid continental climate',
+      'Dfb': 'Warm-summer humid continental climate',
       'Dwa': 'Hot-Humid Continental (Monsoon) — hot summers, cold dry winters',
       'Dwb': 'Warm-Humid Continental (Monsoon) — warm summers, cold dry winters',
-      'BSh': 'Semi-Arid Hot — hot dry conditions, limited rainfall',
-      'BSk': 'Semi-Arid Cold — cold dry conditions, limited rainfall',
-      'A': 'Tropical Rainforest — hot and wet year-round',
-      'Am': 'Tropical Monsoon — hot, very wet monsoon season',
-      'Aw': 'Tropical Savanna — hot, distinct dry season'
+      'BSh': 'Hot semi-arid climate',
+      'BSk': 'Cold semi-arid climate',
+      'Af': 'Tropical rainforest climate',
+      'A': 'Tropical rainforest climate',
+      'Am': 'Tropical monsoon climate',
+      'Aw': 'Tropical savanna climate',
+      'As': 'Tropical savanna climate / dry-summer tropical climate',
+      'BWh': 'Hot desert climate',
+      'BWk': 'Cold desert climate',
+      'Dfc': 'Subarctic continental climate'
     };
     const koppenDescription = koppenDescriptions[koppen] || `Köppen ${koppen} classification`;
     
@@ -1076,6 +1081,48 @@ function layerFitLabel(plant, layerKey) {
   return 'other fallback';
 }
 
+function plantPreferenceForCandidate(plant) {
+  const layer = plant.taxonomy?.layer || '';
+  const type = plant.taxonomy?.type || '';
+  const functions = plant.permaculture_role?.functions || [];
+  const roleSet = new Set(functions);
+  const isPerennial = plant.climate_profile?.is_perennial === true ||
+    /perennial|tree|shrub|bramble|vine/.test(type) ||
+    ['canopy', 'sub_canopy', 'low_tree', 'shrub', 'vine', 'ground_cover'].includes(layer);
+  const isWoodyOrStructural = ['canopy', 'sub_canopy', 'low_tree', 'shrub'].includes(layer) ||
+    roleSet.has('hedgerow') ||
+    roleSet.has('evergreen_structure') ||
+    roleSet.has('vertical_growth');
+  const isGuildSupport = [
+    'dynamic_accumulator',
+    'soil_building',
+    'biomass',
+    'chop_and_drop',
+    'compost_activator',
+    'nutrient_accumulator',
+    'potassium_mining',
+    'nitrogen_fixation',
+    'pollinator_forage',
+    'living_mulch',
+    'ground_cover'
+  ].some(role => roleSet.has(role));
+  const isAnnualVegetable = /annual/.test(type) && (
+    layer === 'herbaceous' ||
+    layer === 'root' ||
+    roleSet.has('leafy_green') ||
+    roleSet.has('root_crop') ||
+    roleSet.has('quick_yield') ||
+    roleSet.has('seasonal_yield')
+  );
+
+  let score = 30;
+  if (isWoodyOrStructural) score -= 18;
+  if (isPerennial) score -= 10;
+  if (isGuildSupport) score -= 8;
+  if (isAnnualVegetable) score += 20;
+  return score;
+}
+
 function rankCandidate({ plant, layerKey, climatePriority, currentRoles, currentSalt, currentMinerals, usedIds }) {
   const functions = plant.permaculture_role?.functions || [];
   const salts = plant.bio_logic?.salts || [];
@@ -1087,6 +1134,7 @@ function rankCandidate({ plant, layerKey, climatePriority, currentRoles, current
   const sameSaltMatch = Boolean(currentSaltKey) && salts.some(salt => normalizeSalt(salt) === currentSaltKey);
   const sharedMinerals = salts.filter(salt => currentMinerals.has(salt) || currentMinerals.has(normalizeSalt(salt)));
   const layerFitScore = layerFitScoreForCandidate(plant, layerKey);
+  const preferenceScore = plantPreferenceForCandidate(plant);
   const layerSortScore = (() => {
     if (layerKey !== 'layer5') return layerFitScore;
     if (!isAlreadyUsed && climateFit) return layerFitScore;
@@ -1116,6 +1164,7 @@ function rankCandidate({ plant, layerKey, climatePriority, currentRoles, current
     (sharedRoles.length ? -120 - (sharedRoles.length * 10) : 0) +
     (sameSaltMatch ? -90 : 0) +
     (!sameSaltMatch && sharedMinerals.length ? -45 - (sharedMinerals.length * 5) : 0) +
+    preferenceScore +
     (isAlreadyUsed ? 300 : 0);
 
   return {
@@ -1126,6 +1175,7 @@ function rankCandidate({ plant, layerKey, climatePriority, currentRoles, current
     sharedMinerals,
     layerFitScore,
     layerSortScore,
+    preferenceScore,
     score,
     matchLabels: uniqueLabels
   };
@@ -1490,26 +1540,27 @@ app.post('/api/climate', async (req, res) => {
 
     // Köppen descriptions
     const koppenDescriptions = {
-      'Af': 'Tropical rainforest — hot, humid, no dry season',
-      'Am': 'Tropical monsoon — short dry season',
-      'Aw': 'Tropical savanna — distinct wet/dry seasons',
-      'BWh': 'Hot desert — arid, very hot',
-      'BWk': 'Cold desert — arid, cooler',
-      'BSh': 'Hot semi-arid — steppe, hot',
-      'BSk': 'Cold semi-arid — steppe, cooler',
-      'Csa': 'Mediterranean — hot, dry summer; mild, wet winter',
-      'Csb': 'Warm-summer Mediterranean — mild, dry summer',
-      'Cfa': 'Humid subtropical — hot, humid summer; mild winter',
-      'Cfb': 'Oceanic — mild year-round, no dry season',
+      'Af': 'Tropical rainforest climate',
+      'Am': 'Tropical monsoon climate',
+      'Aw': 'Tropical savanna climate',
+      'As': 'Tropical savanna climate / dry-summer tropical climate',
+      'BWh': 'Hot desert climate',
+      'BWk': 'Cold desert climate',
+      'BSh': 'Hot semi-arid climate',
+      'BSk': 'Cold semi-arid climate',
+      'Csa': 'Hot-summer Mediterranean climate',
+      'Csb': 'Warm-summer Mediterranean climate',
+      'Cfa': 'Humid subtropical climate',
+      'Cfb': 'Oceanic climate',
       'Cfc': 'Subpolar oceanic — cool, short summer',
-      'Dfa': 'Hot-summer humid continental — hot summer, cold winter',
-      'Dfb': 'Warm-summer humid continental — warm summer, cold winter',
-      'Dfc': 'Subarctic — short, cool summer; very cold winter',
+      'Dfa': 'Hot-summer humid continental climate',
+      'Dfb': 'Warm-summer humid continental climate',
+      'Dfc': 'Subarctic continental climate',
       'Dfd': 'Extreme subarctic — short, cool summer; extremely cold winter',
       'ET': 'Tundra — very cold, treeless',
       'EF': 'Ice cap — permanent ice'
     };
-    koppenDescription = koppenDescriptions[koppenCode] || 'Temperate climate';
+    koppenDescription = koppenDescriptions[koppenCode] || (koppenCode ? `Köppen ${koppenCode} classification` : 'Climate classification unavailable');
 
     res.json({
       hardinessZone,
