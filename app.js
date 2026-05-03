@@ -136,6 +136,7 @@ class PermacultureApp {
 
   getPlantClimateFit(plant, zone, koppen = '') {
     const numericZone = Number.parseInt(zone, 10);
+    const koppenCode = String(koppen || '');
     const zones = Array.isArray(plant?.climate_profile?.zones) ? plant.climate_profile.zones : [];
     const minZone = zones.length ? Math.min(...zones) : null;
     const maxZone = zones.length ? Math.max(...zones) : null;
@@ -143,6 +144,9 @@ class PermacultureApp {
     const affinityTarget = this.getClimateAffinityTarget(koppen);
     const affinity = plant?.climate_affinity || 'any';
     const climateFit = !affinityTarget || !affinity || affinity === 'any' || affinity === affinityTarget;
+    const shortSeasonSubarctic = /^Dfc|^Dfd|^ET|^EF/.test(koppenCode);
+    const warmLongSeasonPlant = maxZone !== null && maxZone >= 8 && minZone !== null && minZone >= 5;
+    const contextFit = !(shortSeasonSubarctic && warmLongSeasonPlant);
     const reasons = [];
 
     if (!zoneFit && Number.isFinite(numericZone) && minZone !== null && maxZone !== null) {
@@ -153,10 +157,15 @@ class PermacultureApp {
       reasons.push(`${plant.common_name || plant.id} is mapped for ${affinity} conditions, not ${affinityTarget} conditions.`);
     }
 
+    if (!contextFit) {
+      reasons.push(`${plant.common_name || plant.id} is mapped for warmer or longer-season conditions, while ${koppenCode} indicates a short subarctic/polar growing context.`);
+    }
+
     return {
       zoneFit,
       climateFit,
-      isFit: zoneFit && climateFit,
+      contextFit,
+      isFit: zoneFit && climateFit && contextFit,
       affinityTarget,
       minZone,
       maxZone,
@@ -260,7 +269,7 @@ class PermacultureApp {
     const reason = fit.reasons[0] || `${plant.common_name || plant.id} may be a marginal fit for this site's mapped climate.`;
     const siteClimate = [
       Number.isFinite(Number.parseInt(zone, 10)) ? `Zone ${Number.parseInt(zone, 10)}` : null,
-      fit.affinityTarget || 'mapped climate'
+      koppen || fit.affinityTarget || 'mapped climate'
     ].filter(Boolean).join(' ');
 
     return {
@@ -671,7 +680,7 @@ class PermacultureApp {
         ? (isTropicalFrostFree
           ? 'Establish mineral-profile support plants across understory, shrub, herbaceous, and vine layers during rainy/mild windows.'
           : 'Establish plants selected for mineral-profile support across sub-canopy, shrub, herbaceous, and annual layers.')
-        : 'Establish climate-fit understory, shrub, herbaceous, ground-cover, and vine layers. Cell-salt profiles are not fully mapped yet for many tropical plants.';
+        : 'Establish climate-fit understory, shrub, herbaceous, ground-cover, and vine layers. Cell-salt profiles are not fully mapped yet for some support plants.';
       supportTask.guild_note = hasMappedSaltSupport
         ? (isTropicalFrostFree
           ? 'These plants address the zodiac salt deficiency while adding living cover, biomass, and climate-fit support.'
@@ -1506,7 +1515,7 @@ class PermacultureApp {
         ? (isTropicalFrostFree
           ? 'Establish mineral-profile support plants across understory, shrub, herbaceous, and vine layers during rainy/mild windows.'
           : 'Establish plants selected for mineral-profile support across sub-canopy, shrub, herbaceous, and annual layers.')
-        : 'Establish climate-fit understory, shrub, herbaceous, ground-cover, and vine layers. Cell-salt profiles are not fully mapped yet for many tropical plants.',
+        : 'Establish climate-fit understory, shrub, herbaceous, ground-cover, and vine layers. Cell-salt profiles are not fully mapped yet for some support plants.',
       guild_note: year1HasSaltMatches
         ? (isTropicalFrostFree
           ? `These plants address the zodiac salt deficiency while adding living cover, biomass, and climate-fit support.`
