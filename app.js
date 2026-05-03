@@ -173,6 +173,29 @@ class PermacultureApp {
     };
   }
 
+  isShortSeasonSubarcticContext(koppen = '', climateData = null) {
+    const koppenCode = String(koppen || climateData?.koppenCode || '');
+    const frostFreeDays = Number(climateData?.frostDates?.light?.avgFrostFreeDays || climateData?.growingSeasonDays || 0);
+    return /^Dfc|^Dfd|^ET|^EF/.test(koppenCode) || (frostFreeDays > 0 && frostFreeDays < 150);
+  }
+
+  isEdgeTreeCropForShortSeason(plant) {
+    if (!plant || typeof plant !== 'object') return false;
+    const token = [
+      plant.id,
+      plant.common_name,
+      plant.botanical_name,
+      plant.taxonomy?.layer,
+      plant.taxonomy?.type,
+      ...(plant.permaculture_role?.functions || [])
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    return /(peach|apricot|persimmon|pecan|walnut|chestnut|pear|mulberry)/.test(token);
+  }
+
   getMappedPlantSalts(plant) {
     if (!plant || typeof plant !== 'object') return [];
     return [
@@ -225,8 +248,10 @@ class PermacultureApp {
       .filter(Boolean);
   }
 
-  getSuggestedAnchorIdsForSite(zone, koppen = '', excludedIds = new Set(), limit = 3) {
+  getSuggestedAnchorIdsForSite(zone, koppen = '', excludedIds = new Set(), limit = 3, climateData = null) {
     const compatibleLayers = new Set(['canopy', 'sub_canopy', 'low_tree']);
+    const autoAnchorExclusions = new Set(['autumn_olive_']);
+    const shortSeasonContext = this.isShortSeasonSubarcticContext(koppen, climateData);
     const usefulRoles = new Set([
       'fruit_production',
       'nut_production',
@@ -241,6 +266,7 @@ class PermacultureApp {
 
     return Object.values(this.masterRegistry)
       .filter(plant => plant?.id && !excludedIds.has(plant.id))
+      .filter(plant => !autoAnchorExclusions.has(plant.id))
       .filter(plant => compatibleLayers.has(plant.taxonomy?.layer))
       .map(plant => {
         const fit = this.getPlantClimateFit(plant, zone, koppen);
@@ -249,11 +275,14 @@ class PermacultureApp {
         const preference = this.getPlantPreference(plant);
         const layer = plant.taxonomy?.layer || '';
         const layerScore = layer === 'canopy' ? 0 : 1;
-        return { plant, fit, usefulRoleCount, preference, layerScore };
+        const edgeScore = shortSeasonContext && this.isEdgeTreeCropForShortSeason(plant) ? 1 : 0;
+        return { plant, fit, usefulRoleCount, preference, layerScore, edgeScore };
       })
       .filter(item => item.fit.zoneFit && item.fit.climateFit)
       .sort((a, b) =>
+        a.edgeScore - b.edgeScore ||
         a.layerScore - b.layerScore ||
+        Number(!a.fit.contextFit) - Number(!b.fit.contextFit) ||
         b.usefulRoleCount - a.usefulRoleCount ||
         a.preference.score - b.preference.score ||
         String(a.plant.common_name || a.plant.id).localeCompare(String(b.plant.common_name || b.plant.id))
@@ -661,7 +690,7 @@ class PermacultureApp {
 
     syncTaskPlants(
       plan.year1?.tasks,
-      /salt-linked support plants|climate-fit support plants/i,
+      /salt-linked support plants|mineral-linked support plants|climate-fit support plants/i,
       mergeLayerPlants('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5')
     );
 
@@ -671,11 +700,11 @@ class PermacultureApp {
       mergeLayerPlants('layer4', 'layer5')
     );
 
-    const supportTask = plan.year1?.tasks?.find(t => /salt-linked support plants|climate-fit support plants/i.test(t.task || ''));
+    const supportTask = plan.year1?.tasks?.find(t => /salt-linked support plants|mineral-linked support plants|climate-fit support plants/i.test(t.task || ''));
     if (supportTask) {
       const supportLayers = mergeLayerItems('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5');
       const hasMappedSaltSupport = this.hasMappedSaltSupport(supportLayers, [supportTask.primarySalt]);
-      supportTask.task = hasMappedSaltSupport ? 'Salt-Linked Support Plants' : 'Climate-Fit Support Plants';
+      supportTask.task = hasMappedSaltSupport ? 'Mineral-Linked Support Plants' : 'Climate-Fit Support Plants';
       supportTask.details = hasMappedSaltSupport
         ? (isTropicalFrostFree
           ? 'Establish mineral-profile support plants across understory, shrub, herbaceous, and vine layers during rainy/mild windows.'
@@ -688,7 +717,7 @@ class PermacultureApp {
         : 'This task is based on climate fit and guild function where mapped cell-salt support is thin.';
       if (plan.year1) {
         plan.year1.focus = hasMappedSaltSupport
-          ? `Fill mid-story with salt-linked plants targeting ${supportTask.primarySalt || 'cell salt balance'}`
+          ? `Fill mid-story with mineral-linked plants targeting ${supportTask.primarySalt || 'cell salt balance'}`
           : 'Fill mid-story with climate-fit support plants';
       }
     }
@@ -782,7 +811,8 @@ class PermacultureApp {
       parseInt(siteZone),
       siteKoppen,
       new Set(anchorIds),
-      Math.max(0, 3 - anchorIds.length)
+      Math.max(0, 3 - anchorIds.length),
+      climateData
     );
     for (const suggestedId of suggestedAnchorIds) {
       if (anchorIds.length >= 3) break;
@@ -1490,7 +1520,7 @@ class PermacultureApp {
     let year1Selected = fillGapsY1(year1Candidates, planDepth * 2, siteZone, affinityTarget, ['sub_canopy', 'herbaceous', 'vine', 'shrub']);
     const y1Unique = [...new Set(year1Selected.map(p => p.id))];
     if (y1Unique.length < 5) {
-      // Widen: allow any climate-matched plants, not just salt-linked
+      // Widen: allow any climate-matched plants, not just mineral-linked
       const widenedCandidates = Object.values(this.masterRegistry).filter(p => {
         const zones = p.climate_profile?.zones || [];
         if (zones.length > 0 && (siteZone < zones[0] || siteZone > zones[zones.length - 1])) return false;
@@ -1505,7 +1535,7 @@ class PermacultureApp {
     const year1HasSaltMatches = this.hasMappedSaltSupport(year1Selected, [primarySalt]);
     
     year1Tasks.push({
-      task: year1HasSaltMatches ? 'Salt-Linked Support Plants' : 'Climate-Fit Support Plants',
+      task: year1HasSaltMatches ? 'Mineral-Linked Support Plants' : 'Climate-Fit Support Plants',
       timing: saltSupportTiming,
       plants: year1Selected.map(p => p.common_name),
       botanical: year1Selected.map(p => p.botanical_name).filter(Boolean),
@@ -1753,7 +1783,7 @@ class PermacultureApp {
         title: 'Sub-Canopy, Herbaceous & Vines',
         duration: 'Year 2',
         focus: year1HasSaltMatches
-          ? `Fill mid-story with salt-linked plants targeting ${primarySalt || 'cell salt balance'}`
+          ? `Fill mid-story with mineral-linked plants targeting ${primarySalt || 'cell salt balance'}`
           : 'Fill mid-story with climate-fit support plants',
         tasks: year1Tasks
       },

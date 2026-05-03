@@ -325,6 +325,63 @@ function formatPreferenceGroup(value) {
   return labels[value] || formatPlantToken(value);
 }
 
+function getEdgeClimateContext(plan = generatedPlan) {
+  const climate = plan?.climateData || {};
+  const koppenCode = String(climate.koppenCode || '');
+  const frostFreeDays = Number(climate?.frostDates?.light?.avgFrostFreeDays || climate?.growingSeasonDays || 0);
+  return /^(Dfc|Dfd|ET|EF)/.test(koppenCode) || (frostFreeDays > 0 && frostFreeDays < 150);
+}
+
+function getEdgeClimateCaution(plant = {}, plan = generatedPlan, layerKey = '') {
+  if (!getEdgeClimateContext(plan) || !plant || typeof plant !== 'object') return null;
+
+  const id = String(plant.id || plant.plant || '').toLowerCase();
+  const name = String(plant.name || plant.common_name || plant.plant || '').toLowerCase();
+  const type = String(plant.taxonomy_type || plant.type || '').toLowerCase();
+  const layer = String(plant.taxonomy_layer || plant.taxonomy?.layer || layerKey || '').toLowerCase();
+  const roles = [
+    ...(Array.isArray(plant.roles) ? plant.roles : []),
+    ...(Array.isArray(plant.functions) ? plant.functions : [])
+  ].map(role => String(role).toLowerCase());
+  const token = `${id} ${name} ${type} ${layer} ${roles.join(' ')}`;
+
+  if (/(watermelon|cucumber|zucchini|pumpkin|squash|melon)/.test(token)) {
+    return {
+      label: 'Short-season annual',
+      message: 'Use starts, row cover, low tunnel, greenhouse, or warm microclimate.'
+    };
+  }
+
+  if (/(peach|apricot|persimmon|pecan|walnut|chestnut|pear|mulberry)/.test(token) ||
+      /(canopy|sub_canopy|low_tree|fruit_tree|nut_tree)/.test(token)) {
+    return {
+      label: 'Edge tree crop',
+      message: 'Choose locally proven cold-hardy cultivars/rootstock and protect from winter injury, wildlife browse, and late frosts.'
+    };
+  }
+
+  return null;
+}
+
+function getInvasiveRiskCaution(plant = {}) {
+  if (!plant || typeof plant !== 'object') return null;
+  const token = [
+    plant.id,
+    plant.name,
+    plant.common_name,
+    plant.plant
+  ].filter(Boolean).join(' ').toLowerCase();
+
+  if (/(^|\s)autumn[_\s-]*olive(_|\s|$)/.test(token)) {
+    return {
+      label: 'Invasive risk',
+      message: 'Check local regulations and avoid planting where it may spread.'
+    };
+  }
+
+  return null;
+}
+
 function getRecommendedPlantCategory(plant) {
   const layer = plant?.taxonomy_layer || '';
   const type = plant?.taxonomy_type || '';
@@ -496,6 +553,7 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
   const layerParts = [plant.taxonomy_layer, plant.taxonomy_type].filter(Boolean).map(formatPlantToken);
   const category = getRecommendedPlantCategory(plant);
   const supportsDeficiency = helpsPlanDeficiency(plant, plan);
+  const edgeCaution = getEdgeClimateCaution(plant, plan);
   const mapped = plant.metadata_mapped !== false && Boolean(plant.id || plant.common_name || plant.name);
   const isClimateFallback = plant.recommendation_source === 'climate_fallback';
   const displayMatchLabels = (isClimateFallback
@@ -522,10 +580,12 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
           : '<span class="recommendation-tag muted-tag">Mineral profile not mapped yet</span>'}
       </div>` : ''}
       ${displayMatchLabels.length ? `<div class="recommendation-tags">${displayMatchLabels.map(label => `<span class="recommendation-tag ${/fallback|climate fit|diversity/i.test(label) ? 'preference-tag' : 'role-tag'}">${escapeHtml(label)}</span>`).join('')}</div>` : ''}
+      ${edgeCaution ? `<div class="recommendation-tags"><span class="recommendation-tag warning-tag">${escapeHtml(edgeCaution.label)}</span></div>` : ''}
       ${roles.length ? `<div class="recommendation-tags">${roles.map(role => `<span class="recommendation-tag role-tag">${escapeHtml(formatPlantToken(role))}</span>`).join('')}</div>` : ''}
       <div class="recommendation-tags"><span class="recommendation-tag preference-tag">${escapeHtml(category.label)}</span></div>
       ${supportFunctions.length ? `<p class="recommended-meta"><strong>Cell-salt support:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
       ${whyShown ? `<p class="recommended-meta"><strong>Why shown:</strong> ${escapeHtml(whyShown)}</p>` : ''}
+      ${edgeCaution ? `<p class="recommended-meta"><strong>${escapeHtml(edgeCaution.label)}:</strong> ${escapeHtml(edgeCaution.message)}</p>` : ''}
       ${layerParts.length ? `<p class="recommended-meta"><strong>Layer/type:</strong> ${escapeHtml(layerParts.join(' / '))}</p>` : ''}
       ${plant.climate_affinity ? `<p class="recommended-meta"><strong>Climate:</strong> ${escapeHtml(plant.climate_affinity)}${Array.isArray(plant.zones) && plant.zones.length ? ` · Zones ${escapeHtml(plant.zones.join('-'))}` : ''}</p>` : ''}
       ${!mapped ? '<p class="recommended-meta"><strong>Metadata not mapped yet</strong></p>' : ''}
@@ -1140,6 +1200,13 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
   
   // Equinox: sun declination = 0°
   const equinoxAlt = (90 - absLat).toFixed(1);
+  const isHighLatitudeSun = Number(summerAlt) < 60 || Number(winterAlt) < 15;
+  const summerImpact = isHighLatitudeSun
+    ? 'Long summer days provide strong growing light, but the sun remains lower than in temperate/tropical sites. Use warm, wind-protected exposures for fruiting crops.'
+    : 'Intense overhead light. High evaporation, short shadows. Fruit trees and canopy plants thrive.';
+  const equinoxImpact = isHighLatitudeSun
+    ? 'Moderate-to-low sun angle creates longer shadows. Prioritize southern exposure and avoid shading young plants with buildings, fences, or mature trees.'
+    : 'Balanced light. Moderate shadows. Ideal for most vegetables and understory plants.';
   const zoneNumber = parseInt(String(climate?.hardinessZone || '').match(/^(\d+)/)?.[1] || '0', 10);
   const koppenCode = String(climate?.koppenCode || '');
   const frostFreeDays = Number(climate?.frostDates?.light?.avgFrostFreeDays || climate?.growingSeasonDays || 0);
@@ -1185,14 +1252,14 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
         <h4>☀️ Summer Peak (Jun 21)</h4>
         <p><strong>Sun Angle:</strong> ${summerAlt}° above horizon</p>
         <p><strong>Shadow:</strong> ${shadowLength(summerAlt)} for 10ft tree</p>
-        <p><strong>Impact:</strong> Intense overhead light. High evaporation, short shadows. Fruit trees and canopy plants thrive.</p>
+        <p><strong>Impact:</strong> ${summerImpact}</p>
       </div>
 
       <div class="sun-card sun-equinox">
         <h4>🌿 Equinox (Mar/Sept)</h4>
         <p><strong>Sun Angle:</strong> ${equinoxAlt}° above horizon</p>
         <p><strong>Shadow:</strong> ${shadowLength(equinoxAlt)} for 10ft tree</p>
-        <p><strong>Impact:</strong> Balanced light. Moderate shadows. Ideal for most vegetables and understory plants.</p>
+        <p><strong>Impact:</strong> ${equinoxImpact}</p>
       </div>
 
       <div class="sun-card sun-winter">
@@ -1664,7 +1731,7 @@ function renderSevenLayerGuild(guild) {
     return layer.name || layer.plant || layer.common_name || 'No plants selected yet';
   };
 
-  const renderLayerMeta = (layer) => {
+  const renderLayerMeta = (layer, layerKey = '') => {
     if (!layer || typeof layer !== 'object' || Array.isArray(layer)) return '';
 
     let label = '';
@@ -1700,11 +1767,29 @@ function renderSevenLayerGuild(guild) {
       ? mineralText
       : (layer.salt_content ? 'None mapped' : 'Not mapped yet');
     const roleValue = roleText || 'Not mapped yet';
+    const edgeCaution = getEdgeClimateCaution(layer, generatedPlan, layerKey);
+    const invasiveCaution = getInvasiveRiskCaution(layer);
 
     const metaParts = [];
     if (label) metaParts.push('<span class="guild-badge ' + escapeHtml(badgeClass) + '">' + escapeHtml(label) + '</span>');
+    if (invasiveCaution) metaParts.push('<span class="guild-badge climate-warning">' + escapeHtml(invasiveCaution.label) + '</span>');
+    if (edgeCaution) metaParts.push('<span class="guild-badge climate-warning">' + escapeHtml(edgeCaution.label) + '</span>');
     metaParts.push('<span>' + escapeHtml(mineralLabel) + escapeHtml(mineralValue) + '</span>');
     metaParts.push('<span>Role: ' + escapeHtml(roleValue) + '</span>');
+    if (invasiveCaution) {
+      metaParts.push(
+        '<div class="guild-climate-warning">' +
+          '<span><strong>' + escapeHtml(invasiveCaution.label) + ':</strong> ' + escapeHtml(invasiveCaution.message) + '</span>' +
+        '</div>'
+      );
+    }
+    if (edgeCaution) {
+      metaParts.push(
+        '<div class="guild-climate-warning">' +
+          '<span><strong>' + escapeHtml(edgeCaution.label) + ':</strong> ' + escapeHtml(edgeCaution.message) + '</span>' +
+        '</div>'
+      );
+    }
     if (layer.climate_warning) {
       const warning = layer.climate_warning;
       const alternatives = Array.isArray(warning.alternatives) && warning.alternatives.length
@@ -1723,9 +1808,9 @@ function renderSevenLayerGuild(guild) {
       : '';
   };
 
-  const renderComparisonColumn = (label, layer, className) => {
+  const renderComparisonColumn = (label, layer, className, layerKey = '') => {
     const plantName = renderLayerPlant(layer);
-    const meta = renderLayerMeta(layer);
+    const meta = renderLayerMeta(layer, layerKey);
     return '<div class="guild-comparison-column ' + className + '">' +
       '<div class="guild-comparison-label">' + escapeHtml(label) + '</div>' +
       '<div class="guild-comparison-plant">' + escapeHtml(plantName) + '</div>' +
@@ -1768,12 +1853,12 @@ function renderSevenLayerGuild(guild) {
       if (hasUnsavedLayerEdit) {
         const originalLayer = originalGuildLayers.has(dirtyKey) ? originalGuildLayers.get(dirtyKey) : null;
         htmlParts.push('      <div class="guild-layer-comparison">');
-        htmlParts.push('        ' + renderComparisonColumn('Original', originalLayer, 'original'));
-        htmlParts.push('        ' + renderComparisonColumn('Pending', layer, 'pending'));
+        htmlParts.push('        ' + renderComparisonColumn('Original', originalLayer, 'original', layerDef.canonicalKey));
+        htmlParts.push('        ' + renderComparisonColumn('Pending', layer, 'pending', layerDef.canonicalKey));
         htmlParts.push('      </div>');
       } else {
         htmlParts.push('      <span style="font-size:1.05em;">' + escapeHtml(renderLayerPlant(layer)) + '</span>');
-        const meta = renderLayerMeta(layer);
+        const meta = renderLayerMeta(layer, layerDef.canonicalKey);
         if (meta) htmlParts.push('      ' + meta);
       }
       htmlParts.push('    </div>');

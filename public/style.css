@@ -709,6 +709,12 @@ select:-webkit-autofill:focus {
   color: var(--pending-text);
 }
 
+.warning-tag {
+  border-color: var(--warning-border);
+  background: var(--warning-bg);
+  color: var(--pending-text);
+}
+
 .muted-tag,
 .recommendation-empty {
   color: var(--text-light);
