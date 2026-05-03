@@ -202,6 +202,335 @@ async function generatePlan() {
   }
 }
 
+function getPlanMineralNeeds(plan = generatedPlan) {
+  return [...new Set((plan?.cellSalts?.deficient || [])
+    .map(salt => salt.cell_salt)
+    .filter(Boolean))];
+}
+
+function normalizeToken(value = '') {
+  return String(value).trim().toLowerCase();
+}
+
+function getRecommendedPlantName(plant) {
+  return plant?.name || plant?.common_name || plant?.plant || 'Unknown plant';
+}
+
+function getRecommendedPlantMinerals(plant) {
+  return [...new Set((plant?.minerals || []).map(mineral => String(mineral).trim()).filter(Boolean))];
+}
+
+function getRecommendedPlantRoles(plant) {
+  return [...new Set((plant?.roles || []).map(role => String(role).trim()).filter(Boolean))];
+}
+
+function getRecommendedPlantPreferenceGroup(plant) {
+  return plant?.preference_group || 'general';
+}
+
+function getRecommendedPlantMatchLabels(plant) {
+  return [...new Set((plant?.matchLabels || []).map(label => String(label).trim()).filter(Boolean))];
+}
+
+function helpsPlanDeficiency(plant, plan = generatedPlan) {
+  const needs = new Set(getPlanMineralNeeds(plan).map(normalizeToken));
+  return getRecommendedPlantMinerals(plant).some(mineral => needs.has(normalizeToken(mineral)));
+}
+
+function normalizeRecommendationKey(value = '') {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+function getGuildUsedPlantKeys(plan = generatedPlan) {
+  const keys = new Set();
+  const guilds = Array.isArray(plan?.guild) ? plan.guild : [];
+
+  guilds.forEach(guild => {
+    const layers = guild?.layers || {};
+    Object.values(layers).forEach(layer => {
+      if (!layer) return;
+      if (typeof layer === 'string') {
+        const key = normalizeRecommendationKey(layer.split('[')[0]);
+        if (key && key !== 'none') keys.add(key);
+        return;
+      }
+      if (typeof layer !== 'object' || Array.isArray(layer)) return;
+      [layer.id, layer.name, layer.common_name, layer.plant].forEach(value => {
+        const key = normalizeRecommendationKey(value);
+        if (key && key !== 'none') keys.add(key);
+      });
+    });
+  });
+
+  return keys;
+}
+
+function isRecommendedPlantUsedInGuild(plant, usedKeys) {
+  return [plant?.id, plant?.plant, plant?.name, plant?.common_name]
+    .map(normalizeRecommendationKey)
+    .filter(Boolean)
+    .some(key => usedKeys.has(key));
+}
+
+function shouldShowUnmappedRecommendationNote(plants = []) {
+  const climateFallbackCount = plants.filter(plant => plant?.recommendation_source === 'climate_fallback').length;
+  const mappedWithoutMineralsCount = plants.filter(plant =>
+    plant?.metadata_mapped === true &&
+    getRecommendedPlantMinerals(plant).length === 0
+  ).length;
+  return climateFallbackCount >= 3 || mappedWithoutMineralsCount >= 5;
+}
+
+function getCanopyClimateWarnings(plan = generatedPlan) {
+  const guilds = Array.isArray(plan?.guild) ? plan.guild : [];
+  return guilds
+    .map(guild => guild?.layers?.layer1_canopy)
+    .filter(layer => layer?.climate_warning)
+    .map(layer => ({
+      plantName: layer.name || layer.common_name || layer.plant || 'This canopy',
+      warning: layer.climate_warning
+    }));
+}
+
+function renderCanopyClimateWarnings(plan = generatedPlan) {
+  const warnings = getCanopyClimateWarnings(plan);
+  if (!warnings.length) return '';
+
+  return warnings.map(({ plantName, warning }) => {
+    const alternatives = Array.isArray(warning.alternatives) && warning.alternatives.length
+      ? ` Consider ${warning.alternatives.slice(0, 3).join(', ')} as better-fit anchors.`
+      : '';
+    return `<div class="implementation-climate-note"><strong>Climate note:</strong> ${escapeHtml(plantName)} was chosen by you, but ${escapeHtml(warning.reason || 'it may be marginal for this mapped site climate.')}${escapeHtml(alternatives)}</div>`;
+  }).join('');
+}
+
+function formatPlantToken(value) {
+  return String(value || '').replace(/_/g, ' ');
+}
+
+function formatPreferenceGroup(value) {
+  const labels = {
+    annual_crop: 'Annual crops',
+    woody_structural: 'Woody / structural',
+    guild_soil_support: 'Guild / soil support',
+    perennial: 'Perennials',
+    general: 'General'
+  };
+  return labels[value] || formatPlantToken(value);
+}
+
+function getRecommendedPlantCategory(plant) {
+  const layer = plant?.taxonomy_layer || '';
+  const type = plant?.taxonomy_type || '';
+  const roles = new Set(getRecommendedPlantRoles(plant));
+
+  if (layer === 'canopy' || /fruit_tree|nut_tree/.test(type)) return { value: 'canopy_tree', label: 'Canopy / tree crop' };
+  if (layer === 'low_tree' || layer === 'sub_canopy') return { value: 'low_tree', label: 'Low tree / understory' };
+  if (layer === 'shrub') return { value: 'shrub', label: 'Shrub / hedge crop' };
+  if (layer === 'vine') return { value: 'vine', label: 'Vine / trellis crop' };
+  if (layer === 'root' || /rhizome|root/.test(type)) return { value: 'root', label: 'Root / rhizome crop' };
+  if (layer === 'ground_cover' || roles.has('living_mulch') || roles.has('ground_cover')) return { value: 'ground_cover', label: 'Ground cover / living mulch' };
+  if (layer === 'herbaceous' && (roles.has('leafy_green') || roles.has('edible_greens') || roles.has('edible_leaf'))) return { value: 'leafy_green', label: 'Leafy green / herbaceous crop' };
+  if (layer === 'herbaceous' && (roles.has('aromatic') || roles.has('medicinal') || roles.has('pest_deterrent') || roles.has('culinary_herb'))) return { value: 'herb_aromatic', label: 'Herb / aromatic support' };
+  if (roles.has('nitrogen_fixation')) return { value: 'nitrogen_fixer', label: 'Nitrogen fixer / soil support' };
+  if (['dynamic_accumulator', 'soil_building', 'biomass', 'chop_and_drop'].some(role => roles.has(role))) return { value: 'soil_building', label: 'Soil-building support' };
+  return { value: plant?.recommendation_source === 'climate_fallback' ? 'climate_support' : (plant?.preference_group || 'general'), label: 'Climate-fit support plant' };
+}
+
+function getRecommendedPlantControls(plan = generatedPlan) {
+  const plants = Array.isArray(plan?.recommendedPlants) ? plan.recommendedPlants : [];
+  const roles = [...new Set(plants.flatMap(getRecommendedPlantRoles))].sort((a, b) => a.localeCompare(b));
+  const minerals = [...new Set(plants.flatMap(getRecommendedPlantMinerals))].sort((a, b) => a.localeCompare(b));
+  const categoryMap = new Map();
+  plants.map(getRecommendedPlantCategory).forEach(category => categoryMap.set(category.value, category.label));
+  const categories = [...categoryMap.entries()]
+    .map(([value, label]) => ({ value, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  return { roles, minerals, categories };
+}
+
+function resetRecommendedPlantFilters() {
+  const sortSelect = document.getElementById('recommendedSort');
+  const roleFilter = document.getElementById('recommendedRoleFilter');
+  const mineralFilter = document.getElementById('recommendedMineralFilter');
+  const typeFilter = document.getElementById('recommendedTypeFilter');
+  if (sortSelect) sortSelect.value = 'best';
+  if (roleFilter) roleFilter.value = '';
+  if (mineralFilter) mineralFilter.value = '';
+  if (typeFilter) typeFilter.value = '';
+  renderRecommendedPlants(generatedPlan);
+}
+
+function renderRecommendedPlants(plan = generatedPlan) {
+  const container = document.getElementById('recommendedPlants');
+  if (!container) return;
+
+  const plants = Array.isArray(plan?.recommendedPlants) ? plan.recommendedPlants : [];
+  const mineralNeeds = getPlanMineralNeeds(plan);
+  const { roles, minerals, categories } = getRecommendedPlantControls(plan);
+  const selectedSort = document.getElementById('recommendedSort')?.value || 'best';
+  const selectedRole = document.getElementById('recommendedRoleFilter')?.value || '';
+  const selectedMineral = document.getElementById('recommendedMineralFilter')?.value || '';
+  const selectedType = document.getElementById('recommendedTypeFilter')?.value || '';
+
+  const filteredPlants = plants
+    .filter(plant => !selectedRole || getRecommendedPlantRoles(plant).includes(selectedRole))
+    .filter(plant => !selectedMineral || getRecommendedPlantMinerals(plant).includes(selectedMineral))
+    .filter(plant => !selectedType || getRecommendedPlantCategory(plant).value === selectedType)
+    .sort((a, b) => {
+      const nameA = getRecommendedPlantName(a);
+      const nameB = getRecommendedPlantName(b);
+      if (selectedSort === 'plant') return nameA.localeCompare(nameB);
+      if (selectedSort === 'role') {
+        const roleA = getRecommendedPlantRoles(a)[0] || 'zzzz';
+        const roleB = getRecommendedPlantRoles(b)[0] || 'zzzz';
+        return roleA.localeCompare(roleB) || nameA.localeCompare(nameB);
+      }
+      if (selectedSort === 'mineral') {
+        const mineralA = getRecommendedPlantMinerals(a)[0] || 'zzzz';
+        const mineralB = getRecommendedPlantMinerals(b)[0] || 'zzzz';
+        return mineralA.localeCompare(mineralB) || nameA.localeCompare(nameB);
+      }
+      if (selectedSort === 'layer') {
+        const layerA = a.taxonomy_layer || 'zzzz';
+        const layerB = b.taxonomy_layer || 'zzzz';
+        return String(layerA).localeCompare(String(layerB)) || nameA.localeCompare(nameB);
+      }
+      const deficiencyDiff = Number(helpsPlanDeficiency(b, plan)) - Number(helpsPlanDeficiency(a, plan));
+      if (deficiencyDiff !== 0) return deficiencyDiff;
+      const preferenceDiff = (a.preference_score ?? 50) - (b.preference_score ?? 50);
+      if (preferenceDiff !== 0) return preferenceDiff;
+      const mappedDiff = Number(Boolean(b.metadata_mapped)) - Number(Boolean(a.metadata_mapped));
+      if (mappedDiff !== 0) return mappedDiff;
+      return nameA.localeCompare(nameB);
+    });
+
+  const usedKeys = getGuildUsedPlantKeys(plan);
+  const usedPlants = filteredPlants.filter(plant => isRecommendedPlantUsedInGuild(plant, usedKeys));
+  const additionalPlants = filteredPlants.filter(plant => !isRecommendedPlantUsedInGuild(plant, usedKeys));
+  const bothGroupsVisible = usedPlants.length > 0 && additionalPlants.length > 0;
+  const usedLimit = bothGroupsVisible ? 6 : 12;
+  const additionalLimit = bothGroupsVisible ? 6 : 12;
+  const visibleUsedPlants = usedPlants.slice(0, usedLimit);
+  const visibleAdditionalPlants = additionalPlants.slice(0, additionalLimit);
+  const visibleCount = visibleUsedPlants.length + visibleAdditionalPlants.length;
+  const showUnmappedNote = shouldShowUnmappedRecommendationNote(plants);
+  const showGlobalUnmappedNote = Boolean(showUnmappedNote);
+  const needsHtml = mineralNeeds.length
+    ? mineralNeeds.map(mineral => `<span class="recommendation-tag mineral-tag">${escapeHtml(mineral)}</span>`).join('')
+    : '<span class="recommendation-empty">No mineral deficiencies detected or mapped.</span>';
+  const renderRecommendationGroup = (title, groupPlants) => groupPlants.length ? `
+    <div class="recommended-group">
+      <h4>${escapeHtml(title)}</h4>
+      <div class="plant-list recommended-plant-list">
+        ${groupPlants.map(plant => renderRecommendedPlantCard(plant, plan, { showGlobalUnmappedNote })).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  container.innerHTML = `
+    <div class="plan-mineral-needs">
+      <strong>Plan mineral needs</strong>
+      <div class="recommendation-tags">${needsHtml}</div>
+    </div>
+    ${showUnmappedNote ? `
+      <div class="educational-note recommendation-context-note">
+        Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Koppen climate, layer role, and guild diversity - not because they directly match a deficiency.
+      </div>
+    ` : ''}
+    <div class="recommended-controls">
+      <label>
+        <span>Sort by</span>
+        <select id="recommendedSort" onchange="renderRecommendedPlants(generatedPlan)">
+          <option value="best"${selectedSort === 'best' ? ' selected' : ''}>Best match</option>
+          <option value="plant"${selectedSort === 'plant' ? ' selected' : ''}>Plant name</option>
+          <option value="role"${selectedSort === 'role' ? ' selected' : ''}>Role</option>
+          <option value="mineral"${selectedSort === 'mineral' ? ' selected' : ''}>Mineral / Cell Salt</option>
+          <option value="layer"${selectedSort === 'layer' ? ' selected' : ''}>Layer</option>
+        </select>
+      </label>
+      <label>
+        <span>Filter by role</span>
+        <select id="recommendedRoleFilter" onchange="renderRecommendedPlants(generatedPlan)">
+          <option value="">All roles</option>
+          ${roles.map(role => `<option value="${escapeHtml(role)}"${selectedRole === role ? ' selected' : ''}>${escapeHtml(formatPlantToken(role))}</option>`).join('')}
+        </select>
+      </label>
+      <label>
+        <span>Filter by mineral</span>
+        <select id="recommendedMineralFilter" onchange="renderRecommendedPlants(generatedPlan)">
+          <option value="">All minerals</option>
+          ${minerals.map(mineral => `<option value="${escapeHtml(mineral)}"${selectedMineral === mineral ? ' selected' : ''}>${escapeHtml(mineral)}</option>`).join('')}
+        </select>
+      </label>
+      <label>
+        <span>Filter by plant type</span>
+        <select id="recommendedTypeFilter" onchange="renderRecommendedPlants(generatedPlan)">
+          <option value="">All types</option>
+          ${categories.map(category => `<option value="${escapeHtml(category.value)}"${selectedType === category.value ? ' selected' : ''}>${escapeHtml(category.label)}</option>`).join('')}
+        </select>
+      </label>
+      <button class="btn btn-small" type="button" onclick="resetRecommendedPlantFilters()">Reset filters</button>
+    </div>
+    ${filteredPlants.length ? '<p class="note">These recommended candidates are grouped by whether they already appear in your guild design.</p>' : ''}
+    ${renderRecommendationGroup('Recommended plants used in this plan', visibleUsedPlants)}
+    ${renderRecommendationGroup('Additional recommended candidates', visibleAdditionalPlants)}
+    ${!filteredPlants.length ? '<p class="note">No recommended plants match the current filters.</p>' : ''}
+    ${filteredPlants.length > visibleCount ?
+      `<p class="note">Showing ${visibleCount} of ${filteredPlants.length} recommended plants${plants.length !== filteredPlants.length ? ' matching current filters' : ''}.</p>` : ''}
+  `;
+}
+
+function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
+  const name = getRecommendedPlantName(plant);
+  const minerals = getRecommendedPlantMinerals(plant);
+  const roles = getRecommendedPlantRoles(plant);
+  const matchLabels = getRecommendedPlantMatchLabels(plant);
+  const supportFunctions = [...new Set((plant.functions || []).map(item => String(item).trim()).filter(Boolean))];
+  const layerParts = [plant.taxonomy_layer, plant.taxonomy_type].filter(Boolean).map(formatPlantToken);
+  const category = getRecommendedPlantCategory(plant);
+  const supportsDeficiency = helpsPlanDeficiency(plant, plan);
+  const mapped = plant.metadata_mapped !== false && Boolean(plant.id || plant.common_name || plant.name);
+  const isClimateFallback = plant.recommendation_source === 'climate_fallback';
+  const displayMatchLabels = (isClimateFallback
+    ? matchLabels.filter(label => !/cell-salt mapping/i.test(label))
+    : matchLabels
+  ).slice(0, 3);
+  const fallbackMineralNote = isClimateFallback && minerals.length === 0
+    ? 'Climate-fit recommendation. Cell-salt profile not mapped yet.'
+    : '';
+  const whyShown = options.showGlobalUnmappedNote && fallbackMineralNote
+    ? (plant.recommendation_source === 'climate_fallback' ? 'Climate fit and guild diversity.' : plant.recommendation_reason || '')
+    : fallbackMineralNote || plant.recommendation_reason || '';
+
+  return `
+    <div class="plant-item recommended-plant-card">
+      <div class="recommended-card-header">
+        <h4>${escapeHtml(formatPlantToken(name))}</h4>
+        ${supportsDeficiency ? '<span class="recommendation-badge helps">Helps deficiency</span>' : ''}
+      </div>
+      ${plant.botanical_name ? `<p class="recommended-botanical">${escapeHtml(plant.botanical_name)}</p>` : ''}
+      ${minerals.length || !isClimateFallback ? `<div class="recommendation-tags">
+        ${minerals.length
+          ? minerals.map(mineral => `<span class="recommendation-tag mineral-tag">${escapeHtml(mineral)}</span>`).join('')
+          : '<span class="recommendation-tag muted-tag">Mineral profile not mapped yet</span>'}
+      </div>` : ''}
+      ${displayMatchLabels.length ? `<div class="recommendation-tags">${displayMatchLabels.map(label => `<span class="recommendation-tag ${/fallback|climate fit|diversity/i.test(label) ? 'preference-tag' : 'role-tag'}">${escapeHtml(label)}</span>`).join('')}</div>` : ''}
+      ${roles.length ? `<div class="recommendation-tags">${roles.map(role => `<span class="recommendation-tag role-tag">${escapeHtml(formatPlantToken(role))}</span>`).join('')}</div>` : ''}
+      <div class="recommendation-tags"><span class="recommendation-tag preference-tag">${escapeHtml(category.label)}</span></div>
+      ${supportFunctions.length ? `<p class="recommended-meta"><strong>Cell-salt support:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
+      ${whyShown ? `<p class="recommended-meta"><strong>Why shown:</strong> ${escapeHtml(whyShown)}</p>` : ''}
+      ${layerParts.length ? `<p class="recommended-meta"><strong>Layer/type:</strong> ${escapeHtml(layerParts.join(' / '))}</p>` : ''}
+      ${plant.climate_affinity ? `<p class="recommended-meta"><strong>Climate:</strong> ${escapeHtml(plant.climate_affinity)}${Array.isArray(plant.zones) && plant.zones.length ? ` · Zones ${escapeHtml(plant.zones.join('-'))}` : ''}</p>` : ''}
+      ${!mapped ? '<p class="recommended-meta"><strong>Metadata not mapped yet</strong></p>' : ''}
+    </div>
+  `;
+}
+
 function displayResults(plan) {
   document.getElementById('step2').classList.add('hidden');
   document.getElementById('results').classList.remove('hidden');
@@ -260,7 +589,7 @@ function displayResults(plan) {
   // Render map and sun analysis
   if (loc.latitude && loc.longitude) {
     renderMap(loc.latitude, loc.longitude, plan.siteInfo.address);
-    drawPlantSunAnalysis(loc.latitude, loc.longitude);
+    drawPlantSunAnalysis(loc.latitude, loc.longitude, climate);
   } else {
     document.getElementById('siteMap').innerHTML = '<p class="note">Location map unavailable</p>';
   }
@@ -314,18 +643,7 @@ function displayResults(plan) {
       </p>
     `;
   } else {
-    document.getElementById('recommendedPlants').innerHTML = `
-      <div class="plant-list">
-        ${plan.recommendedPlants.slice(0, 12).map(plant => `
-          <div class="plant-item">
-            <h4>${plant.plant.replace(/_/g, ' ')}</h4>
-            <p><strong>Rich in:</strong> ${plant.minerals.join(', ')}</p>
-          </div>
-        `).join('')}
-      </div>
-      ${plan.recommendedPlants.length > 12 ? 
-        `<p class="note">Showing 12 of ${plan.recommendedPlants.length} recommended plants. Full list in downloadable plan.</p>` : ''}
-    `;
+    renderRecommendedPlants(plan);
   };
 
   // 3-Year Plan
@@ -377,11 +695,15 @@ function displayResults(plan) {
                 seen.add(key);
                 return true;
               });
+            const climateWarningHtml = /canopy|tree.?plant/i.test(task.task || '')
+              ? renderCanopyClimateWarnings(plan)
+              : '';
             return `
             <div class="task-item">
               <strong>${task.task || 'Task'} - ${task.timing || ''}</strong>
               ${displayPlants.length ? `<p>Plants: ${displayPlants.join(', ')}</p>` : ''}
               <p>${task.details || ''}</p>
+              ${climateWarningHtml}
             </div>`;
           }).join('')}
         </div>
@@ -439,6 +761,9 @@ function displayResults(plan) {
   // Moon Calendar
   const moon = plan.moonCalendar;
   document.getElementById('moonCalendar').innerHTML = `
+    <div class="educational-note moon-guidance-note">
+      This prototype shows basic moon-phase planting guidance. A full date-based planting calendar with crop-specific timing is planned.
+    </div>
     <div class="moon-phase">
       <div class="moon-card">
         <h4>🌒 Waxing Moon</h4>
@@ -607,16 +932,26 @@ function startOver() {
 }
 
 function updateSaveControls() {
-  const saveChangesBtn = document.getElementById('saveChangesBtn');
-  const saveAsNewBtn = document.getElementById('saveAsNewBtn');
-  if (saveChangesBtn) {
-    const canSaveChanges = Boolean(currentSavedSite?.siteId && planDirty);
-    saveChangesBtn.disabled = !canSaveChanges;
-    saveChangesBtn.classList.toggle('hidden', !canSaveChanges);
-  }
-  if (saveAsNewBtn) {
-    saveAsNewBtn.disabled = !generatedPlan;
-  }
+  const canSaveChanges = Boolean(currentSavedSite?.siteId && planDirty);
+  const canSaveAsNew = Boolean(generatedPlan);
+  [
+    {
+      saveChangesBtn: document.getElementById('saveChangesBtn'),
+      saveAsNewBtn: document.getElementById('saveAsNewBtn')
+    },
+    {
+      saveChangesBtn: document.getElementById('bottomSaveChangesBtn'),
+      saveAsNewBtn: document.getElementById('bottomSaveAsNewBtn')
+    }
+  ].forEach(({ saveChangesBtn, saveAsNewBtn }) => {
+    if (saveChangesBtn) {
+      saveChangesBtn.disabled = !canSaveChanges;
+      saveChangesBtn.classList.toggle('hidden', !canSaveChanges);
+    }
+    if (saveAsNewBtn) {
+      saveAsNewBtn.disabled = !canSaveAsNew;
+    }
+  });
 }
 
 function hasPendingGuildEdits(guildIndex) {
@@ -786,7 +1121,7 @@ function downloadPlan() {
 }
 
 
-function drawPlantSunAnalysis(lat, lon) {
+function drawPlantSunAnalysis(lat, lon, climate = {}) {
   const container = document.getElementById('plantSunAnalysis');
   if (!container) return;
 
@@ -803,6 +1138,28 @@ function drawPlantSunAnalysis(lat, lon) {
   
   // Equinox: sun declination = 0°
   const equinoxAlt = (90 - absLat).toFixed(1);
+  const zoneNumber = parseInt(String(climate?.hardinessZone || '').match(/^(\d+)/)?.[1] || '0', 10);
+  const koppenCode = String(climate?.koppenCode || '');
+  const isTropical = koppenCode.startsWith('A') || zoneNumber >= 12;
+  const isWarmFrostFree = isTropical || zoneNumber >= 10 || climate?.frostDates?.light?.frostFree === true;
+  const winterImpact = isWarmFrostFree
+    ? 'Lower seasonal light still matters, but frost is unlikely. Use wind protection, mulch, and dry-season irrigation planning for young tropical plants.'
+    : 'Low-angle light, long shadows. Southern exposure critical. Protect tender plants from frost.';
+  const recommendationItems = isWarmFrostFree
+    ? [
+        '<li><strong>Young tropical trees:</strong> Use mulch, wind protection, and temporary afternoon shade while roots establish.</li>',
+        '<li><strong>Dry-season irrigation:</strong> Group thirsty crops where drip lines or rain catchment can support them.</li>',
+        '<li><strong>Living soil cover:</strong> Keep ground covered with sweet potato, perennial peanut, or other living mulch to reduce heat and erosion.</li>',
+        '<li><strong>Salt and wind exposure:</strong> Place sensitive plants behind shrubs, palms, hedges, or other wind-filtering structure.</li>',
+        '<li><strong>Understory crops:</strong> Use bananas, taro, ginger, turmeric, cacao, or coffee where partial shade and moisture are available.</li>'
+      ]
+    : [
+        '<li><strong>South-facing beds:</strong> Sunniest all year. Best for fruit trees, tomatoes, peppers, squash.</li>',
+        '<li><strong>East-facing beds:</strong> Morning sun, afternoon shade. Good for leafy greens, herbs, strawberries.</li>',
+        '<li><strong>West-facing beds:</strong> Hot afternoon sun. Good for Mediterranean herbs, drought-tolerant perennials.</li>',
+        '<li><strong>North-facing beds:</strong> Coolest, most shade. Best for shade-tolerant plants: hostas, ferns, mushrooms.</li>',
+        '<li><strong>Under deciduous trees:</strong> Full sun in winter (when bare), dappled shade in summer. Perfect for shade-loving understory.</li>'
+      ];
 
   // Shadow length for a 10ft tree
   function shadowLength(sunAltDeg) {
@@ -830,18 +1187,14 @@ function drawPlantSunAnalysis(lat, lon) {
         <h4>❄️ Winter Low (Dec 21)</h4>
         <p><strong>Sun Angle:</strong> ${winterAlt}° above horizon</p>
         <p><strong>Shadow:</strong> ${shadowLength(winterAlt)} for 10ft tree</p>
-        <p><strong>Impact:</strong> Low-angle light, long shadows. Southern exposure critical. Protect tender plants from frost.</p>
+        <p><strong>Impact:</strong> ${winterImpact}</p>
       </div>
     </div>
 
     <div class="sun-recommendations">
       <h4>🌱 Planting Recommendations</h4>
       <ul>
-        <li><strong>South-facing beds:</strong> Sunniest all year. Best for fruit trees, tomatoes, peppers, squash.</li>
-        <li><strong>East-facing beds:</strong> Morning sun, afternoon shade. Good for leafy greens, herbs, strawberries.</li>
-        <li><strong>West-facing beds:</strong> Hot afternoon sun. Good for Mediterranean herbs, drought-tolerant perennials.</li>
-        <li><strong>North-facing beds:</strong> Coolest, most shade. Best for shade-tolerant plants: hostas, ferns, mushrooms.</li>
-        <li><strong>Under deciduous trees:</strong> Full sun in winter (when bare), dappled shade in summer. Perfect for shade-loving understory.</li>
+        ${recommendationItems.join('')}
       </ul>
     </div>
   `;
@@ -1302,8 +1655,9 @@ function renderSevenLayerGuild(guild) {
     let badgeClass = '';
     if (layer.tier === 'Anchor') {
       const isChosen = layer.selection_reason === 'Chosen by you';
-      label = (isChosen ? 'Chosen by you' : 'Suggested') + ' · Canopy anchor';
-      badgeClass = isChosen ? 'chosen-by-you' : 'suggested-anchor';
+      const hasClimateWarning = Boolean(layer.climate_warning);
+      label = (isChosen ? 'Chosen by you' : 'Suggested') + (hasClimateWarning ? ' · climate warning' : ' · Canopy anchor');
+      badgeClass = hasClimateWarning ? 'climate-warning' : (isChosen ? 'chosen-by-you' : 'suggested-anchor');
     } else if (layer.tier === 'A') {
       label = 'Mineral match' + (layer.salt_content ? ' · ' + layer.salt_content : '');
       badgeClass = 'mineral-match';
@@ -1335,6 +1689,18 @@ function renderSevenLayerGuild(guild) {
     if (label) metaParts.push('<span class="guild-badge ' + escapeHtml(badgeClass) + '">' + escapeHtml(label) + '</span>');
     metaParts.push('<span>' + escapeHtml(mineralLabel) + escapeHtml(mineralValue) + '</span>');
     metaParts.push('<span>Role: ' + escapeHtml(roleValue) + '</span>');
+    if (layer.climate_warning) {
+      const warning = layer.climate_warning;
+      const alternatives = Array.isArray(warning.alternatives) && warning.alternatives.length
+        ? '<span><strong>Better-fit alternatives:</strong> ' + escapeHtml(warning.alternatives.join(', ')) + '</span>'
+        : '';
+      metaParts.push(
+        '<div class="guild-climate-warning">' +
+          '<span><strong>Climate note:</strong> ' + escapeHtml(warning.reason || 'This user-selected canopy may be marginal for the mapped site climate.') + '</span>' +
+          alternatives +
+        '</div>'
+      );
+    }
 
     return metaParts.length
       ? '<div class="guild-plant-meta">' + metaParts.join('') + '</div>'

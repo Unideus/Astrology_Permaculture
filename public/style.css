@@ -312,6 +312,18 @@ select:-webkit-autofill:focus {
   }
 }
 
+@media (max-width: 640px) {
+  .btn-group,
+  .results-save-controls {
+    flex-direction: column;
+  }
+
+  .btn-group .btn,
+  .results-save-controls .btn {
+    width: 100%;
+  }
+}
+
 .btn {
   padding: 12px 24px;
   border: none;
@@ -405,6 +417,43 @@ select:-webkit-autofill:focus {
   display: none;
 }
 
+.bottom-save-area {
+  margin: 28px 0 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-bg-alt);
+}
+
+.bottom-save-label {
+  margin-bottom: 10px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.preview-upgrade-note {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--pending-border);
+  border-left: 4px solid var(--pending-border);
+  border-radius: 8px;
+  background: var(--pending-bg);
+  color: var(--pending-text);
+  font-size: 0.92rem;
+}
+
+.preview-upgrade-note.compact {
+  margin-bottom: 12px;
+}
+
+.preview-upgrade-note strong {
+  color: var(--pending-text);
+}
+
+.bottom-results-save-controls {
+  margin-bottom: 0;
+}
+
 .prototype-feedback-card {
   display: grid;
   gap: 3px;
@@ -460,6 +509,21 @@ select:-webkit-autofill:focus {
   border-radius: 4px;
   margin-top: 15px;
   font-size: 0.95rem;
+}
+
+.educational-note {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--info-border);
+  border-radius: 8px;
+  background: var(--panel-bg-alt);
+  color: var(--text-light);
+  font-size: 0.92rem;
+}
+
+.educational-note strong {
+  color: var(--primary);
 }
 
 .coming-soon-card {
@@ -543,6 +607,130 @@ select:-webkit-autofill:focus {
   color: var(--text-light);
 }
 
+.btn-small {
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.plan-mineral-needs,
+.recommended-controls {
+  margin-bottom: 16px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-bg-alt);
+}
+
+.plan-mineral-needs strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+.recommended-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.recommended-controls label {
+  display: grid;
+  gap: 5px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.recommended-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.recommended-card-header h4 {
+  margin-bottom: 0;
+}
+
+.recommendation-context-note,
+.moon-guidance-note {
+  margin-bottom: 16px;
+}
+
+.recommended-group {
+  margin-top: 18px;
+}
+
+.recommended-group h4 {
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.recommended-botanical,
+.recommended-meta {
+  margin-top: 8px;
+}
+
+.recommendation-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.recommendation-tag,
+.recommendation-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: var(--panel-bg-alt);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.mineral-tag {
+  border-color: var(--info-border);
+  background: var(--info-bg);
+}
+
+.role-tag {
+  border-color: var(--success-border);
+  background: var(--success-bg);
+}
+
+.preference-tag {
+  border-color: var(--pending-border);
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
+.muted-tag,
+.recommendation-empty {
+  color: var(--text-light);
+}
+
+.recommendation-badge.helps {
+  flex-shrink: 0;
+  border-color: var(--pending-border);
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
+@media (max-width: 760px) {
+  .recommended-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .recommended-controls .btn {
+    width: 100%;
+  }
+}
+
 .plan-timeline {
   margin-top: 20px;
 }
@@ -572,6 +760,16 @@ select:-webkit-autofill:focus {
   color: var(--primary);
   display: block;
   margin-bottom: 5px;
+}
+
+.implementation-climate-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--warning-border);
+  border-radius: 6px;
+  background: var(--warning-bg);
+  color: var(--text);
+  font-size: 0.9rem;
 }
 
 .moon-phase {
@@ -1261,6 +1459,28 @@ footer {
   color: #455a64;
 }
 
+.guild-badge.climate-warning {
+  background: var(--warning-bg);
+  color: var(--pending-text);
+  border: 1px solid var(--warning-border);
+}
+
+.guild-climate-warning {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--warning-border);
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: var(--warning-bg);
+  color: var(--text);
+}
+
+.guild-climate-warning strong {
+  color: var(--pending-text);
+}
+
 body.dark-mode header {
   background: #1f3f28;
   color: #f4fff4;
@@ -1419,6 +1639,12 @@ body.dark-mode .guild-badge.climate-fit {
 body.dark-mode .guild-badge.suggested-anchor {
   background: #303a3d;
   color: #d7e2e5;
+}
+
+body.dark-mode .guild-badge.climate-warning {
+  background: var(--warning-bg);
+  color: var(--pending-text) !important;
+  border-color: var(--warning-border);
 }
 
 body.dark-mode .sun-recommendations li,

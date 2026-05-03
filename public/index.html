@@ -119,6 +119,10 @@
 
         <div class="result-card">
           <h3>🧪 Deficient Cell Salts</h3>
+          <div class="educational-note">
+            <strong>How to read this:</strong>
+            These are the plan's mineral/cell-salt targets from the app's traditional matching framework. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested. This is garden-planning context, not medical diagnosis or treatment guidance.
+          </div>
           <div id="cellSalts"></div>
           <p class="note">These cell salts are deficient based on your sun sign(s). The recommended plants are rich in these minerals.</p>
         </div>
@@ -130,12 +134,33 @@
 
         <div class="result-card" id="sevenLayerGuildCard" style="display:none">
           <h3>🌿 7-Layer Edible Guild</h3>
+          <div class="educational-note">
+            <strong>What is a guild?</strong>
+            A guild is a small plant community built around an anchor plant. The seven layers are canopy, sub-canopy, shrub, herbaceous, ground cover, root, and vine. Strong guilds balance food production, soil building, pollinator support, living mulch, nutrient cycling, and climate fit. Editing a layer swaps a plant while preserving the design role when possible.
+          </div>
           <div id="sevenLayerGuild"></div>
         </div>
 
         <div class="result-card">
           <h3>🌿 Recommended Plants</h3>
+          <div class="educational-note">
+            These candidates are ranked from the current plan's mineral needs plus available registry metadata. Use filters to inspect the list by role, layer, plant type, or mineral/cell-salt support. Review and save the plan before treating the list as finalized.
+          </div>
+          <div class="preview-upgrade-note">
+            <strong>Free preview:</strong> This page shows a limited shortlist of recommended plants so you can review the plan structure and climate fit. The Complete PDF Plan includes the expanded plant list, plant profiles, substitutions, and detailed implementation notes.
+          </div>
           <div id="recommendedPlants"></div>
+        </div>
+
+        <div class="bottom-save-area">
+          <p class="bottom-save-label">Finished reviewing plant recommendations?</p>
+          <p class="preview-upgrade-note compact">
+            <strong>Want the complete planting plan?</strong> The Complete PDF Plan unlocks the expanded recommendation list, detailed plant notes, alternatives, and a printable implementation schedule.
+          </p>
+          <div class="results-save-controls bottom-results-save-controls">
+            <button id="bottomSaveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled>Save Changes</button>
+            <button id="bottomSaveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()">Save As New</button>
+          </div>
         </div>
 
         <div class="result-card">
@@ -144,13 +169,12 @@
         </div>
 
         <div class="result-card">
-          <h3>🌙 Moon Planting Calendar</h3>
+          <h3>🌙 Basic Moon Planting Guidance</h3>
           <div id="moonCalendar"></div>
         </div>
 
         <div class="btn-group">
           <button class="btn" onclick="startOver()">Start Over</button>
-          <button class="btn btn-secondary" onclick="saveAsNewSite()">💾 Save As New</button>
           <button class="btn btn-primary" onclick="downloadPlan()">Print / Save PDF</button>
         </div>
         <p class="coming-soon-note">Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”</p>
