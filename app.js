@@ -134,6 +134,35 @@ class PermacultureApp {
     return null;
   }
 
+  getClimateWarningContext(zone, koppen = '', climateData = null) {
+    const rawZoneLabel = climateData?.hardinessZone || (Number.isFinite(Number.parseInt(zone, 10)) ? String(Number.parseInt(zone, 10)) : '');
+    const zoneLabel = rawZoneLabel
+      ? (/^zone\b/i.test(String(rawZoneLabel)) ? String(rawZoneLabel) : `Zone ${rawZoneLabel}`)
+      : 'this mapped zone';
+    const code = String(koppen || climateData?.koppenCode || '');
+    const frostFreeDays = Number(climateData?.frostDates?.light?.avgFrostFreeDays || climateData?.growingSeasonDays || 0);
+    let climatePhrase = code || 'mapped climate';
+
+    if (code === 'Dfa') climatePhrase = 'humid continental climate with cold winters and a limited frost-free season';
+    else if (code === 'Dfb') climatePhrase = 'humid continental climate with cool summers and a limited frost-free season';
+    else if (code === 'Dfc') climatePhrase = 'subarctic or very short-season climate';
+    else if (code === 'Dfd') climatePhrase = 'severe subarctic climate';
+    else if (code === 'ET') climatePhrase = 'tundra climate';
+    else if (code === 'EF') climatePhrase = 'ice-cap climate';
+    else if (code === 'Cfa') climatePhrase = 'humid subtropical climate';
+    else if (code === 'Cfb') climatePhrase = 'temperate oceanic climate';
+
+    const frostPhrase = frostFreeDays > 0 && !/limited frost-free|short-season|subarctic|tundra|ice-cap/i.test(climatePhrase)
+      ? ` with about ${Math.round(frostFreeDays)} frost-free days`
+      : '';
+
+    return {
+      zoneLabel,
+      climatePhrase,
+      sitePhrase: `${zoneLabel} with a ${climatePhrase}${frostPhrase}`
+    };
+  }
+
   getPlantClimateFit(plant, zone, koppen = '') {
     const numericZone = Number.parseInt(zone, 10);
     const koppenCode = String(koppen || '');
@@ -144,7 +173,7 @@ class PermacultureApp {
     const affinityTarget = this.getClimateAffinityTarget(koppen);
     const affinity = plant?.climate_affinity || 'any';
     const climateFit = !affinityTarget || !affinity || affinity === 'any' || affinity === affinityTarget;
-    const shortSeasonSubarctic = /^Dfc|^Dfd|^ET|^EF/.test(koppenCode);
+    const shortSeasonSubarctic = this.isColdShortSeasonSite(numericZone, koppenCode);
     const warmLongSeasonPlant = maxZone !== null && maxZone >= 8 && minZone !== null && minZone >= 5;
     const contextFit = !(shortSeasonSubarctic && warmLongSeasonPlant);
     const reasons = [];
@@ -158,7 +187,8 @@ class PermacultureApp {
     }
 
     if (!contextFit) {
-      reasons.push(`${plant.common_name || plant.id} is mapped for warmer or longer-season conditions, while ${koppenCode} indicates a short subarctic/polar growing context.`);
+      const context = this.getClimateWarningContext(numericZone, koppenCode);
+      reasons.push(`${plant.common_name || plant.id} is mapped for warmer or longer-season conditions, while this site has a ${context.climatePhrase}.`);
     }
 
     return {
@@ -174,9 +204,16 @@ class PermacultureApp {
   }
 
   isShortSeasonSubarcticContext(koppen = '', climateData = null) {
+    return this.isColdShortSeasonSite(null, koppen, climateData);
+  }
+
+  isColdShortSeasonSite(zone = null, koppen = '', climateData = null) {
+    const numericZone = Number.parseInt(zone ?? climateData?.hardinessZone, 10);
     const koppenCode = String(koppen || climateData?.koppenCode || '');
     const frostFreeDays = Number(climateData?.frostDates?.light?.avgFrostFreeDays || climateData?.growingSeasonDays || 0);
-    return /^Dfc|^Dfd|^ET|^EF/.test(koppenCode) || (frostFreeDays > 0 && frostFreeDays < 150);
+    return /^(Dfb|Dfc|Dfd|ET|EF)/.test(koppenCode) ||
+      (Number.isFinite(numericZone) && numericZone <= 5) ||
+      (frostFreeDays > 0 && frostFreeDays < 150);
   }
 
   isEdgeTreeCropForShortSeason(plant) {
@@ -194,6 +231,86 @@ class PermacultureApp {
       .toLowerCase();
 
     return /(peach|apricot|persimmon|pecan|walnut|chestnut|pear|mulberry)/.test(token);
+  }
+
+  getColdShortSeasonCandidateScore(plant, zone = null, koppen = '', climateData = null) {
+    if (!this.isColdShortSeasonSite(zone, koppen, climateData) || !plant) return 0;
+
+    const coldPriorityIds = new Set([
+      'apple_',
+      'sour_cherry',
+      'cornelian_cherry',
+      'nanking_cherry',
+      'american_plum',
+      'chokecherry',
+      'crabapple',
+      'saskatoon_serviceberry',
+      'honeyberry',
+      'aronia',
+      'black_currant_',
+      'gooseberry',
+      'red_raspberry_',
+      'black_raspberry',
+      'blackberry',
+      'strawberry',
+      'nettle',
+      'dandelion',
+      'yarrow_',
+      'comfrey',
+      'french_sorrel_',
+      'white_clover_',
+      'rhubarb',
+      'asparagus',
+      'horseradish',
+      'beet',
+      'cabbage',
+      'sauerkraut_cabbage',
+      'kimchi_cabbage',
+      'kale',
+      'swiss_chard',
+      'beet_greens',
+      'barley',
+      'oats',
+      'rye',
+      'fox_grape_',
+      'hardy_kiwi',
+      'hops',
+      'schisandra',
+      'groundnut_apios'
+    ]);
+    const token = [
+      plant.id,
+      plant.common_name,
+      plant.botanical_name,
+      plant.taxonomy?.layer,
+      plant.taxonomy?.type,
+      plant.climate_affinity,
+      ...(plant.permaculture_role?.functions || [])
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    const fit = this.getPlantClimateFit(plant, zone, koppen);
+    const isShortSeasonAnnual = /(watermelon|cucumber|zucchini|pumpkin|squash|melon)/.test(token);
+    const isWarmOrArid = /(tropical|subtropical|warm|heat|arid|drought)/.test(token) || plant.climate_affinity === 'arid';
+
+    if (coldPriorityIds.has(plant.id)) return 0;
+    if (!fit.contextFit || this.isEdgeTreeCropForShortSeason(plant)) return 6;
+    if (isShortSeasonAnnual) return 5;
+    if (isWarmOrArid) return 4;
+    if (fit.climateFit) return 1;
+    return 3;
+  }
+
+  getColdShortSeasonAffinityPenalty(plant, zone = null, koppen = '', climateData = null, hasMineralMatch = false) {
+    if (!this.isColdShortSeasonSite(zone, koppen, climateData) || !plant) return 0;
+
+    const affinityTarget = this.getClimateAffinityTarget(koppen || climateData?.koppenCode || '');
+    const affinity = plant.climate_affinity || 'any';
+    if (affinityTarget === 'humid' && affinity === 'arid') {
+      return hasMineralMatch ? 2 : 5;
+    }
+    return 0;
   }
 
   getMappedPlantSalts(plant) {
@@ -221,9 +338,24 @@ class PermacultureApp {
     });
   }
 
-  getCanopyClimateAlternatives(plant, zone, koppen = '', limit = 5) {
+  getCanopyClimateAlternatives(plant, zone, koppen = '', limit = 5, climateData = null) {
     const currentRoles = new Set(plant?.permaculture_role?.functions || []);
-    const compatibleLayers = new Set(['canopy', 'sub_canopy', 'low_tree']);
+    const shortSeasonContext = this.isShortSeasonSubarcticContext(koppen, climateData);
+    const compatibleLayers = shortSeasonContext
+      ? new Set(['canopy', 'sub_canopy', 'low_tree', 'shrub', 'vine'])
+      : new Set(['canopy', 'sub_canopy', 'low_tree']);
+    const coldSupportIds = new Set([
+      'apple_',
+      'sour_cherry',
+      'cornelian_cherry',
+      'saskatoon_serviceberry',
+      'honeyberry',
+      'black_currant_',
+      'red_currant',
+      'gooseberry',
+      'aronia',
+      'hardy_kiwi'
+    ]);
 
     return Object.values(this.masterRegistry)
       .filter(candidate => candidate?.id && candidate.id !== plant?.id)
@@ -234,11 +366,22 @@ class PermacultureApp {
         const sharedRoleCount = candidateRoles.filter(role => currentRoles.has(role)).length;
         const layerScore = candidate.taxonomy?.layer === plant?.taxonomy?.layer ? 0 : 1;
         const preference = this.getPlantPreference(candidate);
-        return { candidate, candidateFit, sharedRoleCount, layerScore, preference };
+        const edgeScore = shortSeasonContext && this.isEdgeTreeCropForShortSeason(candidate) ? 1 : 0;
+        const coldSupportScore = shortSeasonContext && coldSupportIds.has(candidate.id) ? 0 : 1;
+        const coldScore = this.getColdShortSeasonCandidateScore(candidate, zone, koppen, climateData);
+        return { candidate, candidateFit, sharedRoleCount, layerScore, preference, edgeScore, coldSupportScore, coldScore };
       })
-      .filter(item => item.candidateFit.zoneFit && item.candidateFit.climateFit)
+      .filter(item =>
+        item.candidateFit.zoneFit &&
+        item.candidateFit.climateFit &&
+        (!shortSeasonContext || item.candidateFit.contextFit || item.coldSupportScore === 0)
+      )
       .sort((a, b) =>
+        a.coldScore - b.coldScore ||
+        a.edgeScore - b.edgeScore ||
+        a.coldSupportScore - b.coldSupportScore ||
         a.layerScore - b.layerScore ||
+        Number(!a.candidateFit.contextFit) - Number(!b.candidateFit.contextFit) ||
         b.sharedRoleCount - a.sharedRoleCount ||
         a.preference.score - b.preference.score ||
         String(a.candidate.common_name || a.candidate.id).localeCompare(String(b.candidate.common_name || b.candidate.id))
@@ -252,6 +395,22 @@ class PermacultureApp {
     const compatibleLayers = new Set(['canopy', 'sub_canopy', 'low_tree']);
     const autoAnchorExclusions = new Set(['autumn_olive_']);
     const shortSeasonContext = this.isShortSeasonSubarcticContext(koppen, climateData);
+    const coldAnchorPriority = new Map([
+      ['apple_', 0],
+      ['sour_cherry', 1],
+      ['cornelian_cherry', 2],
+      ['saskatoon_serviceberry', 3],
+      ['aronia', 4],
+      ['gooseberry', 5],
+      ['black_currant_', 6],
+      ['red_currant', 7],
+      ['american_plum', 8],
+      ['nanking_cherry', 9],
+      ['chokecherry', 10],
+      ['crabapple', 11],
+      ['honeyberry', 12],
+      ['hardy_kiwi', 20]
+    ]);
     const usefulRoles = new Set([
       'fruit_production',
       'nut_production',
@@ -276,11 +435,17 @@ class PermacultureApp {
         const layer = plant.taxonomy?.layer || '';
         const layerScore = layer === 'canopy' ? 0 : 1;
         const edgeScore = shortSeasonContext && this.isEdgeTreeCropForShortSeason(plant) ? 1 : 0;
-        return { plant, fit, usefulRoleCount, preference, layerScore, edgeScore };
+        const coldScore = this.getColdShortSeasonCandidateScore(plant, zone, koppen, climateData);
+        const coldAnchorScore = shortSeasonContext
+          ? (coldAnchorPriority.has(plant.id) ? coldAnchorPriority.get(plant.id) : 50)
+          : 0;
+        return { plant, fit, usefulRoleCount, preference, layerScore, edgeScore, coldScore, coldAnchorScore };
       })
       .filter(item => item.fit.zoneFit && item.fit.climateFit)
       .sort((a, b) =>
+        a.coldScore - b.coldScore ||
         a.edgeScore - b.edgeScore ||
+        a.coldAnchorScore - b.coldAnchorScore ||
         a.layerScore - b.layerScore ||
         Number(!a.fit.contextFit) - Number(!b.fit.contextFit) ||
         b.usefulRoleCount - a.usefulRoleCount ||
@@ -291,21 +456,22 @@ class PermacultureApp {
       .map(item => item.plant.id);
   }
 
-  getUserCanopyClimateWarning(plant, zone, koppen = '') {
+  getUserCanopyClimateWarning(plant, zone, koppen = '', climateData = null) {
     const fit = this.getPlantClimateFit(plant, zone, koppen);
     if (fit.isFit) return null;
 
-    const reason = fit.reasons[0] || `${plant.common_name || plant.id} may be a marginal fit for this site's mapped climate.`;
-    const siteClimate = [
-      Number.isFinite(Number.parseInt(zone, 10)) ? `Zone ${Number.parseInt(zone, 10)}` : null,
-      koppen || fit.affinityTarget || 'mapped climate'
-    ].filter(Boolean).join(' ');
+    const plantName = plant.common_name || plant.id;
+    const context = this.getClimateWarningContext(zone, koppen, climateData);
+    const reason = fit.reasons[0] || `${plantName} may be a marginal fit for this site's mapped climate.`;
+    const warningReason = fit.contextFit
+      ? `${reason} Treat ${plantName} as experimental unless locally proven cultivars and protected microclimates are available.`
+      : `${plantName} is mapped for warmer or longer-season conditions. This site is ${context.sitePhrase}, so ${plantName} should be treated as experimental unless locally proven cultivars and protected microclimates are available.`;
 
     return {
       level: 'warning',
       label: 'User-selected climate warning',
-      reason: `${reason} This plant may not be well matched to ${siteClimate} conditions.`,
-      alternatives: this.getCanopyClimateAlternatives(plant, zone, koppen)
+      reason: warningReason,
+      alternatives: this.getCanopyClimateAlternatives(plant, zone, koppen, 5, climateData)
     };
   }
 
@@ -385,12 +551,16 @@ class PermacultureApp {
         const preference = this.getPlantPreference(plant);
         const layer = plant.taxonomy?.layer || '';
         const tropicalClimateFit = siteKoppen.startsWith('A') && fit.climateFit;
+        const coldScore = this.getColdShortSeasonCandidateScore(plant, siteZone, siteKoppen, climateData);
+        const affinityPenalty = this.getColdShortSeasonAffinityPenalty(plant, siteZone, siteKoppen, climateData);
         return {
           plant,
           fit,
           usefulRoleCount,
           preference,
           layerGroup: groupForLayer(layer),
+          coldScore,
+          affinityPenalty,
           label: tropicalClimateFit ? 'Tropical fallback' : 'Climate fit'
         };
       })
@@ -398,6 +568,10 @@ class PermacultureApp {
       .sort((a, b) => {
         const climateDiff = Number(b.fit.climateFit) - Number(a.fit.climateFit);
         if (climateDiff !== 0) return climateDiff;
+        const coldDiff = a.coldScore - b.coldScore;
+        if (coldDiff !== 0) return coldDiff;
+        const affinityDiff = a.affinityPenalty - b.affinityPenalty;
+        if (affinityDiff !== 0) return affinityDiff;
         const roleDiff = b.usefulRoleCount - a.usefulRoleCount;
         if (roleDiff !== 0) return roleDiff;
         const preferenceDiff = a.preference.score - b.preference.score;
@@ -445,7 +619,7 @@ class PermacultureApp {
         recommendation_source: 'climate_fallback',
         recommendation_reason: 'Added because mineral-mapped recommendations were thin for this site climate.',
         matchLabels: [...new Set(labels)].slice(0, 5),
-        preference_score: item.preference.score + (item.fit.climateFit ? 0 : 25)
+        preference_score: item.preference.score + (item.fit.climateFit ? 0 : 25) + (item.coldScore || 0) * 10 + (item.affinityPenalty || 0) * 10
       });
     });
   }
@@ -460,6 +634,7 @@ class PermacultureApp {
       const zoneMatch = climateData.hardinessZone.match(/^(\d+)/);
       if (zoneMatch) siteZone = parseInt(zoneMatch[1]);
     }
+    const siteKoppen = climateData?.koppenCode || '';
     
     deficientSalts.forEach(salt => {
       const saltKey = salt.cell_salt.toLowerCase().replace(/ /g, '_');
@@ -486,16 +661,22 @@ class PermacultureApp {
               String(entry.common_name || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') === plant
             );
             const preference = this.getPlantPreference(registryPlant);
+            const coldScore = registryPlant
+              ? this.getColdShortSeasonCandidateScore(registryPlant, siteZone, siteKoppen, climateData)
+              : 2;
+            const affinityPenalty = registryPlant
+              ? this.getColdShortSeasonAffinityPenalty(registryPlant, siteZone, siteKoppen, climateData, true)
+              : 0;
             plantMap[plant] = {
               plant,
               minerals: [],
               functions: [],
               ...(registryPlant ? {
-                ...this.plantToRecommendedPlant(registryPlant, { preference_score: preference.score }),
+                ...this.plantToRecommendedPlant(registryPlant, { preference_score: preference.score + coldScore * 10 + affinityPenalty * 5 }),
                 minerals: [],
                 functions: []
               } : {
-                preference_score: preference.score,
+                preference_score: preference.score + coldScore * 10 + affinityPenalty * 5,
                 preference_group: preference.group,
                 metadata_mapped: false,
                 cell_salt_mapped: false,
@@ -584,6 +765,7 @@ class PermacultureApp {
     const siteKoppen = climateData?.koppenCode || '';
     const isTropicalFrostFree = (siteZone !== null && siteZone >= 10) ||
       String(siteKoppen).startsWith('A');
+    const isColdShortSeason = this.isColdShortSeasonSite(siteZone, siteKoppen, climateData);
 
     const getLayerName = (layer) => {
       if (!layer) return null;
@@ -623,20 +805,159 @@ class PermacultureApp {
       guild.map(g => g.layers?.[key]).filter(Boolean)
     );
 
+    const mergeLayerEntries = (...layerKeys) => layerKeys.flatMap(key =>
+      guild
+        .map(g => ({ layerKey: key, layer: g.layers?.[key] }))
+        .filter(entry => entry.layer)
+    );
+
+    const uniqueEntryNames = (entries) => uniqueNames(
+      entries.map(entry => entry.layer || entry)
+    );
+
+    const getEntryRoles = (entry) => {
+      const layer = entry?.layer || entry;
+      if (!layer || typeof layer !== 'object') return [];
+      return [
+        ...(Array.isArray(layer.functions) ? layer.functions : []),
+        ...(Array.isArray(layer.roles) ? layer.roles : [])
+      ].map(role => String(role).toLowerCase());
+    };
+
+    const hasRole = (entry, roles) => {
+      const roleSet = new Set(getEntryRoles(entry));
+      return roles.some(role => roleSet.has(role));
+    };
+
+    const hasMappedMineralProfile = (entry) => {
+      const layer = entry?.layer || entry;
+      return this.getMappedPlantSalts(layer).length > 0;
+    };
+
+    const SOIL_BUILDING_ROLES = [
+      'dynamic_accumulator',
+      'soil_building',
+      'biomass',
+      'chop_and_drop',
+      'compost_activator',
+      'potassium_mining',
+      'nutrient_accumulator',
+      'nitrogen_fixation'
+    ];
+    const SUPPORT_ROLES = [
+      'nitrogen_fixation',
+      'soil_building',
+      'biomass',
+      'chop_and_drop',
+      'dynamic_accumulator',
+      'hedgerow',
+      'windbreak',
+      'shade'
+    ];
+    const GROUND_COVER_ROLES = [
+      'ground_cover',
+      'living_mulch',
+      'leafy_green',
+      'edible_greens',
+      'edible_leaf',
+      'edible_leaves',
+      'moisture_crop',
+      'soil_building'
+    ];
+    const ROOT_FILLER_ROLES = [
+      'root_crop',
+      'rhizome_crop',
+      'tuber_crop',
+      'edible_root',
+      'edible_tuber',
+      'edible_stem',
+      'leafy_green',
+      'edible_greens',
+      'edible_leaf',
+      'edible_leaves',
+      'culinary_herb',
+      'quick_yield'
+    ];
+    const FIRST_HARVEST_ROLES = [
+      'early_spring_harvest',
+      'early_fruit',
+      'quick_yield',
+      'seasonal_yield',
+      'fruit_production',
+      'berry_production',
+      'leafy_green',
+      'edible_greens',
+      'edible_leaf',
+      'edible_leaves',
+      'edible_seed',
+      'edible_stem',
+      'culinary_herb',
+      'aromatic'
+    ];
+
+    const supportPlantNames = () => uniqueEntryNames([
+      ...mergeLayerEntries('layer2_low_tree', 'layer3_shrub'),
+      ...mergeLayerEntries('layer4', 'layer5').filter(entry => hasRole(entry, SUPPORT_ROLES))
+    ]);
+
+    const mineralCyclerNames = () => uniqueEntryNames(
+      mergeLayerEntries('layer3_shrub', 'layer4', 'layer5', 'layer6')
+        .filter(entry => {
+          if (hasRole(entry, SOIL_BUILDING_ROLES)) return true;
+          if (!hasMappedMineralProfile(entry)) return false;
+          const cropOnlyRoles = [
+            'berry_production',
+            'fruit_production',
+            'ground_cover',
+            'living_mulch',
+            'vertical_growth',
+            'root_crop',
+            'rhizome_crop',
+            'tuber_crop',
+            'edible_tuber'
+          ];
+          return entry.layerKey === 'layer4' && !hasRole(entry, cropOnlyRoles);
+        })
+    );
+
+    const groundCoverNames = () => uniqueEntryNames([
+      ...mergeLayerEntries('layer5'),
+      ...mergeLayerEntries('layer4').filter(entry => hasRole(entry, GROUND_COVER_ROLES))
+    ]);
+
+    const rootAndFillerNames = () => uniqueEntryNames([
+      ...mergeLayerEntries('layer6'),
+      ...mergeLayerEntries('layer4').filter(entry => hasRole(entry, ROOT_FILLER_ROLES))
+    ]);
+
+    const firstHarvestNames = () => {
+      const harvestEntries = mergeLayerEntries('layer3_shrub', 'layer4', 'layer5', 'layer6', 'layer7')
+        .filter(entry => hasRole(entry, FIRST_HARVEST_ROLES));
+      const names = uniqueEntryNames(harvestEntries);
+      if (names.length > 0) return names.slice(0, 10);
+      return mergeLayerPlants('layer4', 'layer5', 'layer6', 'layer7').slice(0, 8);
+    };
+
     const syncTaskPlants = (tasks, taskPattern, plants) => {
       if (!Array.isArray(tasks) || plants.length === 0) return;
       const task = tasks.find(t => taskPattern.test(t.task || ''));
       if (task) task.plants = plants;
     };
 
-    const canopyNames = guild
+    const canopyLayers = guild
       .map(g => g.layers?.layer1_canopy)
-      .filter(Boolean)
+      .filter(Boolean);
+    const canopyNames = canopyLayers
       .map(layer => getLayerName(layer))
       .filter(name => name && name.toLowerCase() !== 'none');
 
     const uniqueCanopies = [...new Set(canopyNames)];
     if (uniqueCanopies.length === 0) return;
+    const experimentalCanopies = uniqueNames(
+      canopyLayers.filter(layer => layer?.climate_fit === 'warning' || layer?.climate_warning)
+    );
+    const experimentalKeys = new Set(experimentalCanopies.map(name => name.toLowerCase()));
+    const recommendedCanopies = uniqueCanopies.filter(name => !experimentalKeys.has(name.toLowerCase()));
 
     const formatList = (items) => {
       if (items.length <= 2) return items.join(' and ');
@@ -644,29 +965,50 @@ class PermacultureApp {
     };
 
     const canopyList = formatList(uniqueCanopies);
+    const recommendedList = formatList(recommendedCanopies);
+    const experimentalList = formatList(experimentalCanopies);
     const canopyTask = plan.year0.tasks.find(t => /canopy|tree.?plant/i.test(t.task || ''));
     const tropicalCanopyGuidance = 'Plant at the start of the wet season or a mild rainy period. Provide mulch, wind protection, temporary shade, and deep dry-season watering during establishment.';
+    const coldCanopyGuidance = 'Plant recommended hardy canopy anchors after soil is workable in spring. Use locally proven cold-hardy cultivars and protect young trees through their first winter with mulch, guards, and wind protection.';
+    const establishmentGuidance = isTropicalFrostFree
+      ? tropicalCanopyGuidance
+      : (isColdShortSeason ? coldCanopyGuidance : 'Plant with spacing appropriate to each species and site conditions.');
+    const experimentalTaskNote = experimentalCanopies.length
+      ? `${experimentalList} ${experimentalCanopies.length === 1 ? 'is' : 'are'} listed as experimental; see the climate note for site-fit context.`
+      : '';
 
     if (uniqueCanopies.length > 1 || scale === 'homestead') {
-      plan.year0.focus = `Establish ${canopyList} as the canopy anchors`;
+      const focusParts = [];
+      if (recommendedCanopies.length) focusParts.push(`establish ${recommendedList} as recommended canopy anchors`);
+      if (experimentalCanopies.length) focusParts.push(`track ${experimentalList} as ${experimentalCanopies.length === 1 ? 'an experimental user-selected anchor' : 'experimental user-selected anchors'}`);
+      plan.year0.focus = focusParts.length
+        ? focusParts.join('; ')
+        : `Establish ${canopyList} as the canopy anchors`;
       if (canopyTask) {
-        canopyTask.task = 'Canopy Tree Planting - Plant Primary Anchors';
+        canopyTask.task = experimentalCanopies.length
+          ? 'Canopy Tree Planting - Recommended & Experimental Anchors'
+          : 'Canopy Tree Planting - Plant Primary Anchors';
         canopyTask.plants = uniqueCanopies;
-        canopyTask.details = isTropicalFrostFree
-          ? `${canopyList} are the primary canopy anchors for the guild system. ${tropicalCanopyGuidance}`
-          : `${canopyList} are the primary canopy anchors for the guild system. Plant with spacing appropriate to each species and site conditions.`;
+        canopyTask.details = experimentalCanopies.length
+          ? `${recommendedCanopies.length ? `${recommendedList} ${recommendedCanopies.length === 1 ? 'is' : 'are'} the recommended canopy ${recommendedCanopies.length === 1 ? 'anchor' : 'anchors'} for the guild system. ` : ''}${experimentalTaskNote} ${establishmentGuidance}`
+          : `${canopyList} are the primary canopy anchors for the guild system. ${establishmentGuidance}`;
         canopyTask.guild_note = 'These canopy anchors come directly from the generated guild canopies.';
         canopyTask.botanical = null;
         canopyTask.cellSalts = [];
         canopyTask.climateAffinity = 'guild-derived';
       }
     } else {
-      plan.year0.focus = `Establish ${uniqueCanopies[0]} as the system anchor`;
+      plan.year0.focus = experimentalCanopies.length
+        ? `Track ${experimentalList} as an experimental user-selected anchor`
+        : `Establish ${uniqueCanopies[0]} as the system anchor`;
       if (canopyTask) {
         canopyTask.plants = [uniqueCanopies[0]];
-        canopyTask.details = isTropicalFrostFree
-          ? `${uniqueCanopies[0]} is the primary canopy anchor for the guild system. ${tropicalCanopyGuidance}`
-          : `${uniqueCanopies[0]} is the primary canopy anchor for the guild system. Plant with spacing appropriate to the species and site conditions.`;
+        canopyTask.task = experimentalCanopies.length
+          ? 'Canopy Tree Planting - Experimental Anchor'
+          : canopyTask.task;
+        canopyTask.details = experimentalCanopies.length
+          ? `${experimentalTaskNote} ${establishmentGuidance}`
+          : `${uniqueCanopies[0]} is the primary canopy anchor for the guild system. ${establishmentGuidance}`;
         canopyTask.guild_note = 'This canopy anchor comes directly from the generated guild canopy.';
         canopyTask.botanical = null;
         canopyTask.cellSalts = [];
@@ -677,54 +1019,78 @@ class PermacultureApp {
     syncTaskPlants(
       plan.year0.tasks,
       /support species|dynamic accumulators/i,
-      mergeLayerPlants('layer3_shrub', 'layer4', 'layer5')
+      uniqueEntryNames(
+        mergeLayerEntries('layer3_shrub', 'layer4', 'layer5')
+          .filter(entry => hasRole(entry, SUPPORT_ROLES) || hasRole(entry, SOIL_BUILDING_ROLES))
+      )
     );
 
     if (isTropicalFrostFree) {
       syncTaskPlants(
         plan.year0.tasks,
         /living mulch|tropical soil cover/i,
-        mergeLayerPlants('layer5', 'layer4', 'layer6')
+        groundCoverNames()
       );
     }
 
     syncTaskPlants(
       plan.year1?.tasks,
       /salt-linked support plants|mineral-linked support plants|climate-fit support plants/i,
-      mergeLayerPlants('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5')
+      supportPlantNames()
     );
 
     syncTaskPlants(
       plan.year1?.tasks,
       /mineral cyclers|biomass plants|biomass.*climate support/i,
-      mergeLayerPlants('layer4', 'layer5')
+      mineralCyclerNames()
     );
 
     const supportTask = plan.year1?.tasks?.find(t => /salt-linked support plants|mineral-linked support plants|climate-fit support plants/i.test(t.task || ''));
     if (supportTask) {
       const supportLayers = mergeLayerItems('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5');
-      const hasMappedSaltSupport = this.hasMappedSaltSupport(supportLayers, [supportTask.primarySalt]);
-      supportTask.task = hasMappedSaltSupport ? 'Mineral-Linked Support Plants' : 'Climate-Fit Support Plants';
+      const supportPlantKeys = new Set((supportTask.plants || []).map(name => String(name).trim().toLowerCase()));
+      const syncedSupportLayers = supportLayers.filter(layer => {
+        const name = getLayerName(layer);
+        return name && supportPlantKeys.has(name.toLowerCase());
+      });
+      const supportSaltLayers = syncedSupportLayers.length ? syncedSupportLayers : supportLayers;
+      const hasMappedSaltSupport = this.hasMappedSaltSupport(supportSaltLayers, [supportTask.primarySalt]);
+      const hasUnmappedSupport = supportSaltLayers.some(layer => this.getMappedPlantSalts(layer).length === 0);
+      const hasMixedSupport = hasMappedSaltSupport && hasUnmappedSupport;
+      supportTask.task = hasMixedSupport
+        ? 'Mineral-Linked & Climate-Fit Support Plants'
+        : (hasMappedSaltSupport ? 'Mineral-Linked Support Plants' : 'Climate-Fit Support Plants');
       supportTask.details = hasMappedSaltSupport
-        ? (isTropicalFrostFree
+        ? (hasMixedSupport
+          ? 'Establish the synced guild support plants as a mix of mapped mineral-support plants and climate-fit structural/support plants.'
+          : (isTropicalFrostFree
           ? 'Establish mineral-profile support plants across understory, shrub, herbaceous, and vine layers during rainy/mild windows.'
-          : 'Establish plants selected for mineral-profile support across sub-canopy, shrub, herbaceous, and annual layers.')
+          : 'Establish plants selected for mineral-profile support across sub-canopy, shrub, herbaceous, and annual layers.'))
         : 'Establish climate-fit understory, shrub, herbaceous, ground-cover, and vine layers. Cell-salt profiles are not fully mapped yet for some support plants.';
       supportTask.guild_note = hasMappedSaltSupport
-        ? (isTropicalFrostFree
+        ? (hasMixedSupport
+          ? 'This task combines direct mineral links with climate-fit guild structure from the generated layers.'
+          : (isTropicalFrostFree
           ? 'These plants address the zodiac salt deficiency while adding living cover, biomass, and climate-fit support.'
-          : 'These plants address the zodiac salt deficiency directly. Their biomass feeds the canopy.')
+          : 'These plants address the zodiac salt deficiency directly. Their biomass feeds the canopy.'))
         : 'This task is based on climate fit and guild function where mapped cell-salt support is thin.';
       if (plan.year1) {
-        plan.year1.focus = hasMappedSaltSupport
+        plan.year1.focus = hasMixedSupport
+          ? 'Fill mid-story with mineral-linked and climate-fit support plants'
+          : (hasMappedSaltSupport
           ? `Fill mid-story with mineral-linked plants targeting ${supportTask.primarySalt || 'cell salt balance'}`
-          : 'Fill mid-story with climate-fit support plants';
+          : 'Fill mid-story with climate-fit support plants');
       }
     }
 
     const biomassTask = plan.year1?.tasks?.find(t => /mineral cyclers|biomass plants|biomass.*climate support/i.test(t.task || ''));
     if (biomassTask) {
-      const biomassLayers = mergeLayerItems('layer4', 'layer5');
+      const biomassLayers = mergeLayerEntries('layer3_shrub', 'layer4', 'layer5', 'layer6')
+        .filter(entry => {
+          const name = getLayerName(entry.layer);
+          return name && (biomassTask.plants || []).some(plantName => String(plantName).toLowerCase() === name.toLowerCase());
+        })
+        .map(entry => entry.layer);
       const hasMappedBiomassSalts = this.hasMappedSaltSupport(biomassLayers, []);
       biomassTask.task = hasMappedBiomassSalts ? 'Mineral Cyclers & Biomass Plants' : 'Biomass & Climate Support Plants';
       biomassTask.details = hasMappedBiomassSalts
@@ -748,31 +1114,19 @@ class PermacultureApp {
     syncTaskPlants(
       plan.year2?.tasks,
       /ground covers|herbaceous soil cover/i,
-      mergeLayerPlants('layer5', 'layer4')
+      groundCoverNames()
     );
 
     syncTaskPlants(
       plan.year2?.tasks,
       /root crops|herbaceous fillers/i,
-      mergeLayerPlants('layer6', 'layer4')
+      rootAndFillerNames()
     );
 
-    const allGuildPlants = mergeLayerPlants(
-      'layer1_canopy',
-      'layer2_low_tree',
-      'layer3_shrub',
-      'layer4',
-      'layer5',
-      'layer6',
-      'layer7'
-    );
-    const completionPlants = allGuildPlants.length > 12
-      ? mergeLayerPlants('layer2_low_tree', 'layer3_shrub', 'layer4', 'layer5', 'layer6', 'layer7').slice(0, 12)
-      : allGuildPlants;
     syncTaskPlants(
       plan.year2?.tasks,
       /guild completion|first harvests/i,
-      completionPlants
+      firstHarvestNames()
     );
   }
 
@@ -826,6 +1180,7 @@ class PermacultureApp {
       if (!anchorIds.includes(da)) anchorIds.push(da);
     }
     const selectedAnchorIds = new Set(anchorIds);
+    const autoLayerExclusions = new Set(['autumn_olive_']);
     
     // Get best fit for each anchor
     const selectedAnchors = anchorIds.map(id => {
@@ -855,6 +1210,7 @@ class PermacultureApp {
 
         const scored = candidates
           .filter(p => !assignedIds.has(p.id))
+          .filter(p => !autoLayerExclusions.has(p.id))
           .map(p => {
             const plantSalts = (p.bio_logic?.salts || []).map(s => s.toLowerCase().replace(/ /g, '_'));
             const matched = saltKeys.find(sk => plantSalts.includes(sk));
@@ -864,6 +1220,7 @@ class PermacultureApp {
             const isSelectedAnchor = selectedAnchorIds.has(p.id);
             const functions = p.permaculture_role?.functions || [];
             const preference = this.getPlantPreference(p);
+            const coldScore = this.getColdShortSeasonCandidateScore(p, parseInt(siteZone), siteKoppen, climateData);
             const layerFitScore = (() => {
               if (layerUsageKey !== 'layer5') return 0;
               if (p.taxonomy?.layer === 'ground_cover') return 0;
@@ -878,9 +1235,22 @@ class PermacultureApp {
               if (layerFitScore < 3) return 7 + layerFitScore;
               return 10;
             })();
-            return { plant: p, matched, climateScore, wasUsedInLayer, isSelectedAnchor, preference, layerFitScore, layer5SelectionScore };
+            return { plant: p, matched, climateScore, coldScore, wasUsedInLayer, isSelectedAnchor, preference, layerFitScore, layer5SelectionScore };
           })
           .sort((a, b) => {
+            const coldLayer2DiversityPriority = item => {
+              if (
+                layerUsageKey === 'layer2_low_tree' &&
+                this.isColdShortSeasonSite(parseInt(siteZone), siteKoppen, climateData)
+              ) {
+                if (item.isSelectedAnchor) return 4;
+                if (!item.wasUsedInLayer && item.coldScore === 0) return 0;
+                if (!item.wasUsedInLayer) return 1;
+                if (item.coldScore === 0) return 2;
+                return 3;
+              }
+              return null;
+            };
             const priority = item => {
               if (item.isSelectedAnchor) return 4;
               if (!item.wasUsedInLayer && item.matched) return 0;
@@ -892,6 +1262,14 @@ class PermacultureApp {
               const layerFitDiff = a.layer5SelectionScore - b.layer5SelectionScore;
               if (layerFitDiff !== 0) return layerFitDiff;
             }
+            const layer2PriorityA = coldLayer2DiversityPriority(a);
+            const layer2PriorityB = coldLayer2DiversityPriority(b);
+            if (layer2PriorityA !== null && layer2PriorityB !== null) {
+              const layer2PriorityDiff = layer2PriorityA - layer2PriorityB;
+              if (layer2PriorityDiff !== 0) return layer2PriorityDiff;
+            }
+            const coldDiff = a.coldScore - b.coldScore;
+            if (coldDiff !== 0) return coldDiff;
             const priorityDiff = priority(a) - priority(b);
             if (priorityDiff !== 0) return priorityDiff;
             const climateDiff = a.climateScore - b.climateScore;
@@ -923,7 +1301,7 @@ class PermacultureApp {
         const anchorPlant = this.masterRegistry[anchor.parentId];
         const isUserAnchor = userAnchorIds.has(anchor.parentId);
         const climateWarning = isUserAnchor
-          ? this.getUserCanopyClimateWarning(anchorPlant, parseInt(siteZone), siteKoppen)
+          ? this.getUserCanopyClimateWarning(anchorPlant, parseInt(siteZone), siteKoppen, climateData)
           : null;
         layers['layer1_canopy'] = {
           id: anchorPlant.id,
@@ -1221,30 +1599,31 @@ class PermacultureApp {
     // ── PREFLIGHT: config, primary salt, star name ─────────────────────────
     const isTropicalFrostFree = (siteZone !== null && siteZone >= 10) ||
       String(siteKoppen || '').startsWith('A');
+    const isColdShortSeason = this.isColdShortSeasonSite(siteZone, siteKoppen, climateData);
     const canopyPlantingTiming = isTropicalFrostFree
       ? 'Start of wet season or mild rainy period'
-      : 'Late winter/early spring (dormant bare root)';
+      : (isColdShortSeason ? 'Spring planting window after soil is workable' : 'Late winter/early spring (dormant bare root)');
     const supportPlantingTiming = isTropicalFrostFree
       ? 'Early wet season, then fill gaps as soil cover establishes'
-      : 'Month 3-6';
+      : (isColdShortSeason ? 'Spring to early summer establishment window' : 'Month 3-6');
     const saltSupportTiming = isTropicalFrostFree
       ? 'Early wet season, then fill gaps as soil cover establishes'
-      : 'Early Spring after last frost';
+      : (isColdShortSeason ? 'After soil is workable and danger of hard freeze is easing' : 'Early Spring after last frost');
     const biomassTiming = isTropicalFrostFree
       ? 'Active growth period; chop-and-drop before dry season'
-      : 'Spring after last frost';
+      : (isColdShortSeason ? 'Active growth window after spring green-up' : 'Spring after last frost');
     const vineTiming = isTropicalFrostFree
       ? 'Wet season or year-round during mild/rainy windows'
-      : 'Spring';
+      : (isColdShortSeason ? 'Spring after soil warms; protect young vines through first winter' : 'Spring');
     const groundCoverTiming = isTropicalFrostFree
       ? 'Start of wet season; maintain before dry season'
-      : 'Spring/Fall';
+      : (isColdShortSeason ? 'Spring soil-cover window; reinforce before winter' : 'Spring/Fall');
     const rootTiming = isTropicalFrostFree
       ? 'Wet season establishment; irrigate through dry spells'
-      : 'Early Spring or Fall';
+      : (isColdShortSeason ? 'Short-season spring window or protected fall planting where locally proven' : 'Early Spring or Fall');
     const completionTiming = isTropicalFrostFree
       ? 'Year-round during active growth windows'
-      : 'Throughout season';
+      : (isColdShortSeason ? 'During the active growing window; prepare winter protection before freeze-up' : 'Throughout season');
 
     const tropicalSoilCoverFallback = [
       'perennial_peanut',
@@ -1353,8 +1732,11 @@ class PermacultureApp {
           details: isTropicalFrostFree
             ? `${star.common_name} - ${star.taxonomy?.type || 'tree'}. Plant at the start of the wet season or a mild rainy period. ` +
               `Provide mulch, wind protection, and temporary shade for young transplants. Water deeply through dry-season establishment.`
-            : `${star.common_name} - ${star.taxonomy?.type || 'tree'}. Spacing: 30-50ft. ` +
-              `Matures in 5-15 years. Timeline: Establish Year 1. Expected Harvest: Year 4+.`,
+            : (isColdShortSeason
+              ? `${star.common_name} - ${star.taxonomy?.type || 'tree'}. Plant hardy bare-root or potted stock once the ground can be worked. ` +
+                `Use locally proven cold-hardy cultivars and protect young plants through their first winter with mulch, guards, and wind protection.`
+              : `${star.common_name} - ${star.taxonomy?.type || 'tree'}. Spacing: 30-50ft. ` +
+                `Matures in 5-15 years. Timeline: Establish Year 1. Expected Harvest: Year 4+.`),
           guild_note: `This is the structural anchor of your entire system. All other plants support it.`
         });
       }
@@ -1401,10 +1783,14 @@ class PermacultureApp {
         cellSalts: [...new Set(selectedNFixers.flatMap(p => p.bio_logic?.salts || []))],
         details: isTropicalFrostFree
           ? 'Install support species during rainy establishment windows, using nitrogen fixers, mineral cyclers, pollinator plants, and chop-and-drop biomass to shade soil and feed young anchors.'
-          : 'Install nitrogen fixers where available, plus mineral accumulators, pollinator plants, and chop-and-drop biomass species to support canopy establishment.',
+          : (isColdShortSeason
+            ? 'Install cold-hardy support species during the workable spring-to-early-summer window. Prioritize hardy soil builders, pollinator plants, mulch, and winter protection over aggressive year-round planting.'
+            : 'Install nitrogen fixers where available, plus mineral accumulators, pollinator plants, and chop-and-drop biomass species to support canopy establishment.'),
         guild_note: isTropicalFrostFree
           ? 'Support species build fertility, cycle minerals, protect soil, and provide biomass through wet/dry season swings.'
-          : 'Support species build fertility, cycle minerals, attract pollinators, and provide biomass. True nitrogen fixers are included when available.'
+          : (isColdShortSeason
+            ? 'Support species build fertility, hold soil cover, and help young woody plants enter winter with less stress.'
+            : 'Support species build fertility, cycle minerals, attract pollinators, and provide biomass. True nitrogen fixers are included when available.')
       });
       
       // Water infrastructure
@@ -1414,25 +1800,37 @@ class PermacultureApp {
         plants: [],
         details: isTropicalFrostFree
           ? 'Plan wet-season capture, dry-season drip or deep watering, wind exposure, salt exposure where relevant, and mulch basins around young anchors.'
-          : 'Swales on contour, drip irrigation zones, rain catchment. Design around mature canopy spread.',
+          : (isColdShortSeason
+            ? 'Plan spring drainage, summer watering access, snow catch, wind protection, and mulch basins around young woody anchors. Avoid sites where cold, wet soil delays spring root growth.'
+            : 'Swales on contour, drip irrigation zones, rain catchment. Design around mature canopy spread.'),
         guild_note: isTropicalFrostFree
           ? 'Mulch and water design carry young guilds through dry-season establishment.'
-          : `Without water capture, your star player struggles in dry spells.`
+          : (isColdShortSeason
+            ? 'Cold sites need both summer moisture and winter protection; snow, wind, and drainage are part of water design.'
+            : `Without water capture, your star player struggles in dry spells.`)
       });
       
       // Cover crops between rows
       year0Tasks.push({
-        task: isTropicalFrostFree ? 'Living Mulch & Tropical Soil Cover' : 'Cover Crops Between Rows',
-        timing: isTropicalFrostFree ? 'Start of wet season; maintain before dry season' : 'Month 1-3',
+        task: isTropicalFrostFree
+          ? 'Living Mulch & Tropical Soil Cover'
+          : (isColdShortSeason ? 'Cold-Hardy Cover Crops & Regional Soil Cover' : 'Cover Crops Between Rows'),
+        timing: isTropicalFrostFree
+          ? 'Start of wet season; maintain before dry season'
+          : (isColdShortSeason ? 'Spring soil-cover window or fall establishment where locally proven' : 'Month 1-3'),
         plants: isTropicalFrostFree
           ? tropicalLivingMulchPlants()
-          : ['Cereal Rye', 'Crimson Clover', 'Hairy Vetch', 'White Clover'],
+          : (isColdShortSeason ? ['Cereal Rye', 'Oats', 'White Clover', 'regionally proven cold-climate mixes'] : ['Cereal Rye', 'Crimson Clover', 'Hairy Vetch', 'White Clover']),
         details: isTropicalFrostFree
           ? 'Establish living mulch and fast soil-cover plants to protect soil, cycle nutrients, suppress weeds, and hold moisture through wet/dry season swings.'
-          : 'Protect bare soil, build biology, suppress weeds. Will be mowed/chopped as guild fills in.',
+          : (isColdShortSeason
+            ? 'Use cold-hardy cover crops or regionally proven mixes to protect bare soil, build biology, and suppress weeds without assuming every temperate cover crop is locally reliable.'
+            : 'Protect bare soil, build biology, suppress weeds. Will be mowed/chopped as guild fills in.'),
         guild_note: isTropicalFrostFree
           ? 'Living mulch protects tropical soil between larger guild plants while the canopy fills in.'
-          : `Cover crops buy time while the slow trees establish.`
+          : (isColdShortSeason
+            ? 'Choose mixes recommended by local growers or extension guidance for short-season establishment.'
+            : `Cover crops buy time while the slow trees establish.`)
       });
     } else {
       // Balcony: containers, dwarf/compact trees

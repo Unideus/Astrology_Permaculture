@@ -296,18 +296,87 @@ function getCanopyClimateWarnings(plan = generatedPlan) {
     }));
 }
 
+function classifyCanopyAlternatives(alternatives = [], plan = generatedPlan) {
+  const names = Array.isArray(alternatives) ? alternatives.map(name => String(name || '').trim()).filter(Boolean) : [];
+  const guilds = Array.isArray(plan?.guild) ? plan.guild : [];
+  const layerByName = new Map();
+  const canopyLayers = new Set(['canopy', 'sub_canopy', 'low_tree', 'layer1_canopy', 'layer2_low_tree']);
+  const shrubSupportPattern = /(aronia|chokeberry|currant|gooseberry|honeyberry|haskap|raspberry|blackberry|serviceberry|saskatoon)/i;
+
+  guilds.forEach(guild => {
+    Object.entries(guild?.layers || {}).forEach(([layerKey, layer]) => {
+      const name = String(layer?.name || layer?.common_name || layer?.plant || '').trim().toLowerCase();
+      if (!name) return;
+      layerByName.set(name, String(layer?.taxonomy_layer || layer?.taxonomy?.layer || layerKey || '').toLowerCase());
+    });
+  });
+
+  return names.reduce((groups, name) => {
+    const layer = layerByName.get(name.toLowerCase()) || '';
+    if (canopyLayers.has(layer) || /cherry|plum|apple|pear|chestnut|walnut|pecan|persimmon|mulberry/i.test(name)) {
+      groups.canopy.push(name);
+    } else if (shrubSupportPattern.test(name)) {
+      groups.support.push(name);
+    } else {
+      groups.support.push(name);
+    }
+    return groups;
+  }, { canopy: [], support: [] });
+}
+
+function formatSentenceList(items = []) {
+  const cleanItems = items.filter(Boolean);
+  if (cleanItems.length <= 2) return cleanItems.join(cleanItems.length === 2 ? ' and ' : '');
+  return `${cleanItems.slice(0, -1).join(', ')}, and ${cleanItems[cleanItems.length - 1]}`;
+}
+
+function renderClimateAlternativeText(alternatives = [], plan = generatedPlan) {
+  const groups = classifyCanopyAlternatives(alternatives, plan);
+  const parts = [];
+  if (groups.canopy.length) {
+    parts.push(`Better-fit canopy or low-tree alternatives include ${formatSentenceList(groups.canopy.slice(0, 5))}.`);
+  }
+  if (groups.support.length) {
+    parts.push(`Additional cold-climate woody support crops include ${formatSentenceList(groups.support.slice(0, 3))}.`);
+  }
+  return parts.length ? ` ${parts.join(' ')}` : '';
+}
+
 function renderCanopyClimateWarnings(plan = generatedPlan) {
   const warnings = getCanopyClimateWarnings(plan);
   if (!warnings.length) return '';
 
   return warnings.map(({ plantName, warning }) => {
-    const alternatives = Array.isArray(warning.alternatives) && warning.alternatives.length
-      ? ` Consider ${warning.alternatives.slice(0, 3).join(', ')} as better-fit anchors.`
-      : '';
-    const reason = String(warning.reason || 'it may be marginal for this mapped site climate.')
-      .replace(new RegExp(`^${escapeRegExp(String(plantName))}\\b`, 'i'), 'it');
-    return `<div class="implementation-climate-note"><strong>Climate note:</strong> ${escapeHtml(plantName)} was chosen by you, but ${escapeHtml(reason)}${escapeHtml(alternatives)}</div>`;
+    const alternatives = renderClimateAlternativeText(warning.alternatives, plan);
+    const normalizedReason = warning.reason
+      ? String(warning.reason)
+      : `${plantName} may be marginal for this mapped site climate.`;
+    return `<div class="implementation-climate-note"><strong>Climate note:</strong> ${escapeHtml(normalizedReason)}${escapeHtml(alternatives)}</div>`;
   }).join('');
+}
+
+function getExperimentalCanopySummary(plan = generatedPlan) {
+  const guilds = Array.isArray(plan?.guild) ? plan.guild : [];
+  const experimental = [];
+  const recommended = [];
+  const addUnique = (list, name) => {
+    const cleanName = String(name || '').trim();
+    if (!cleanName || cleanName.toLowerCase() === 'none') return;
+    if (list.some(existing => existing.toLowerCase() === cleanName.toLowerCase())) return;
+    list.push(cleanName);
+  };
+
+  guilds.forEach(guild => {
+    const canopy = guild?.layers?.layer1_canopy;
+    const name = canopy?.name || canopy?.common_name || canopy?.plant;
+    if (canopy?.climate_fit === 'warning' || canopy?.climate_warning) {
+      addUnique(experimental, name);
+    } else {
+      addUnique(recommended, name);
+    }
+  });
+
+  return { experimental, recommended };
 }
 
 function formatPlantToken(value) {
@@ -328,8 +397,11 @@ function formatPreferenceGroup(value) {
 function getEdgeClimateContext(plan = generatedPlan) {
   const climate = plan?.climateData || {};
   const koppenCode = String(climate.koppenCode || '');
+  const zone = Number.parseInt(climate.hardinessZone, 10);
   const frostFreeDays = Number(climate?.frostDates?.light?.avgFrostFreeDays || climate?.growingSeasonDays || 0);
-  return /^(Dfc|Dfd|ET|EF)/.test(koppenCode) || (frostFreeDays > 0 && frostFreeDays < 150);
+  return /^(Dfa|Dfb|Dfc|Dfd|ET|EF)/.test(koppenCode) ||
+    (Number.isFinite(zone) && zone <= 5) ||
+    (frostFreeDays > 0 && frostFreeDays < 150);
 }
 
 function getEdgeClimateCaution(plant = {}, plan = generatedPlan, layerKey = '') {
@@ -344,19 +416,57 @@ function getEdgeClimateCaution(plant = {}, plan = generatedPlan, layerKey = '') 
     ...(Array.isArray(plant.functions) ? plant.functions : [])
   ].map(role => String(role).toLowerCase());
   const token = `${id} ${name} ${type} ${layer} ${roles.join(' ')}`;
+  const coldFitPattern = /(apple|sour[_\s-]*cherry|cornelian[_\s-]*cherry|nanking[_\s-]*cherry|american[_\s-]*plum|chokecherry|crabapple|serviceberry|saskatoon|honeyberry|haskap|aronia|chokeberry|currant|gooseberry|raspberry|strawberry|fox[_\s-]*grape|hardy[_\s-]*kiwi|kiwiberry|hops|schisandra|groundnut|apios|nettle|dandelion|yarrow|comfrey|sorrel|white[_\s-]*clover|rhubarb|asparagus|horseradish|beet|cabbage|kale|chard|barley|oats|rye)/;
+  const isVine = /(^|[_\s-])(vine|layer7|vertical[_\s-]*growth|trellis)([_\s-]|$)/.test(token);
+  const isTree = /(canopy|sub[_\s-]*canopy|low[_\s-]*tree|fruit[_\s-]*tree|nut[_\s-]*tree|tree[_\s-]*crop|cornelian[_\s-]*cherry|nanking[_\s-]*cherry|sour[_\s-]*cherry|american[_\s-]*plum|chokecherry|crabapple|apple)/.test(token);
+  const isShrub = !isTree && /(^|[_\s-])(shrub|berry[_\s-]*shrub|bramble|hedgerow)([_\s-]|$)/.test(token);
+  const isBerryShrub = /(berry[_\s-]*shrub|bramble|berry[_\s-]*production|fruit[_\s-]*production|blackberry|currant|gooseberry|aronia|chokeberry|raspberry)/.test(token);
+  const isSoilSupportHerb = !isBerryShrub && /(dynamic[_\s-]*accumulator|compost[_\s-]*activator|soil[_\s-]*building|potassium[_\s-]*mining|nutrient[_\s-]*accumulator|nettle|comfrey|dandelion|horsetail|yarrow)/.test(token);
 
   if (/(watermelon|cucumber|zucchini|pumpkin|squash|melon)/.test(token)) {
     return {
       label: 'Short-season annual',
+      tone: 'warning',
       message: 'Use starts, row cover, low tunnel, greenhouse, or warm microclimate.'
     };
   }
 
-  if (/(peach|apricot|persimmon|pecan|walnut|chestnut|pear|mulberry)/.test(token) ||
-      /(canopy|sub_canopy|low_tree|fruit_tree|nut_tree)/.test(token)) {
+  if (isSoilSupportHerb) {
+    return {
+      label: 'Dynamic accumulator / soil support',
+      tone: 'fit',
+      message: ''
+    };
+  }
+
+  if (/(blackberry|raspberry|bramble|cane[_\s-]*fruit)/.test(token)) {
+    return {
+      label: 'Cold-site cane fruit note',
+      tone: 'fit',
+      message: 'Use locally proven cold-hardy cultivar.'
+    };
+  }
+
+  if (coldFitPattern.test(token)) {
+    const label = isVine
+      ? 'Cold-hardy vine'
+      : isShrub
+        ? 'Cold-hardy shrub'
+        : isTree
+          ? 'Cold-climate tree crop'
+          : 'Short-season adapted';
+    return {
+      label,
+      tone: 'fit',
+      message: ''
+    };
+  }
+
+  if (/(peach|apricot|persimmon|pecan|walnut|chestnut|pear|mulberry)/.test(token)) {
     return {
       label: 'Edge tree crop',
-      message: 'Choose locally proven cold-hardy cultivars/rootstock and protect from winter injury, wildlife browse, and late frosts.'
+      tone: 'warning',
+      message: 'Use only with locally proven cultivar, protected microclimate, or season extension.'
     };
   }
 
@@ -382,22 +492,73 @@ function getInvasiveRiskCaution(plant = {}) {
   return null;
 }
 
+function getGuildLayerRoleLabel(layer = {}, layerKey = '') {
+  if (!layer || typeof layer !== 'object') return '';
+  const id = String(layer.id || layer.plant || '').toLowerCase();
+  const name = String(layer.name || layer.common_name || layer.plant || '').toLowerCase();
+  const type = String(layer.taxonomy_type || layer.type || '').toLowerCase();
+  const roles = [
+    ...(Array.isArray(layer.roles) ? layer.roles : []),
+    ...(Array.isArray(layer.functions) ? layer.functions : [])
+  ].map(role => String(role).toLowerCase());
+  const token = `${id} ${name} ${type} ${roles.join(' ')}`;
+
+  if (layerKey === 'layer3_shrub' && /(nettle|comfrey|dandelion|horsetail|yarrow|dynamic[_\s-]*accumulator|compost[_\s-]*activator|soil[_\s-]*building|potassium[_\s-]*mining)/.test(token)) {
+    return 'Support layer: tall herbaceous accumulator';
+  }
+  if (layerKey === 'layer3_shrub') return 'Layer role: shrub/support layer';
+  if (layerKey === 'layer2_low_tree') return 'Layer role: low-tree/sub-canopy layer';
+  if (layerKey === 'layer4') return 'Layer role: herbaceous layer';
+  if (layerKey === 'layer5') return 'Layer role: ground-cover/living-mulch layer';
+  if (layerKey === 'layer6') return 'Layer role: root/rhizosphere layer';
+  if (layerKey === 'layer7') return 'Layer role: vine/vertical layer';
+  return '';
+}
+
 function getRecommendedPlantCategory(plant) {
   const layer = plant?.taxonomy_layer || '';
   const type = plant?.taxonomy_type || '';
   const roles = new Set(getRecommendedPlantRoles(plant));
+  const hasSoilBuilderRole = ['dynamic_accumulator', 'compost_activator', 'potassium_mining', 'nutrient_accumulator', 'soil_building', 'biomass', 'chop_and_drop']
+    .some(role => roles.has(role));
+
+  if (roles.has('root_crop') || roles.has('rhizome_crop') || roles.has('tuber_crop') || roles.has('edible_tuber')) return { value: 'root', label: 'Root / rhizome crop' };
+  if (roles.has('edible_stem') || roles.has('moisture_crop') || /perennial_vegetable/.test(type)) return { value: 'perennial_vegetable', label: 'Perennial vegetable' };
+  if (roles.has('dynamic_accumulator') || roles.has('compost_activator') || roles.has('potassium_mining')) return { value: 'soil_building', label: 'Dynamic accumulator / soil support' };
+  if (roles.has('leafy_green') || roles.has('edible_greens') || roles.has('edible_leaf') || roles.has('edible_leaves')) return { value: 'leafy_green', label: 'Leafy green / herbaceous crop' };
+  if (roles.has('berry_production') || /berry|bramble/.test(type)) return { value: 'berry_shrub', label: 'Berry shrub / woody crop' };
+  if (roles.has('fruit_production') && layer === 'shrub') return { value: 'berry_shrub', label: 'Berry shrub / woody crop' };
+  if (roles.has('fruit_production') && (layer === 'canopy' || layer === 'low_tree' || layer === 'sub_canopy' || /fruit_tree/.test(type))) return { value: 'fruit_tree', label: 'Fruit / tree crop' };
+  if (roles.has('nutrient_accumulator')) return { value: 'nutrient_accumulator', label: 'Nutrient accumulator / edible crop' };
+  if (/perennial_herb|culinary_herb|medicinal_herb/.test(type) && hasSoilBuilderRole) return { value: 'soil_building', label: 'Perennial herb / soil support' };
+  if (layer === 'shrub' || /shrub/.test(type)) return { value: 'shrub', label: 'Shrub / hedge crop' };
+  if (layer === 'ground_cover' || roles.has('living_mulch') || roles.has('ground_cover')) return { value: 'ground_cover', label: 'Ground cover / living mulch' };
+  if (layer === 'vine' || roles.has('vertical_growth')) return { value: 'vine', label: 'Vine / trellis crop' };
+  if (roles.has('nut_production')) return { value: 'nut_tree', label: 'Nut tree / woody crop' };
+  if (roles.has('nitrogen_fixation')) return { value: 'nitrogen_fixer', label: 'Nitrogen fixer / soil support' };
+  if (['dynamic_accumulator', 'soil_building', 'biomass', 'chop_and_drop'].some(role => roles.has(role))) return { value: 'soil_building', label: 'Soil-building support' };
+  if (roles.has('pollinator_forage') || roles.has('aromatic') || roles.has('medicinal') || roles.has('pest_deterrent') || roles.has('culinary_herb')) return { value: 'herb_pollinator', label: 'Herb / pollinator support' };
 
   if (layer === 'canopy' || /fruit_tree|nut_tree/.test(type)) return { value: 'canopy_tree', label: 'Canopy / tree crop' };
   if (layer === 'low_tree' || layer === 'sub_canopy') return { value: 'low_tree', label: 'Low tree / understory' };
   if (layer === 'shrub') return { value: 'shrub', label: 'Shrub / hedge crop' };
-  if (layer === 'vine') return { value: 'vine', label: 'Vine / trellis crop' };
   if (layer === 'root' || /rhizome|root/.test(type)) return { value: 'root', label: 'Root / rhizome crop' };
-  if (layer === 'ground_cover' || roles.has('living_mulch') || roles.has('ground_cover')) return { value: 'ground_cover', label: 'Ground cover / living mulch' };
-  if (layer === 'herbaceous' && (roles.has('leafy_green') || roles.has('edible_greens') || roles.has('edible_leaf'))) return { value: 'leafy_green', label: 'Leafy green / herbaceous crop' };
-  if (layer === 'herbaceous' && (roles.has('aromatic') || roles.has('medicinal') || roles.has('pest_deterrent') || roles.has('culinary_herb'))) return { value: 'herb_aromatic', label: 'Herb / aromatic support' };
-  if (roles.has('nitrogen_fixation')) return { value: 'nitrogen_fixer', label: 'Nitrogen fixer / soil support' };
-  if (['dynamic_accumulator', 'soil_building', 'biomass', 'chop_and_drop'].some(role => roles.has(role))) return { value: 'soil_building', label: 'Soil-building support' };
   return { value: plant?.recommendation_source === 'climate_fallback' ? 'climate_support' : (plant?.preference_group || 'general'), label: 'Climate-fit support plant' };
+}
+
+function formatCellSaltExplanation(explanation = '') {
+  return String(explanation || '').replace(
+    /Supplementing\s+(\d+)\s+cell\s+salt(s?)\./i,
+    'Tracking $1 cell-salt/mineral theme$2 for planting support.'
+  );
+}
+
+function softenCellSaltStaticCopy() {
+  const note = document.querySelector('#cellSaltsCard > p.note');
+  if (!note) return;
+  if (/cell salts are deficient/i.test(note.textContent || '')) {
+    note.textContent = 'These are the cell-salt/mineral themes highlighted by the selected sun signs in this traditional framework. Matching plant tags help explain the planting logic.';
+  }
 }
 
 function getRecommendedPlantControls(plan = generatedPlan) {
@@ -476,9 +637,12 @@ function renderRecommendedPlants(plan = generatedPlan) {
   const additionalLimit = bothGroupsVisible ? 6 : 12;
   const visibleUsedPlants = usedPlants.slice(0, usedLimit);
   const visibleAdditionalPlants = additionalPlants.slice(0, additionalLimit);
+  const visiblePlants = [...visibleUsedPlants, ...visibleAdditionalPlants];
   const visibleCount = visibleUsedPlants.length + visibleAdditionalPlants.length;
   const showUnmappedNote = shouldShowUnmappedRecommendationNote(plants);
   const showGlobalUnmappedNote = Boolean(showUnmappedNote);
+  const visibleMinerals = new Set(visiblePlants.flatMap(getRecommendedPlantMinerals).map(mineral => String(mineral).toLowerCase()));
+  const missingVisibleMinerals = mineralNeeds.filter(mineral => !visibleMinerals.has(String(mineral).toLowerCase()));
   const needsHtml = mineralNeeds.length
     ? mineralNeeds.map(mineral => `<span class="recommendation-tag mineral-tag">${escapeHtml(mineral)}</span>`).join('')
     : '<span class="recommendation-empty">No mineral deficiencies detected or mapped.</span>';
@@ -495,6 +659,7 @@ function renderRecommendedPlants(plan = generatedPlan) {
     <div class="plan-mineral-needs">
       <strong>Plan mineral needs</strong>
       <div class="recommendation-tags">${needsHtml}</div>
+      ${missingVisibleMinerals.length ? '<p class="note">Some mineral themes may have fewer mapped plants in the current registry. The app prioritizes climate-fit and mapped matches where available.</p>' : ''}
     </div>
     ${showUnmappedNote ? `
       <div class="educational-note recommendation-context-note">
@@ -535,7 +700,7 @@ function renderRecommendedPlants(plan = generatedPlan) {
       </label>
       <button class="btn btn-small" type="button" onclick="resetRecommendedPlantFilters()">Reset filters</button>
     </div>
-    ${filteredPlants.length ? '<p class="note">These recommended candidates are grouped by whether they already appear in your guild design.</p>' : ''}
+    ${filteredPlants.length ? '<p class="note">Used in this plan means the plant already appears in one of the generated guild layers. Additional candidates are compatible plants that match mineral, climate, or role needs but were not placed in the guild.</p>' : ''}
     ${renderRecommendationGroup('Recommended plants used in this plan', visibleUsedPlants)}
     ${renderRecommendationGroup('Additional recommended candidates', visibleAdditionalPlants)}
     ${!filteredPlants.length ? '<p class="note">No recommended plants match the current filters.</p>' : ''}
@@ -556,10 +721,15 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
   const edgeCaution = getEdgeClimateCaution(plant, plan);
   const mapped = plant.metadata_mapped !== false && Boolean(plant.id || plant.common_name || plant.name);
   const isClimateFallback = plant.recommendation_source === 'climate_fallback';
+  const normalizeLabel = value => String(value || '').trim().toLowerCase();
+  const categoryLabelKey = normalizeLabel(category.label);
+  const shouldShowEdgeCaution = Boolean(edgeCaution) && normalizeLabel(edgeCaution.label) !== categoryLabelKey;
   const displayMatchLabels = (isClimateFallback
     ? matchLabels.filter(label => !/cell-salt mapping/i.test(label))
     : matchLabels
-  ).slice(0, 3);
+  )
+    .filter(label => normalizeLabel(label) !== categoryLabelKey)
+    .slice(0, 3);
   const fallbackMineralNote = isClimateFallback && minerals.length === 0
     ? 'Climate-fit recommendation. Cell-salt profile not mapped yet.'
     : '';
@@ -580,12 +750,12 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
           : '<span class="recommendation-tag muted-tag">Mineral profile not mapped yet</span>'}
       </div>` : ''}
       ${displayMatchLabels.length ? `<div class="recommendation-tags">${displayMatchLabels.map(label => `<span class="recommendation-tag ${/fallback|climate fit|diversity/i.test(label) ? 'preference-tag' : 'role-tag'}">${escapeHtml(label)}</span>`).join('')}</div>` : ''}
-      ${edgeCaution ? `<div class="recommendation-tags"><span class="recommendation-tag warning-tag">${escapeHtml(edgeCaution.label)}</span></div>` : ''}
+      ${shouldShowEdgeCaution ? `<div class="recommendation-tags"><span class="recommendation-tag ${edgeCaution.tone === 'fit' ? 'preference-tag' : 'warning-tag'}">${escapeHtml(edgeCaution.label)}</span></div>` : ''}
       ${roles.length ? `<div class="recommendation-tags">${roles.map(role => `<span class="recommendation-tag role-tag">${escapeHtml(formatPlantToken(role))}</span>`).join('')}</div>` : ''}
       <div class="recommendation-tags"><span class="recommendation-tag preference-tag">${escapeHtml(category.label)}</span></div>
       ${supportFunctions.length ? `<p class="recommended-meta"><strong>Cell-salt support:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
       ${whyShown ? `<p class="recommended-meta"><strong>Why shown:</strong> ${escapeHtml(whyShown)}</p>` : ''}
-      ${edgeCaution ? `<p class="recommended-meta"><strong>${escapeHtml(edgeCaution.label)}:</strong> ${escapeHtml(edgeCaution.message)}</p>` : ''}
+      ${edgeCaution?.message ? `<p class="recommended-meta"><strong>${escapeHtml(edgeCaution.label)}:</strong> ${escapeHtml(edgeCaution.message)}</p>` : ''}
       ${layerParts.length ? `<p class="recommended-meta"><strong>Layer/type:</strong> ${escapeHtml(layerParts.join(' / '))}</p>` : ''}
       ${plant.climate_affinity ? `<p class="recommended-meta"><strong>Climate:</strong> ${escapeHtml(plant.climate_affinity)}${Array.isArray(plant.zones) && plant.zones.length ? ` · Zones ${escapeHtml(plant.zones.join('-'))}` : ''}</p>` : ''}
       ${!mapped ? '<p class="recommended-meta"><strong>Metadata not mapped yet</strong></p>' : ''}
@@ -596,6 +766,7 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
 function displayResults(plan) {
   document.getElementById('step2').classList.add('hidden');
   document.getElementById('results').classList.remove('hidden');
+  softenCellSaltStaticCopy();
 
   // Site Info
   const loc = plan.locationData || {};
@@ -682,8 +853,9 @@ function displayResults(plan) {
   }
 
   // Cell Salts
+  const cellSaltExplanation = formatCellSaltExplanation(plan.cellSalts?.explanation || '');
   document.getElementById('cellSalts').innerHTML = `
-    <p>${plan.cellSalts.explanation}</p>
+    <p>${escapeHtml(cellSaltExplanation)}</p>
     <div class="plant-list">
       ${plan.cellSalts.deficient.map(salt => `
         <div class="plant-item">
@@ -741,6 +913,7 @@ function displayResults(plan) {
 
   document.getElementById('threeYearPlan').innerHTML = `
     <div class="plan-timeline">
+      <p class="note">These plants are pulled from the generated guild layers and may appear in more than one task because they serve multiple establishment roles.</p>
       <div class="year-section">
         <h4>${planData.year0.title || 'Canopy & Infrastructure'}</h4>
         <p><em>${planData.year0.duration || planData.year0.timeframe || 'Months 0-12'}</em></p>
@@ -757,13 +930,18 @@ function displayResults(plan) {
                 seen.add(key);
                 return true;
               });
+            const isCanopyTask = /canopy|tree.?plant/i.test(task.task || '');
+            const canopySummary = isCanopyTask ? getExperimentalCanopySummary(plan) : { recommended: [], experimental: [] };
             const climateWarningHtml = /canopy|tree.?plant/i.test(task.task || '')
               ? renderCanopyClimateWarnings(plan)
               : '';
             return `
             <div class="task-item">
               <strong>${task.task || 'Task'} - ${task.timing || ''}</strong>
-              ${displayPlants.length ? `<p>Plants: ${displayPlants.join(', ')}</p>` : ''}
+              ${isCanopyTask && canopySummary.experimental.length ? `
+                ${canopySummary.recommended.length ? `<p>Recommended anchors: ${canopySummary.recommended.join(', ')}</p>` : ''}
+                <p>Experimental user-selected ${canopySummary.experimental.length === 1 ? 'anchor' : 'anchors'}: ${canopySummary.experimental.join(', ')}</p>
+              ` : (displayPlants.length ? `<p>Plants: ${displayPlants.join(', ')}</p>` : '')}
               <p>${task.details || ''}</p>
               ${climateWarningHtml}
             </div>`;
@@ -850,7 +1028,7 @@ function displayResults(plan) {
         <h4>🌑 New Moon</h4>
         <p><strong>Action:</strong> ${moon.newMoon.action}</p>
         <ul>
-          ${moon.newMoon.plant.map(p => `<li>${p}</li>`).join('')}
+          <li>Rest, observe, plan, or sow hardy greens where seasonally appropriate.</li>
         </ul>
       </div>
 
@@ -858,7 +1036,7 @@ function displayResults(plan) {
         <h4>🌕 Full Moon</h4>
         <p><strong>Action:</strong> ${moon.fullMoon.action}</p>
         <ul>
-          ${moon.fullMoon.plant.map(p => `<li>${p}</li>`).join('')}
+          <li>Harvest herbs, observe plant vigor, or sow quick greens where seasonally appropriate.</li>
         </ul>
       </div>
     </div>
@@ -1465,20 +1643,39 @@ function syncThreeYearPlanCanopiesFromGuild(plan) {
   };
 
   const canopyList = formatList(canopyNames);
+  const { experimental, recommended } = getExperimentalCanopySummary(plan);
+  const recommendedList = formatList(recommended);
+  const experimentalList = formatList(experimental);
   const canopyTask = year0.tasks.find(task => /canopy|tree.?plant/i.test(task.task || ''));
 
   if (canopyNames.length > 1) {
-    year0.focus = `Establish ${canopyList} as the canopy anchors`;
+    const focusParts = [];
+    if (recommended.length) focusParts.push(`establish ${recommendedList} as recommended canopy anchors`);
+    if (experimental.length) focusParts.push(`track ${experimentalList} as ${experimental.length === 1 ? 'an experimental user-selected anchor' : 'experimental user-selected anchors'}`);
+    year0.focus = focusParts.length
+      ? focusParts.join('; ')
+      : `Establish ${canopyList} as the canopy anchors`;
     if (canopyTask) {
-      canopyTask.task = 'Canopy Tree Planting - Plant Primary Anchors';
+      canopyTask.task = experimental.length
+        ? 'Canopy Tree Planting - Recommended & Experimental Anchors'
+        : 'Canopy Tree Planting - Plant Primary Anchors';
       canopyTask.plants = canopyNames;
-      canopyTask.details = `${canopyList} are the primary canopy anchors for the guild system. Plant with spacing appropriate to each species and site conditions.`;
+      canopyTask.details = experimental.length
+        ? `${recommended.length ? `${recommendedList} ${recommended.length === 1 ? 'is' : 'are'} the recommended canopy ${recommended.length === 1 ? 'anchor' : 'anchors'} for the guild system. ` : ''}${experimentalList} ${experimental.length === 1 ? 'is' : 'are'} listed as experimental; see the climate note for site-fit context.`
+        : `${canopyList} are the primary canopy anchors for the guild system. Plant with spacing appropriate to each species and site conditions.`;
     }
   } else {
-    year0.focus = `Establish ${canopyNames[0]} as the system anchor`;
+    year0.focus = experimental.length
+      ? `Track ${experimentalList} as an experimental user-selected anchor`
+      : `Establish ${canopyNames[0]} as the system anchor`;
     if (canopyTask) {
       canopyTask.plants = [canopyNames[0]];
-      canopyTask.details = `${canopyNames[0]} is the primary canopy anchor for the guild system. Plant with spacing appropriate to the species and site conditions.`;
+      canopyTask.task = experimental.length
+        ? 'Canopy Tree Planting - Experimental Anchor'
+        : canopyTask.task;
+      canopyTask.details = experimental.length
+        ? `${experimentalList} is listed as an experimental canopy anchor; see the climate note for site-fit context.`
+        : `${canopyNames[0]} is the primary canopy anchor for the guild system. Plant with spacing appropriate to the species and site conditions.`;
     }
   }
 
@@ -1739,7 +1936,7 @@ function renderSevenLayerGuild(guild) {
     if (layer.tier === 'Anchor') {
       const isChosen = layer.selection_reason === 'Chosen by you';
       const hasClimateWarning = Boolean(layer.climate_warning);
-      label = (isChosen ? 'Chosen by you' : 'Suggested') + (hasClimateWarning ? ' · climate warning' : ' · Canopy anchor');
+      label = (isChosen ? 'Chosen by you' : 'Suggested') + (hasClimateWarning ? ' · climate warning · experimental anchor' : ' · Canopy anchor');
       badgeClass = hasClimateWarning ? 'climate-warning' : (isChosen ? 'chosen-by-you' : 'suggested-anchor');
     } else if (layer.tier === 'A') {
       label = 'Mineral match' + (layer.salt_content ? ' · ' + layer.salt_content : '');
@@ -1769,12 +1966,17 @@ function renderSevenLayerGuild(guild) {
     const roleValue = roleText || 'Not mapped yet';
     const edgeCaution = getEdgeClimateCaution(layer, generatedPlan, layerKey);
     const invasiveCaution = getInvasiveRiskCaution(layer);
+    const layerRoleLabel = getGuildLayerRoleLabel(layer, layerKey);
 
     const metaParts = [];
     if (label) metaParts.push('<span class="guild-badge ' + escapeHtml(badgeClass) + '">' + escapeHtml(label) + '</span>');
     if (invasiveCaution) metaParts.push('<span class="guild-badge climate-warning">' + escapeHtml(invasiveCaution.label) + '</span>');
-    if (edgeCaution) metaParts.push('<span class="guild-badge climate-warning">' + escapeHtml(edgeCaution.label) + '</span>');
+    if (edgeCaution) {
+      const edgeBadgeClass = edgeCaution.tone === 'fit' ? 'climate-fit' : 'climate-warning';
+      metaParts.push('<span class="guild-badge ' + edgeBadgeClass + '">' + escapeHtml(edgeCaution.label) + '</span>');
+    }
     metaParts.push('<span>' + escapeHtml(mineralLabel) + escapeHtml(mineralValue) + '</span>');
+    if (layerRoleLabel) metaParts.push('<span>' + escapeHtml(layerRoleLabel) + '</span>');
     metaParts.push('<span>Role: ' + escapeHtml(roleValue) + '</span>');
     if (invasiveCaution) {
       metaParts.push(
@@ -1783,7 +1985,7 @@ function renderSevenLayerGuild(guild) {
         '</div>'
       );
     }
-    if (edgeCaution) {
+    if (edgeCaution?.message) {
       metaParts.push(
         '<div class="guild-climate-warning">' +
           '<span><strong>' + escapeHtml(edgeCaution.label) + ':</strong> ' + escapeHtml(edgeCaution.message) + '</span>' +
@@ -1792,8 +1994,9 @@ function renderSevenLayerGuild(guild) {
     }
     if (layer.climate_warning) {
       const warning = layer.climate_warning;
-      const alternatives = Array.isArray(warning.alternatives) && warning.alternatives.length
-        ? '<span><strong>Better-fit alternatives:</strong> ' + escapeHtml(warning.alternatives.join(', ')) + '</span>'
+      const alternativeText = renderClimateAlternativeText(warning.alternatives, generatedPlan).trim();
+      const alternatives = alternativeText
+        ? '<span>' + escapeHtml(alternativeText) + '</span>'
         : '';
       metaParts.push(
         '<div class="guild-climate-warning">' +
@@ -1831,11 +2034,13 @@ function renderSevenLayerGuild(guild) {
 
   guilds.forEach((guildItem, index) => {
     const title = formatGuildTitle(guildItem, index);
+    const canopyLayer = getLayerValue(guildItem, ['layer1_canopy']);
+    const isExperimentalGuild = canopyLayer?.selection_reason === 'Chosen by you' && canopyLayer?.climate_fit === 'warning';
     const hasPendingEdits = hasPendingGuildEdits(index);
     const isEditMode = activeGuildEditIndex === index;
     htmlParts.push('<div class="seven-layer-card guild-card' + (hasPendingEdits ? ' pending-edit' : '') + (isEditMode ? ' edit-mode' : '') + '">');
     htmlParts.push('  <div class="guild-card-header">');
-    htmlParts.push('    <h4 style="margin:0;">' + escapeHtml(title) + '</h4>');
+    htmlParts.push('    <h4 style="margin:0;">' + escapeHtml(title) + (isExperimentalGuild ? ' <span class="guild-badge climate-warning">Experimental</span>' : '') + '</h4>');
     htmlParts.push('    <div class="guild-card-actions">');
     htmlParts.push('      <button class="btn btn-guild-save' + (hasPendingEdits ? '' : ' hidden') + '" type="button" data-guild-index="' + index + '" onclick="saveGuildEdits(' + index + ')"' + (hasPendingEdits ? '' : ' disabled') + '>Save Guild</button>');
     htmlParts.push('      <button class="btn btn-guild-edit" type="button" data-guild-index="' + index + '" onclick="toggleGuildEditMode(' + index + ')">' + (isEditMode ? 'Done' : 'Edit') + '</button>');

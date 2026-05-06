@@ -2972,8 +2972,8 @@
     "common_name": "Fox Grape",
     "botanical_name": "Vitis labrusca",
     "taxonomy": {
-      "type": "vine",
-      "layer": "sub_canopy"
+      "type": "perennial_vine",
+      "layer": "vine"
     },
     "bio_logic": {
       "salts": [],
@@ -2996,7 +2996,9 @@
       "functions": [
         "fruit_production",
         "vertical_growth",
-        "shade_canopy"
+        "shade_canopy",
+        "pollinator_forage",
+        "wildlife_food"
       ],
       "guild_compat": []
     },
@@ -5653,6 +5655,269 @@
         "living_mulch",
         "nitrogen_fixation",
         "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "nanking_cherry": {
+    "id": "nanking_cherry",
+    "common_name": "Nanking Cherry",
+    "botanical_name": "Prunus tomentosa",
+    "taxonomy": {
+      "type": "fruit_shrub",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "multi_stem_shrub"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "early_bloom_pollinator",
+        "pollinator_forage",
+        "hedgerow",
+        "short_season_crop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "american_plum": {
+    "id": "american_plum",
+    "common_name": "American Plum",
+    "botanical_name": "Prunus americana",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "small_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "wildlife_food",
+        "hedgerow",
+        "short_season_crop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "chokecherry": {
+    "id": "chokecherry",
+    "common_name": "Chokecherry",
+    "botanical_name": "Prunus virginiana",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "small_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "wildlife_food",
+        "hedgerow",
+        "short_season_crop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "crabapple": {
+    "id": "crabapple",
+    "common_name": "Crabapple",
+    "botanical_name": "Malus spp.",
+    "taxonomy": {
+      "type": "fruit_tree",
+      "layer": "low_tree"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "small_tree"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "pollinator_forage",
+        "wildlife_food",
+        "pollination_support",
+        "short_season_crop"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "hops": {
+    "id": "hops",
+    "common_name": "Hops",
+    "botanical_name": "Humulus lupulus",
+    "taxonomy": {
+      "type": "perennial_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "vertical_growth",
+        "biomass",
+        "pollinator_forage",
+        "seasonal_yield"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "any"
+  },
+  "schisandra": {
+    "id": "schisandra",
+    "common_name": "Schisandra / Magnolia Vine",
+    "botanical_name": "Schisandra chinensis",
+    "taxonomy": {
+      "type": "perennial_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "fruit_production",
+        "vertical_growth",
+        "shade_tolerance",
+        "medicinal",
+        "pollinator_forage"
+      ],
+      "guild_compat": []
+    },
+    "climate_affinity": "humid"
+  },
+  "groundnut_apios": {
+    "id": "groundnut_apios",
+    "common_name": "Groundnut / Apios",
+    "botanical_name": "Apios americana",
+    "taxonomy": {
+      "type": "perennial_vine",
+      "layer": "vine"
+    },
+    "bio_logic": {
+      "salts": [],
+      "primary_benefit": ""
+    },
+    "climate_profile": {
+      "zones": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "koppen": [],
+      "is_perennial": true,
+      "chill_hours_required": null,
+      "growth_habit": "perennial_vine"
+    },
+    "permaculture_role": {
+      "functions": [
+        "nitrogen_fixation",
+        "root_crop",
+        "vertical_growth",
+        "edible_tuber",
+        "soil_building"
       ],
       "guild_compat": []
     },
