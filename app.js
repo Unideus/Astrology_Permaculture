@@ -11,7 +11,7 @@ class PermacultureApp {
                         'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces'];
   }
 
-  // Get deficient cell salts based on sun sign (sign + next 2)
+  // Get symbolic cell-salt themes based on sun sign (sign + next 2)
   getDeficientSalts(sunSign) {
     const sign = sunSign.toLowerCase();
     const idx = this.zodiacOrder.indexOf(sign);
@@ -624,7 +624,7 @@ class PermacultureApp {
     });
   }
 
-  // Get recommended plants based on deficient salts, filtered by climate zone
+  // Get recommended plants based on symbolic cell-salt themes, filtered by climate zone
   getRecommendedPlants(deficientSalts, climateData = null) {
     const plantMap = {};
     
@@ -742,8 +742,9 @@ class PermacultureApp {
       },
       cellSalts: {
         deficient: uniqueSalts,
-        explanation: `Based on sun sign${allSigns.length > 1 ? 's' : ''}: ${allSigns.join(', ')}. ` +
-                    `Supplementing ${uniqueSalts.length} cell salt${uniqueSalts.length > 1 ? 's' : ''}.`
+        explanation: `This prototype uses a Carey / Schüssler-inspired symbolic framework. ` +
+                    `It treats the sun sign${allSigns.length > 1 ? 's' : ''} (${allSigns.join(', ')}) and neighboring signs as mineral or cell-salt themes for planting design, not as health diagnosis, treatment, supplement advice, or medical guidance. ` +
+                    `These ${uniqueSalts.length} theme${uniqueSalts.length > 1 ? 's' : ''} help explain why certain guild roles, accumulator plants, support species, and edible plants are emphasized in the recommendation process.`
       },
       recommendedPlants,
       guild,
@@ -1071,14 +1072,14 @@ class PermacultureApp {
         ? (hasMixedSupport
           ? 'This task combines direct mineral links with climate-fit guild structure from the generated layers.'
           : (isTropicalFrostFree
-          ? 'These plants address the zodiac salt deficiency while adding living cover, biomass, and climate-fit support.'
-          : 'These plants address the zodiac salt deficiency directly. Their biomass feeds the canopy.'))
-        : 'This task is based on climate fit and guild function where mapped cell-salt support is thin.';
+          ? 'These plants are associated with the plan mineral-theme metadata while adding living cover, biomass, and climate-fit support.'
+          : 'These plants are associated with the plan mineral-theme metadata. Their biomass feeds the canopy.'))
+        : 'This task is based on climate fit and guild function where mapped cell-salt theme metadata is thin.';
       if (plan.year1) {
         plan.year1.focus = hasMixedSupport
           ? 'Fill mid-story with mineral-linked and climate-fit support plants'
           : (hasMappedSaltSupport
-          ? `Fill mid-story with mineral-linked plants targeting ${supportTask.primarySalt || 'cell salt balance'}`
+          ? `Fill mid-story with mineral-linked plants emphasizing ${supportTask.primarySalt || 'cell-salt themes'}`
           : 'Fill mid-story with climate-fit support plants');
       }
     }
@@ -1289,7 +1290,7 @@ class PermacultureApp {
           tier: selected.matched ? 'A' : 'B',
           salt_content: selected.matched ? selected.plant.bio_logic?.salts?.find(s => s.toLowerCase().replace(/ /g, '_') === selected.matched) || selected.matched : null,
           minerals: selected.plant.bio_logic?.salts || [],
-          selection_reason: selected.matched ? 'cell salt match' : 'zone/climate fallback',
+          selection_reason: selected.matched ? 'cell-salt theme match' : 'zone/climate fallback',
           functions: selected.plant.permaculture_role?.functions || [],
           roles: selected.plant.permaculture_role?.functions || []
         };
@@ -1946,9 +1947,9 @@ class PermacultureApp {
         : 'Establish climate-fit understory, shrub, herbaceous, ground-cover, and vine layers. Cell-salt profiles are not fully mapped yet for some support plants.',
       guild_note: year1HasSaltMatches
         ? (isTropicalFrostFree
-          ? `These plants address the zodiac salt deficiency while adding living cover, biomass, and climate-fit support.`
-          : `These plants address the zodiac salt deficiency directly. Their biomass feeds the canopy.`)
-        : 'This task is based on climate fit and guild function where mapped cell-salt support is thin.'
+          ? `These plants are associated with the plan mineral-theme metadata while adding living cover, biomass, and climate-fit support.`
+          : `These plants are associated with the plan mineral-theme metadata. Their biomass feeds the canopy.`)
+        : 'This task is based on climate fit and guild function where mapped cell-salt theme metadata is thin.'
     });
     
     // Dynamic accumulators
@@ -2181,7 +2182,7 @@ class PermacultureApp {
         title: 'Sub-Canopy, Herbaceous & Vines',
         duration: 'Year 2',
         focus: year1HasSaltMatches
-          ? `Fill mid-story with mineral-linked plants targeting ${primarySalt || 'cell salt balance'}`
+          ? `Fill mid-story with mineral-linked plants emphasizing ${primarySalt || 'cell-salt themes'}`
           : 'Fill mid-story with climate-fit support plants',
         tasks: year1Tasks
       },

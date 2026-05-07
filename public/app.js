@@ -161,7 +161,7 @@ async function generatePlan() {
     <div class="loading">
       <div class="spinner"></div>
       <h3>Generating your permaculture plan...</h3>
-      <p>Analyzing location, cell salts, and planting schedules</p>
+      <p>Analyzing location, cell-salt themes, and planting schedules</p>
     </div>
   `;
 
@@ -549,7 +549,7 @@ function getRecommendedPlantCategory(plant) {
 function formatCellSaltExplanation(explanation = '') {
   return String(explanation || '').replace(
     /Supplementing\s+(\d+)\s+cell\s+salt(s?)\./i,
-    'Tracking $1 cell-salt/mineral theme$2 for planting support.'
+    'Using $1 cell-salt/mineral theme$2 as symbolic planting-design support.'
   );
 }
 
@@ -557,7 +557,7 @@ function softenCellSaltStaticCopy() {
   const note = document.querySelector('#cellSaltsCard > p.note');
   if (!note) return;
   if (/cell salts are deficient/i.test(note.textContent || '')) {
-    note.textContent = 'These are the cell-salt/mineral themes highlighted by the selected sun signs in this traditional framework. Matching plant tags help explain the planting logic.';
+    note.textContent = 'These are symbolic cell-salt/mineral themes highlighted by the selected sun signs and neighboring signs in a Carey / Schüssler-inspired planting-design framework. Matching registry tags help explain the planting logic; this is not medical guidance.';
   }
 }
 
@@ -645,7 +645,7 @@ function renderRecommendedPlants(plan = generatedPlan) {
   const missingVisibleMinerals = mineralNeeds.filter(mineral => !visibleMinerals.has(String(mineral).toLowerCase()));
   const needsHtml = mineralNeeds.length
     ? mineralNeeds.map(mineral => `<span class="recommendation-tag mineral-tag">${escapeHtml(mineral)}</span>`).join('')
-    : '<span class="recommendation-empty">No mineral deficiencies detected or mapped.</span>';
+    : '<span class="recommendation-empty">No symbolic mineral themes selected or mapped.</span>';
   const renderRecommendationGroup = (title, groupPlants) => groupPlants.length ? `
     <div class="recommended-group">
       <h4>${escapeHtml(title)}</h4>
@@ -657,13 +657,13 @@ function renderRecommendedPlants(plan = generatedPlan) {
 
   container.innerHTML = `
     <div class="plan-mineral-needs">
-      <strong>Plan mineral needs</strong>
+      <strong>Plan mineral themes</strong>
       <div class="recommendation-tags">${needsHtml}</div>
       ${missingVisibleMinerals.length ? '<p class="note">Some mineral themes may have fewer mapped plants in the current registry. The app prioritizes climate-fit and mapped matches where available.</p>' : ''}
     </div>
     ${showUnmappedNote ? `
       <div class="educational-note recommendation-context-note">
-        Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Koppen climate, layer role, and guild diversity - not because they directly match a deficiency.
+        Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Koppen climate, layer role, and guild diversity - not because they directly match a symbolic cell-salt theme.
       </div>
     ` : ''}
     <div class="recommended-controls">
@@ -741,7 +741,7 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
     <div class="plant-item recommended-plant-card">
       <div class="recommended-card-header">
         <h4>${escapeHtml(formatPlantToken(name))}</h4>
-        ${supportsDeficiency ? '<span class="recommendation-badge helps">Helps deficiency</span>' : ''}
+        ${supportsDeficiency ? '<span class="recommendation-badge helps">Theme match</span>' : ''}
       </div>
       ${plant.botanical_name ? `<p class="recommended-botanical">${escapeHtml(plant.botanical_name)}</p>` : ''}
       ${minerals.length || !isClimateFallback ? `<div class="recommendation-tags">
@@ -753,7 +753,7 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
       ${shouldShowEdgeCaution ? `<div class="recommendation-tags"><span class="recommendation-tag ${edgeCaution.tone === 'fit' ? 'preference-tag' : 'warning-tag'}">${escapeHtml(edgeCaution.label)}</span></div>` : ''}
       ${roles.length ? `<div class="recommendation-tags">${roles.map(role => `<span class="recommendation-tag role-tag">${escapeHtml(formatPlantToken(role))}</span>`).join('')}</div>` : ''}
       <div class="recommendation-tags"><span class="recommendation-tag preference-tag">${escapeHtml(category.label)}</span></div>
-      ${supportFunctions.length ? `<p class="recommended-meta"><strong>Cell-salt support:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
+      ${supportFunctions.length ? `<p class="recommended-meta"><strong>Traditional cell-salt note:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
       ${whyShown ? `<p class="recommended-meta"><strong>Why shown:</strong> ${escapeHtml(whyShown)}</p>` : ''}
       ${edgeCaution?.message ? `<p class="recommended-meta"><strong>${escapeHtml(edgeCaution.label)}:</strong> ${escapeHtml(edgeCaution.message)}</p>` : ''}
       ${layerParts.length ? `<p class="recommended-meta"><strong>Layer/type:</strong> ${escapeHtml(layerParts.join(' / '))}</p>` : ''}

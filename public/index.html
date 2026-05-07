@@ -10,7 +10,7 @@
   <div class="container">
     <header>
       <h1>🌱 Permaculture Design Generator</h1>
-      <p class="subtitle">Cell Salt-Based Planting Plans</p>
+      <p class="subtitle">Symbolic Cell Salt / Mineral Theme Planting Plans</p>
       <div class="prototype-notice" role="note">
         <strong>Prototype / Early Access</strong>
         <span>Plant recommendations and saved guild edits are active. Soil test interpretation and true PDF export are coming soon.</span>
@@ -47,12 +47,12 @@
             <option value="aquarius">♒ Aquarius (Jan 20 - Feb 18)</option>
             <option value="pisces">♓ Pisces (Feb 19 - Mar 20)</option>
           </select>
-          <small>Determines your deficient cell salts (your sign + next 2)</small>
+          <small>Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes</small>
         </div>
 
         <div class="form-group family-section">
           <label><strong>Family Members (Optional)</strong></label>
-          <p class="family-description">Add sun signs for family members to combine cell salt recommendations</p>
+          <p class="family-description">Add sun signs for family members to combine symbolic mineral / cell-salt themes</p>
           <div id="familyMembers"></div>
           <button type="button" class="btn btn-secondary" onclick="addFamilyMember()">+ Add Family Member</button>
         </div>
@@ -118,13 +118,13 @@
         </div>
 
         <div class="result-card">
-          <h3>🧪 Deficient Cell Salts</h3>
+          <h3>🧪 Symbolic Cell Salt / Mineral Themes</h3>
           <div class="educational-note">
             <strong>How to read this:</strong>
-            These are the plan's mineral/cell-salt targets from the app's traditional matching framework. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested. This is garden-planning context, not medical diagnosis or treatment guidance.
+            This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested.
           </div>
           <div id="cellSalts"></div>
-          <p class="note">These cell salts are deficient based on your sun sign(s). The recommended plants are rich in these minerals.</p>
+          <p class="note">These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.</p>
         </div>
 
         <div class="result-card" id="aiGuildsCard" style="display:none">
@@ -144,7 +144,7 @@
         <div class="result-card">
           <h3>🌿 Recommended Plants</h3>
           <div class="educational-note">
-            These candidates are ranked from the current plan's mineral needs plus available registry metadata. Use filters to inspect the list by role, layer, plant type, or mineral/cell-salt support. Review and save the plan before treating the list as finalized.
+            These candidates are ranked from the current plan's mineral themes plus available registry metadata. Use filters to inspect the list by role, layer, plant type, or traditional mineral/cell-salt notes. Review and save the plan before considering the list finalized.
           </div>
           <div class="preview-upgrade-note">
             <strong>Free preview:</strong> This page shows a limited shortlist of recommended plants so you can review the plan structure and climate fit. The Complete PDF Plan includes the expanded plant list, plant profiles, substitutions, and detailed implementation notes.
@@ -183,7 +183,7 @@
 
     <footer>
       <p><span id="appVersionLabel" class="app-version-label">Prototype v0.1</span></p>
-      <p>Based on Schüssler Cell Salts & Biodynamic Agriculture</p>
+      <p>Carey / Schüssler-inspired symbolic cell-salt themes for planting design</p>
     </footer>
   </div>
 
