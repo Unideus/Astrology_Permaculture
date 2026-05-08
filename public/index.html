@@ -9,31 +9,41 @@
 <body>
   <div class="container">
     <header>
-      <h1>🌱 Permaculture Design Generator</h1>
-      <p class="subtitle">Symbolic Cell Salt / Mineral Theme Planting Plans</p>
+      <h1 data-i18n="appTitle">🌱 Permaculture Design Generator</h1>
+      <p class="subtitle" data-i18n="appSubtitle">Symbolic Cell Salt / Mineral Theme Planting Plans</p>
       <div class="prototype-notice" role="note">
-        <strong>Prototype / Early Access</strong>
-        <span>Plant recommendations and saved guild edits are active. Soil test interpretation and true PDF export are coming soon.</span>
+        <strong data-i18n="prototypeLabel">Prototype / Early Access</strong>
+        <span data-i18n="prototypeNotice">Plant recommendations and saved guild edits are active. Soil test interpretation and true PDF export are coming soon.</span>
       </div>
-      <button class="btn btn-header" onclick="showSavedSites()">📂 My Saved Sites</button>
-      <button class="btn btn-header" id="themeToggle" type="button" onclick="toggleTheme()">🌙 Dark mode</button>
+      <div class="top-controls">
+        <div class="language-control">
+          <label for="languageSelect" data-i18n="languageLabel">Language</label>
+          <select id="languageSelect" onchange="setLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+        <button class="btn btn-header" onclick="showSavedSites()" data-i18n="savedSitesButton">📂 My Saved Sites</button>
+        <button class="btn btn-header" id="themeToggle" type="button" onclick="toggleTheme()">🌙 Dark mode</button>
+      </div>
+      <p class="translation-note" data-i18n="translationNote">Spanish is a first-pass prototype translation. Plant names, registry tags, and some generated notes may remain in English.</p>
     </header>
 
     <main>
       <!-- Step 1: Basic Info -->
       <section class="form-section" id="step1">
-        <h2>Step 1: Location & Sun Sign</h2>
-        
+        <h2 data-i18n="step1Title">Step 1: Location & Sun Sign</h2>
+
         <div class="form-group">
-          <label for="address">Property Address *</label>
-          <input type="text" id="address" placeholder="123 Main St, City, State ZIP" required>
-          <small>Used to determine hardiness zone, climate, and frost dates</small>
+          <label for="address" data-i18n="propertyAddress">Property Address *</label>
+          <input type="text" id="address" placeholder="123 Main St, City, State ZIP" data-i18n-placeholder="addressPlaceholder" required>
+          <small data-i18n="addressHelp">Used to determine hardiness zone, climate, and frost dates</small>
         </div>
 
         <div class="form-group">
-          <label for="sunSign">Your Sun Sign *</label>
+          <label for="sunSign" data-i18n="sunSignLabel">Your Sun Sign *</label>
           <select id="sunSign" required>
-            <option value="">Select your sun sign...</option>
+            <option value="" data-i18n="sunSignPlaceholder">Select your sun sign...</option>
             <option value="aries">♈ Aries (Mar 21 - Apr 19)</option>
             <option value="taurus">♉ Taurus (Apr 20 - May 20)</option>
             <option value="gemini">♊ Gemini (May 21 - Jun 20)</option>
@@ -47,20 +57,20 @@
             <option value="aquarius">♒ Aquarius (Jan 20 - Feb 18)</option>
             <option value="pisces">♓ Pisces (Feb 19 - Mar 20)</option>
           </select>
-          <small>Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes</small>
+          <small data-i18n="sunSignHelp">Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes</small>
         </div>
 
         <div class="form-group family-section">
-          <label><strong>Family Members (Optional)</strong></label>
-          <p class="family-description">Add sun signs for family members to combine symbolic mineral / cell-salt themes</p>
+          <label><strong data-i18n="familyMembersLabel">Family Members (Optional)</strong></label>
+          <p class="family-description" data-i18n="familyMembersHelp">Add sun signs for family members to combine symbolic mineral / cell-salt themes</p>
           <div id="familyMembers"></div>
-          <button type="button" class="btn btn-secondary" onclick="addFamilyMember()">+ Add Family Member</button>
+          <button type="button" class="btn btn-secondary" onclick="addFamilyMember()" data-i18n="addFamilyMember">+ Add Family Member</button>
         </div>
 
         <div class="form-group">
-          <label for="scale">Project Scale *</label>
+          <label for="scale" data-i18n="projectScale">Project Scale *</label>
           <select id="scale" required>
-            <option value="">Select scale...</option>
+            <option value="" data-i18n="scalePlaceholder">Select scale...</option>
             <option value="balcony">🏠 Balcony/Container (0-100 sq ft)</option>
             <option value="backyard">🌿 Backyard Garden (100-1000 sq ft)</option>
             <option value="homestead" selected>🏡 Homestead (¼-2 acres)</option>
@@ -70,120 +80,122 @@
         </div>
 
         <div class="form-group">
-          <label for="userDesiredPlants">Desired Canopy Trees / Plants (optional)</label>
-          <input type="text" id="userDesiredPlants" placeholder="e.g., Apple, Peach, Pawpaw">
-          <small>Enter one or more desired canopy plants, separated by commas. Example: apple, peach, pear. Leave blank for suggested anchors.</small>
+          <label for="userDesiredPlants" data-i18n="desiredPlants">Desired Canopy Trees / Plants (optional)</label>
+          <input type="text" id="userDesiredPlants" placeholder="e.g., Apple, Peach, Pawpaw" data-i18n-placeholder="desiredPlantsPlaceholder">
+          <small data-i18n="desiredPlantsHelp">Enter one or more desired canopy plants, separated by commas. Example: apple, peach, pear. Leave blank for suggested anchors.</small>
         </div>
 
-        <button class="btn btn-primary" onclick="goToStep2()">Next →</button>
+        <button class="btn btn-primary" onclick="goToStep2()" data-i18n="next">Next →</button>
       </section>
 
       <!-- Step 2: Soil Test -->
       <section class="form-section hidden" id="step2">
-        <h2>Step 2: Review & Generate</h2>
+        <h2 data-i18n="step2Title">Step 2: Review & Generate</h2>
 
         <div class="coming-soon-card">
-          <h3>Soil Test Integration — Coming Soon</h3>
-          <p>We’re preparing soil-test upload and interpretation tools. For now, generate the plan without soil-test inputs.</p>
+          <h3 data-i18n="soilComingSoonTitle">Soil Test Integration — Coming Soon</h3>
+          <p data-i18n="soilComingSoonText">We’re preparing soil-test upload and interpretation tools. For now, generate the plan without soil-test inputs.</p>
         </div>
 
         <div class="btn-group">
-          <button class="btn" onclick="goToStep1()">← Back</button>
-          <button class="btn btn-primary" onclick="generatePlan()">🌱 Generate Plan</button>
+          <button class="btn" onclick="goToStep1()" data-i18n="back">← Back</button>
+          <button class="btn btn-primary" onclick="generatePlan()" data-i18n="generatePlan">🌱 Generate Plan</button>
         </div>
       </section>
 
       <!-- Results -->
       <section class="results-section hidden" id="results">
-        <h2>Your Permaculture Plan</h2>
+        <h2 data-i18n="resultsTitle">Your Permaculture Plan</h2>
         <div id="saveStateIndicator" class="save-state-indicator hidden"></div>
         <div class="results-save-controls">
-          <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled>Save Changes</button>
-          <button id="saveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()">Save As New</button>
+          <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled data-i18n="saveChanges">Save Changes</button>
+          <button id="saveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
+          <button id="openPlantingScaleBtn" class="btn btn-secondary" type="button" onclick="openPlantingScale()" data-i18n="openPlantingScale">Open Planting Timeline</button>
         </div>
         <div class="prototype-feedback-card">
-          <strong>Testing this?</strong>
-          <span>Note confusing recommendations, missing plants, bad zone matches, or features you expected. Early feedback will guide the next registry and editing passes.</span>
+          <strong data-i18n="testingPrompt">Testing this?</strong>
+          <span data-i18n="testingText">Note confusing recommendations, missing plants, bad zone matches, or features you expected. Early feedback will guide the next registry and editing passes.</span>
         </div>
-        
+
         <div class="result-card">
-          <h3>📍 Site Information</h3>
+          <h3 data-i18n="siteInfoTitle">📍 Site Information</h3>
           <div id="siteInfo"></div>
           <div id="siteMap" class="site-map"></div>
         </div>
 
         <div class="result-card">
-          <h3>☀️ Sun Analysis for Plants</h3>
+          <h3 data-i18n="sunAnalysisTitle">☀️ Sun Analysis for Plants</h3>
           <div id="plantSunAnalysis"></div>
         </div>
 
         <div class="result-card">
-          <h3>🧪 Symbolic Cell Salt / Mineral Themes</h3>
+          <h3 data-i18n="cellSaltTitle">🧪 Symbolic Cell Salt / Mineral Themes</h3>
           <div class="educational-note">
-            <strong>How to read this:</strong>
-            This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested.
+            <strong data-i18n="howToRead">How to read this:</strong>
+            <span data-i18n="cellSaltDisclaimer">This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested.</span>
           </div>
           <div id="cellSalts"></div>
-          <p class="note">These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.</p>
+          <p class="note" data-i18n="cellSaltNote">These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.</p>
         </div>
 
         <div class="result-card" id="aiGuildsCard" style="display:none">
-          <h3>🤖 AI-Designed Plant Guilds</h3>
+          <h3 data-i18n="aiGuildsTitle">🤖 AI-Designed Plant Guilds</h3>
           <div id="aiGuilds"></div>
         </div>
 
         <div class="result-card" id="sevenLayerGuildCard" style="display:none">
-          <h3>🌿 7-Layer Edible Guild</h3>
+          <h3 data-i18n="sevenLayerGuildTitle">🌿 7-Layer Edible Guild</h3>
           <div class="educational-note">
-            <strong>What is a guild?</strong>
-            A guild is a small plant community built around an anchor plant. The seven layers are canopy, sub-canopy, shrub, herbaceous, ground cover, root, and vine. Strong guilds balance food production, soil building, pollinator support, living mulch, nutrient cycling, and climate fit. Editing a layer swaps a plant while preserving the design role when possible.
+            <strong data-i18n="whatIsGuild">What is a guild?</strong>
+            <span data-i18n="guildExplanation">A guild is a small plant community built around an anchor plant. The seven layers are canopy, sub-canopy, shrub, herbaceous, ground cover, root, and vine. Strong guilds balance food production, soil building, pollinator support, living mulch, nutrient cycling, and climate fit. Editing a layer swaps a plant while preserving the design role when possible.</span>
           </div>
           <div id="sevenLayerGuild"></div>
         </div>
 
         <div class="result-card">
-          <h3>🌿 Recommended Plants</h3>
+          <h3 data-i18n="recommendedPlantsTitle">🌿 Recommended Plants</h3>
           <div class="educational-note">
-            These candidates are ranked from the current plan's mineral themes plus available registry metadata. Use filters to inspect the list by role, layer, plant type, or traditional mineral/cell-salt notes. Review and save the plan before considering the list finalized.
+            <span data-i18n="recommendedPlantsHelp">These candidates are ranked from the current plan's mineral themes plus available registry metadata. Use filters to inspect the list by role, layer, plant type, or traditional mineral/cell-salt notes. Review and save the plan before considering the list finalized.</span>
           </div>
           <div class="preview-upgrade-note">
-            <strong>Free preview:</strong> This page shows a limited shortlist of recommended plants so you can review the plan structure and climate fit. The Complete PDF Plan includes the expanded plant list, plant profiles, substitutions, and detailed implementation notes.
+            <strong data-i18n="freePreview">Free preview:</strong> <span data-i18n="freePreviewText">This page shows a limited shortlist of recommended plants so you can review the plan structure and climate fit. The Complete PDF Plan includes the expanded plant list, plant profiles, substitutions, and detailed implementation notes.</span>
           </div>
           <div id="recommendedPlants"></div>
         </div>
 
         <div class="bottom-save-area">
-          <p class="bottom-save-label">Finished reviewing plant recommendations?</p>
+          <p class="bottom-save-label" data-i18n="finishedReviewing">Finished reviewing plant recommendations?</p>
           <p class="preview-upgrade-note compact">
-            <strong>Want the complete planting plan?</strong> The Complete PDF Plan unlocks the expanded recommendation list, detailed plant notes, alternatives, and a printable implementation schedule.
+            <strong data-i18n="completePlanPrompt">Want the complete planting plan?</strong> <span data-i18n="completePlanText">The Complete PDF Plan unlocks the expanded recommendation list, detailed plant notes, alternatives, and a printable implementation schedule.</span>
           </p>
           <div class="results-save-controls bottom-results-save-controls">
-            <button id="bottomSaveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled>Save Changes</button>
-            <button id="bottomSaveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()">Save As New</button>
+            <button id="bottomSaveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled data-i18n="saveChanges">Save Changes</button>
+            <button id="bottomSaveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
+            <button id="bottomOpenPlantingScaleBtn" class="btn btn-secondary" type="button" onclick="openPlantingScale()" data-i18n="openPlantingScale">Open Planting Timeline</button>
           </div>
         </div>
 
         <div class="result-card">
-          <h3>📅 3-Year Implementation Plan</h3>
+          <h3 data-i18n="threeYearTitle">📅 3-Year Implementation Plan</h3>
           <div id="threeYearPlan"></div>
         </div>
 
         <div class="result-card">
-          <h3>🌙 Basic Moon Planting Guidance</h3>
+          <h3 data-i18n="moonTitle">🌙 Basic Moon Planting Guidance</h3>
           <div id="moonCalendar"></div>
         </div>
 
         <div class="btn-group">
-          <button class="btn" onclick="startOver()">Start Over</button>
-          <button class="btn btn-primary" onclick="downloadPlan()">Print / Save PDF</button>
+          <button class="btn" onclick="startOver()" data-i18n="startOver">Start Over</button>
+          <button class="btn btn-primary" onclick="downloadPlan()" data-i18n="printPdf">Print / Save PDF</button>
         </div>
-        <p class="coming-soon-note">Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”</p>
+        <p class="coming-soon-note" data-i18n="pdfComingSoon">Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”</p>
       </section>
     </main>
 
     <footer>
       <p><span id="appVersionLabel" class="app-version-label">Prototype v0.1</span></p>
-      <p>Carey / Schüssler-inspired symbolic cell-salt themes for planting design</p>
+      <p data-i18n="footerText">Carey / Schüssler-inspired symbolic cell-salt themes for planting design</p>
     </footer>
   </div>
 
@@ -191,11 +203,11 @@
   <div id="savedSitesModal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>📂 My Saved Sites</h2>
+        <h2 data-i18n="modalSavedSitesTitle">📂 My Saved Sites</h2>
         <button class="btn-close" onclick="closeSavedSites()">&times;</button>
       </div>
       <div id="savedSitesList" class="saved-sites-list">
-        <p class="note">Loading saved sites...</p>
+        <p class="note" data-i18n="loadingSavedSites">Loading saved sites...</p>
       </div>
     </div>
   </div>
@@ -204,26 +216,26 @@
   <div id="guildEditModal" class="modal-overlay hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="guildEditTitle">Edit Guild Layer</h2>
+        <h2 id="guildEditTitle" data-i18n="editGuildLayer">Edit Guild Layer</h2>
         <button class="btn-close" type="button" onclick="closeGuildEditModal()">&times;</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="guildLayerSelect">Layer to edit</label>
+          <label for="guildLayerSelect" data-i18n="layerToEdit">Layer to edit</label>
           <select id="guildLayerSelect" onchange="updateGuildEditPreview()"></select>
         </div>
         <div class="guild-edit-preview">
-          <p class="guild-edit-label">Current plant</p>
-          <p id="guildCurrentPlant" class="guild-edit-current">No plants selected yet</p>
+          <p class="guild-edit-label" data-i18n="currentPlant">Current plant</p>
+          <p id="guildCurrentPlant" class="guild-edit-current" data-i18n="noPlantsSelected">No plants selected yet</p>
         </div>
         <div class="form-group">
-          <label for="guildReplacementSelect">Replacement plant</label>
+          <label for="guildReplacementSelect" data-i18n="replacementPlant">Replacement plant</label>
           <select id="guildReplacementSelect"></select>
-          <small id="guildReplacementStatus">Choose a layer to load compatible plants.</small>
+          <small id="guildReplacementStatus" data-i18n="chooseLayer">Choose a layer to load compatible plants.</small>
         </div>
         <div class="btn-group">
-          <button class="btn" type="button" onclick="closeGuildEditModal()">Cancel</button>
-          <button class="btn btn-primary" type="button" onclick="applyGuildLayerEdit()">Apply</button>
+          <button class="btn" type="button" onclick="closeGuildEditModal()" data-i18n="cancel">Cancel</button>
+          <button class="btn btn-primary" type="button" onclick="applyGuildLayerEdit()" data-i18n="apply">Apply</button>
         </div>
       </div>
     </div>

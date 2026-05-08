@@ -9,6 +9,444 @@ const originalGuildLayers = new Map();
 let activeGuildEditIndex = null;
 const APP_VERSION = 'Prototype v0.1';
 const THEME_STORAGE_KEY = 'permacultureTheme';
+const LANGUAGE_STORAGE_KEY = 'language';
+const I18N = {
+  en: {
+    documentTitle: 'Permaculture Design Generator',
+    appTitle: '🌱 Permaculture Design Generator',
+    appSubtitle: 'Symbolic Cell Salt / Mineral Theme Planting Plans',
+    languageLabel: 'Language',
+    translationNote: 'Spanish is a first-pass prototype translation. Plant names, registry tags, and some generated notes may remain in English.',
+    prototypeLabel: 'Prototype / Early Access',
+    prototypeNotice: 'Plant recommendations and saved guild edits are active. Soil test interpretation and true PDF export are coming soon.',
+    savedSitesButton: '📂 My Saved Sites',
+    darkMode: '🌙 Dark mode',
+    lightMode: '☀️ Light mode',
+    step1Title: 'Step 1: Location & Sun Sign',
+    propertyAddress: 'Property Address *',
+    addressPlaceholder: '123 Main St, City, State ZIP',
+    addressHelp: 'Used to determine hardiness zone, climate, and frost dates',
+    sunSignLabel: 'Your Sun Sign *',
+    sunSignPlaceholder: 'Select your sun sign...',
+    sunSignHelp: 'Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes',
+    familyMembersLabel: 'Family Members (Optional)',
+    familyMembersHelp: 'Add sun signs for family members to combine symbolic mineral / cell-salt themes',
+    addFamilyMember: '+ Add Family Member',
+    projectScale: 'Project Scale *',
+    scalePlaceholder: 'Select scale...',
+    desiredPlants: 'Desired Canopy Trees / Plants (optional)',
+    desiredPlantsPlaceholder: 'e.g., Apple, Peach, Pawpaw',
+    desiredPlantsHelp: 'Enter one or more desired canopy plants, separated by commas. Example: apple, peach, pear. Leave blank for suggested anchors.',
+    next: 'Next →',
+    step2Title: 'Step 2: Review & Generate',
+    soilComingSoonTitle: 'Soil Test Integration — Coming Soon',
+    soilComingSoonText: 'We’re preparing soil-test upload and interpretation tools. For now, generate the plan without soil-test inputs.',
+    back: '← Back',
+    generatePlan: '🌱 Generate Plan',
+    resultsTitle: 'Your Permaculture Plan',
+    saveChanges: 'Save Changes',
+    saveAsNew: 'Save As New',
+    openPlantingScale: 'Open Planting Timeline',
+    testingPrompt: 'Testing this?',
+    testingText: 'Note confusing recommendations, missing plants, bad zone matches, or features you expected. Early feedback will guide the next registry and editing passes.',
+    siteInfoTitle: '📍 Site Information',
+    sunAnalysisTitle: '☀️ Sun Analysis for Plants',
+    cellSaltTitle: '🧪 Symbolic Cell Salt / Mineral Themes',
+    howToRead: 'How to read this:',
+    cellSaltDisclaimer: 'This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested.',
+    cellSaltNote: 'These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.',
+    aiGuildsTitle: '🤖 AI-Designed Plant Guilds',
+    sevenLayerGuildTitle: '🌿 7-Layer Edible Guild',
+    whatIsGuild: 'What is a guild?',
+    guildExplanation: 'A guild is a small plant community built around an anchor plant. The seven layers are canopy, sub-canopy, shrub, herbaceous, ground cover, root, and vine. Strong guilds balance food production, soil building, pollinator support, living mulch, nutrient cycling, and climate fit. Editing a layer swaps a plant while preserving the design role when possible.',
+    recommendedPlantsTitle: '🌿 Recommended Plants',
+    recommendedPlantsHelp: 'These candidates are ranked from the current plan\'s mineral themes plus available registry metadata. Use filters to inspect the list by role, layer, plant type, or traditional mineral/cell-salt notes. Review and save the plan before considering the list finalized.',
+    freePreview: 'Free preview:',
+    freePreviewText: 'This page shows a limited shortlist of recommended plants so you can review the plan structure and climate fit. The Complete PDF Plan includes the expanded plant list, plant profiles, substitutions, and detailed implementation notes.',
+    finishedReviewing: 'Finished reviewing plant recommendations?',
+    completePlanPrompt: 'Want the complete planting plan?',
+    completePlanText: 'The Complete PDF Plan unlocks the expanded recommendation list, detailed plant notes, alternatives, and a printable implementation schedule.',
+    threeYearTitle: '📅 3-Year Implementation Plan',
+    moonTitle: '🌙 Basic Moon Planting Guidance',
+    startOver: 'Start Over',
+    printPdf: 'Print / Save PDF',
+    pdfComingSoon: 'Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”',
+    footerText: 'Carey / Schüssler-inspired symbolic cell-salt themes for planting design',
+    modalSavedSitesTitle: '📂 My Saved Sites',
+    loadingSavedSites: 'Loading saved sites...',
+    editGuildLayer: 'Edit Guild Layer',
+    layerToEdit: 'Layer to edit',
+    currentPlant: 'Current plant',
+    noPlantsSelected: 'No plants selected yet',
+    replacementPlant: 'Replacement plant',
+    chooseLayer: 'Choose a layer to load compatible plants.',
+    cancel: 'Cancel',
+    apply: 'Apply',
+    remove: 'Remove',
+    memberNamePlaceholder: 'Name (optional)',
+    generateLoadingTitle: 'Generating your permaculture plan...',
+    generateLoadingText: 'Analyzing location, cell-salt themes, and planting schedules',
+    fillRequired: 'Please fill in all required fields',
+    generateErrorPrefix: 'Error generating plan: ',
+    noPlanPlantingScale: 'Generate or open a saved plan first.',
+    address: 'Address',
+    scale: 'Scale',
+    primarySunSign: 'Primary Sun Sign',
+    familyMembers: 'Family Members',
+    coordinates: 'Coordinates',
+    geocoded: 'Geocoded',
+    hardinessZone: 'USDA Hardiness Zone',
+    avgMin: 'avg min',
+    koppenClimate: 'Köppen Climate',
+    growingSeason: 'Est. Growing Season',
+    days: 'days',
+    frostDates: 'Frost Dates (30-yr avg)',
+    lastSpringFrost: 'Last spring frost (32°F/0°C)',
+    firstFallFrost: 'First fall frost (32°F/0°C)',
+    frostFreeDays: 'Frost-free days',
+    lastHardFrost: 'Last hard frost (28°F/-2°C)',
+    firstHardFrost: 'First hard frost (28°F/-2°C)',
+    hardFrostFreeDays: 'Hard frost-free days',
+    yearsDataPrefix: 'Based on',
+    yearsDataSuffix: 'years of data (1991–2020)',
+    source: 'Source',
+    nearestKoppen: 'nearest Köppen point',
+    locationWarning: 'Location warning',
+    locationMapUnavailable: 'Location map unavailable',
+    locationUnavailable: 'Location unavailable.',
+    locationUnavailableText: 'Recommended plants require a valid USDA hardiness zone. Please enter a valid City and State (e.g., "Duluth, MN") and try again.',
+    planMineralThemes: 'Plan mineral themes',
+    noMineralThemes: 'No symbolic mineral themes selected or mapped.',
+    fewerMappedPlants: 'Some mineral themes may have fewer mapped plants in the current registry. The app prioritizes climate-fit and mapped matches where available.',
+    unmappedContext: 'Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Köppen climate, layer role, and guild diversity - not because they directly match a symbolic cell-salt theme.',
+    sortBy: 'Sort by',
+    bestMatch: 'Best match',
+    plantName: 'Plant name',
+    role: 'Role',
+    mineralCellSalt: 'Mineral / Cell Salt',
+    layer: 'Layer',
+    filterByRole: 'Filter by role',
+    allRoles: 'All roles',
+    filterByMineral: 'Filter by mineral',
+    allMinerals: 'All minerals',
+    filterByPlantType: 'Filter by plant type',
+    allTypes: 'All types',
+    resetFilters: 'Reset filters',
+    usedInPlanNote: 'Used in this plan means the plant already appears in one of the generated guild layers. Additional candidates are compatible plants that match mineral, climate, or role needs but were not placed in the guild.',
+    recommendedUsed: 'Recommended plants used in this plan',
+    additionalCandidates: 'Additional recommended candidates',
+    noRecommendedMatches: 'No recommended plants match the current filters.',
+    showing: 'Showing',
+    of: 'of',
+    recommendedPlants: 'recommended plants',
+    matchingFilters: 'matching current filters',
+    climateFitUnmapped: 'Climate-fit recommendation. Cell-salt profile not mapped yet.',
+    climateDiversity: 'Climate fit and guild diversity.',
+    themeMatch: 'Theme match',
+    mineralProfileUnmapped: 'Mineral profile not mapped yet',
+    traditionalCellSaltNote: 'Traditional cell-salt note',
+    whyShown: 'Why shown',
+    layerType: 'Layer/type',
+    climate: 'Climate',
+    zones: 'Zones',
+    metadataNotMapped: 'Metadata not mapped yet',
+    timelinePlantsNote: 'These plants are pulled from the generated guild layers and may appear in more than one task because they serve multiple establishment roles.',
+    canopyInfrastructure: 'Canopy & Infrastructure',
+    monthsZeroTwelve: 'Months 0-12',
+    task: 'Task',
+    plants: 'Plants',
+    recommendedAnchors: 'Recommended anchors',
+    experimentalUserSelectedAnchor: 'Experimental user-selected anchor',
+    experimentalUserSelectedAnchors: 'Experimental user-selected anchors',
+    year1: 'Year 1',
+    year2: 'Year 2',
+    moonGuidanceNote: 'This prototype shows basic moon-phase planting guidance. A full date-based planting calendar with crop-specific timing is planned.',
+    waxingMoon: 'Waxing Moon',
+    waningMoon: 'Waning Moon',
+    newMoon: 'New Moon',
+    fullMoon: 'Full Moon',
+    action: 'Action',
+    newMoonDefault: 'Rest, observe, plan, or sow hardy greens where seasonally appropriate.',
+    fullMoonDefault: 'Harvest herbs, observe plant vigor, or sow quick greens where seasonally appropriate.',
+    summerPeak: 'Summer Peak',
+    equinox: 'Equinox',
+    winterLow: 'Winter Low',
+    sunAngle: 'Sun Angle',
+    shadow: 'Shadow',
+    impact: 'Impact',
+    plantingRecommendations: 'Planting Recommendations',
+    forTree: 'for 10ft tree',
+    noSavedSites: 'No saved sites yet.',
+    saveSitePrompt: 'Generate a plan and click "Save As New" to store it here.',
+    unnamedSite: 'Unnamed Site',
+    noDescription: 'No description',
+    updated: 'Updated',
+    created: 'Created',
+    open: '📂 Open',
+    errorLoadingSites: 'Error loading sites: ',
+    siteNotFound: 'Site not found',
+    incompleteSite: 'Site data is incomplete (no plan found).',
+    errorLoadingSite: 'Error loading site: ',
+    deleteConfirmSuffix: 'This cannot be undone.',
+    errorDeletingSite: 'Error deleting site: ',
+    unsavedChanges: 'Unsaved changes',
+    unsavedChangesTo: 'Unsaved changes to saved site:',
+    saved: 'Saved:',
+    loadedSavedSite: 'Loaded saved site:',
+    notSavedYet: 'Not saved yet',
+    siteSaveFailed: 'Site save failed',
+    noPlanToSave: 'No plan to save. Generate a plan first.',
+    enterSiteName: 'Enter a name for this site:',
+    siteSaved: 'Site saved successfully!',
+    errorSavingSite: 'Error saving site: ',
+    changesSaved: 'Changes saved successfully!',
+    errorSavingChanges: 'Error saving changes: ',
+    pdfAlert: 'Native PDF export is coming soon. For now, use your browser print dialog (Ctrl+P / Cmd+P), then choose "Save as PDF" as the destination.',
+    edit: 'Edit',
+    done: 'Done',
+    saveGuild: 'Save Guild',
+    selectLayerToEdit: 'Select a layer to edit',
+    unsavedEdit: 'Unsaved edit',
+    original: 'Original',
+    pending: 'Pending',
+    compatibleNeedsZone: 'Compatible replacements need a generated plan with a USDA zone.',
+    loadingReplacements: 'Loading compatible replacements...',
+    failedLoadCandidates: 'Failed to load replacement candidates',
+    noCompatibleReplacements: 'No compatible replacements found for this layer.',
+    compatibleReplacementAvailable: 'compatible replacement available.',
+    compatibleReplacementsAvailable: 'compatible replacements available.',
+    suggested: 'Suggested',
+    chosenByYou: 'Chosen by you',
+    climateWarning: 'climate warning',
+    experimentalAnchor: 'experimental anchor',
+    canopyAnchor: 'Canopy anchor',
+    mineralMatch: 'Mineral match',
+    climateFitSupport: 'Climate fit · Support plant',
+    otherMinerals: 'Other minerals:',
+    mineralProfile: 'Mineral profile:',
+    noneMapped: 'None mapped',
+    notMappedYet: 'Not mapped yet',
+    climateNote: 'Climate note'
+  },
+  es: {
+    documentTitle: 'Generador de Diseño de Permacultura',
+    appTitle: '🌱 Generador de Diseño de Permacultura',
+    appSubtitle: 'Planes de siembra con temas simbólicos de sales celulares / minerales',
+    languageLabel: 'Idioma',
+    translationNote: 'El español es una traducción inicial de prototipo. Los nombres de plantas, etiquetas del registro y algunas notas generadas pueden permanecer en inglés.',
+    prototypeLabel: 'Prototipo / Acceso temprano',
+    prototypeNotice: 'Las recomendaciones de plantas y la edición de gremios guardados están activas. La interpretación de análisis de suelo y la exportación real a PDF llegarán pronto.',
+    savedSitesButton: '📂 Mis sitios guardados',
+    darkMode: '🌙 Modo oscuro',
+    lightMode: '☀️ Modo claro',
+    step1Title: 'Paso 1: Ubicación y signo solar',
+    propertyAddress: 'Dirección del terreno *',
+    addressPlaceholder: '123 Main St, ciudad, estado, código postal',
+    addressHelp: 'Se usa para determinar zona de rusticidad, clima y fechas de heladas',
+    sunSignLabel: 'Tu signo solar *',
+    sunSignPlaceholder: 'Selecciona tu signo solar...',
+    sunSignHelp: 'Usa tu signo solar y los signos vecinos como temas simbólicos de minerales / sales celulares',
+    familyMembersLabel: 'Integrantes de la familia (opcional)',
+    familyMembersHelp: 'Agrega signos solares de familiares para combinar temas simbólicos de minerales / sales celulares',
+    addFamilyMember: '+ Agregar familiar',
+    projectScale: 'Escala del proyecto *',
+    scalePlaceholder: 'Selecciona la escala...',
+    desiredPlants: 'Árboles de dosel / plantas deseadas (opcional)',
+    desiredPlantsPlaceholder: 'ej., Manzano, Durazno, Pawpaw',
+    desiredPlantsHelp: 'Ingresa una o más plantas de dosel deseadas, separadas por comas. Ejemplo: manzano, durazno, peral. Déjalo en blanco para recibir sugerencias.',
+    next: 'Siguiente →',
+    step2Title: 'Paso 2: Revisar y generar',
+    soilComingSoonTitle: 'Integración de análisis de suelo — Próximamente',
+    soilComingSoonText: 'Estamos preparando herramientas para subir e interpretar análisis de suelo. Por ahora, genera el plan sin datos de suelo.',
+    back: '← Atrás',
+    generatePlan: '🌱 Generar plan',
+    resultsTitle: 'Tu plan de permacultura',
+    saveChanges: 'Guardar cambios',
+    saveAsNew: 'Guardar como nuevo',
+    openPlantingScale: 'Abrir calendario de siembra',
+    testingPrompt: '¿Estás probando esto?',
+    testingText: 'Anota recomendaciones confusas, plantas faltantes, malas coincidencias de zona o funciones que esperabas. Los comentarios tempranos guiarán las próximas mejoras del registro y la edición.',
+    siteInfoTitle: '📍 Información del sitio',
+    sunAnalysisTitle: '☀️ Análisis solar para plantas',
+    cellSaltTitle: '🧪 Temas simbólicos de sales celulares / minerales',
+    howToRead: 'Cómo leer esto:',
+    cellSaltDisclaimer: 'Este prototipo usa un marco simbólico inspirado en Carey / Schüssler. Trata el signo solar y los signos vecinos como temas de minerales o sales celulares para el diseño de siembra. Estas asociaciones tradicionales se muestran solo como contexto simbólico para diseño de siembra. No son afirmaciones de salud, diagnóstico, guía de tratamiento ni consejo sobre suplementos. Las etiquetas de plantas ayudan a explicar por qué se sugieren plantas acumuladoras, comestibles, polinizadoras y de apoyo.',
+    cellSaltNote: 'Estos temas simbólicos de minerales / sales celulares se basan en tu signo solar y signos vecinos. Las plantas recomendadas se asocian con estas etiquetas del registro y metadatos de temas minerales.',
+    aiGuildsTitle: '🤖 Gremios de plantas diseñados por IA',
+    sevenLayerGuildTitle: '🌿 Gremio comestible de 7 capas',
+    whatIsGuild: '¿Qué es un gremio?',
+    guildExplanation: 'Un gremio es una pequeña comunidad vegetal construida alrededor de una planta ancla. Las siete capas son dosel, subdosel, arbusto, herbácea, cobertura del suelo, raíz y trepadora. Los gremios fuertes equilibran producción de alimentos, formación de suelo, apoyo a polinizadores, cobertura viva, ciclo de nutrientes y ajuste climático. Editar una capa cambia una planta mientras conserva el rol de diseño cuando es posible.',
+    recommendedPlantsTitle: '🌿 Plantas recomendadas',
+    recommendedPlantsHelp: 'Estos candidatos se ordenan a partir de los temas minerales del plan actual y los metadatos disponibles del registro. Usa los filtros para revisar la lista por rol, capa, tipo de planta o notas tradicionales de minerales/sales celulares. Revisa y guarda el plan antes de considerar la lista final.',
+    freePreview: 'Vista previa gratuita:',
+    freePreviewText: 'Esta página muestra una lista limitada de plantas recomendadas para que puedas revisar la estructura del plan y el ajuste climático. El Plan PDF Completo incluye la lista ampliada de plantas, perfiles, sustituciones y notas detalladas de implementación.',
+    finishedReviewing: '¿Terminaste de revisar las recomendaciones de plantas?',
+    completePlanPrompt: '¿Quieres el plan completo de siembra?',
+    completePlanText: 'El Plan PDF Completo desbloquea la lista ampliada de recomendaciones, notas detalladas de plantas, alternativas y un calendario imprimible de implementación.',
+    threeYearTitle: '📅 Plan de implementación de 3 años',
+    moonTitle: '🌙 Guía básica de siembra lunar',
+    startOver: 'Empezar de nuevo',
+    printPdf: 'Imprimir / Guardar PDF',
+    pdfComingSoon: 'La exportación nativa a PDF llegará pronto. Por ahora, usa el cuadro de impresión del navegador y elige “Guardar como PDF”.',
+    footerText: 'Temas simbólicos de sales celulares inspirados en Carey / Schüssler para diseño de siembra',
+    modalSavedSitesTitle: '📂 Mis sitios guardados',
+    loadingSavedSites: 'Cargando sitios guardados...',
+    editGuildLayer: 'Editar capa del gremio',
+    layerToEdit: 'Capa para editar',
+    currentPlant: 'Planta actual',
+    noPlantsSelected: 'Aún no hay plantas seleccionadas',
+    replacementPlant: 'Planta de reemplazo',
+    chooseLayer: 'Elige una capa para cargar plantas compatibles.',
+    cancel: 'Cancelar',
+    apply: 'Aplicar',
+    remove: 'Quitar',
+    memberNamePlaceholder: 'Nombre (opcional)',
+    generateLoadingTitle: 'Generando tu plan de permacultura...',
+    generateLoadingText: 'Analizando ubicación, temas de sales celulares y calendarios de siembra',
+    fillRequired: 'Completa todos los campos obligatorios',
+    generateErrorPrefix: 'Error al generar el plan: ',
+    noPlanPlantingScale: 'Genera o abre un plan guardado primero.',
+    address: 'Dirección',
+    scale: 'Escala',
+    primarySunSign: 'Signo solar principal',
+    familyMembers: 'Integrantes de la familia',
+    coordinates: 'Coordenadas',
+    geocoded: 'Geocodificado',
+    hardinessZone: 'Zona de rusticidad USDA',
+    avgMin: 'mín. promedio',
+    koppenClimate: 'Clima Köppen',
+    growingSeason: 'Temporada de crecimiento estimada',
+    days: 'días',
+    frostDates: 'Fechas de heladas (promedio de 30 años)',
+    lastSpringFrost: 'Última helada de primavera (32°F/0°C)',
+    firstFallFrost: 'Primera helada de otoño (32°F/0°C)',
+    frostFreeDays: 'Días sin heladas',
+    lastHardFrost: 'Última helada fuerte (28°F/-2°C)',
+    firstHardFrost: 'Primera helada fuerte (28°F/-2°C)',
+    hardFrostFreeDays: 'Días sin heladas fuertes',
+    yearsDataPrefix: 'Basado en',
+    yearsDataSuffix: 'años de datos (1991–2020)',
+    source: 'Fuente',
+    nearestKoppen: 'punto Köppen más cercano',
+    locationWarning: 'Advertencia de ubicación',
+    locationMapUnavailable: 'Mapa de ubicación no disponible',
+    locationUnavailable: 'Ubicación no disponible.',
+    locationUnavailableText: 'Las plantas recomendadas requieren una zona de rusticidad USDA válida. Ingresa una ciudad y estado válidos (ej., "Duluth, MN") e inténtalo de nuevo.',
+    planMineralThemes: 'Temas minerales del plan',
+    noMineralThemes: 'No se seleccionaron ni mapearon temas minerales simbólicos.',
+    fewerMappedPlants: 'Algunos temas minerales pueden tener menos plantas mapeadas en el registro actual. La app prioriza el ajuste climático y las coincidencias mapeadas cuando están disponibles.',
+    unmappedContext: 'Algunas plantas con buen ajuste climático se muestran aunque su perfil de sales celulares aún no esté mapeado. Se incluyen por zona USDA, clima Köppen, rol de capa y diversidad del gremio, no porque coincidan directamente con un tema simbólico de sales celulares.',
+    sortBy: 'Ordenar por',
+    bestMatch: 'Mejor coincidencia',
+    plantName: 'Nombre de planta',
+    role: 'Rol',
+    mineralCellSalt: 'Mineral / sal celular',
+    layer: 'Capa',
+    filterByRole: 'Filtrar por rol',
+    allRoles: 'Todos los roles',
+    filterByMineral: 'Filtrar por mineral',
+    allMinerals: 'Todos los minerales',
+    filterByPlantType: 'Filtrar por tipo de planta',
+    allTypes: 'Todos los tipos',
+    resetFilters: 'Restablecer filtros',
+    usedInPlanNote: 'Usada en este plan significa que la planta ya aparece en una de las capas del gremio generado. Los candidatos adicionales son plantas compatibles que coinciden con necesidades minerales, climáticas o de rol, pero no fueron colocadas en el gremio.',
+    recommendedUsed: 'Plantas recomendadas usadas en este plan',
+    additionalCandidates: 'Candidatos adicionales recomendados',
+    noRecommendedMatches: 'Ninguna planta recomendada coincide con los filtros actuales.',
+    showing: 'Mostrando',
+    of: 'de',
+    recommendedPlants: 'plantas recomendadas',
+    matchingFilters: 'que coinciden con los filtros actuales',
+    climateFitUnmapped: 'Recomendación con ajuste climático. Perfil de sales celulares aún no mapeado.',
+    climateDiversity: 'Ajuste climático y diversidad del gremio.',
+    themeMatch: 'Coincidencia de tema',
+    mineralProfileUnmapped: 'Perfil mineral aún no mapeado',
+    traditionalCellSaltNote: 'Nota tradicional de sales celulares',
+    whyShown: 'Por qué se muestra',
+    layerType: 'Capa/tipo',
+    climate: 'Clima',
+    zones: 'Zonas',
+    metadataNotMapped: 'Metadatos aún no mapeados',
+    timelinePlantsNote: 'Estas plantas vienen de las capas del gremio generado y pueden aparecer en más de una tarea porque cumplen varios roles de establecimiento.',
+    canopyInfrastructure: 'Dosel e infraestructura',
+    monthsZeroTwelve: 'Meses 0-12',
+    task: 'Tarea',
+    plants: 'Plantas',
+    recommendedAnchors: 'Anclas recomendadas',
+    experimentalUserSelectedAnchor: 'Ancla experimental seleccionada por el usuario',
+    experimentalUserSelectedAnchors: 'Anclas experimentales seleccionadas por el usuario',
+    year1: 'Año 1',
+    year2: 'Año 2',
+    moonGuidanceNote: 'Este prototipo muestra una guía básica de siembra por fases lunares. Se planea un calendario completo por fecha con tiempos específicos por cultivo.',
+    waxingMoon: 'Luna creciente',
+    waningMoon: 'Luna menguante',
+    newMoon: 'Luna nueva',
+    fullMoon: 'Luna llena',
+    action: 'Acción',
+    newMoonDefault: 'Descansa, observa, planifica o siembra hojas verdes resistentes donde sea apropiado para la temporada.',
+    fullMoonDefault: 'Cosecha hierbas, observa el vigor de las plantas o siembra hojas verdes rápidas donde sea apropiado para la temporada.',
+    summerPeak: 'Pico de verano',
+    equinox: 'Equinoccio',
+    winterLow: 'Mínimo de invierno',
+    sunAngle: 'Ángulo solar',
+    shadow: 'Sombra',
+    impact: 'Impacto',
+    plantingRecommendations: 'Recomendaciones de siembra',
+    forTree: 'para un árbol de 10 pies',
+    noSavedSites: 'Aún no hay sitios guardados.',
+    saveSitePrompt: 'Genera un plan y haz clic en "Guardar como nuevo" para guardarlo aquí.',
+    unnamedSite: 'Sitio sin nombre',
+    noDescription: 'Sin descripción',
+    updated: 'Actualizado',
+    created: 'Creado',
+    open: '📂 Abrir',
+    errorLoadingSites: 'Error al cargar sitios: ',
+    siteNotFound: 'Sitio no encontrado',
+    incompleteSite: 'Los datos del sitio están incompletos (no se encontró un plan).',
+    errorLoadingSite: 'Error al cargar el sitio: ',
+    deleteConfirmSuffix: 'Esto no se puede deshacer.',
+    errorDeletingSite: 'Error al eliminar el sitio: ',
+    unsavedChanges: 'Cambios sin guardar',
+    unsavedChangesTo: 'Cambios sin guardar en el sitio guardado:',
+    saved: 'Guardado:',
+    loadedSavedSite: 'Sitio guardado cargado:',
+    notSavedYet: 'Aún no guardado',
+    siteSaveFailed: 'No se pudo guardar el sitio',
+    noPlanToSave: 'No hay plan para guardar. Genera un plan primero.',
+    enterSiteName: 'Ingresa un nombre para este sitio:',
+    siteSaved: '¡Sitio guardado correctamente!',
+    errorSavingSite: 'Error al guardar el sitio: ',
+    changesSaved: '¡Cambios guardados correctamente!',
+    errorSavingChanges: 'Error al guardar cambios: ',
+    pdfAlert: 'La exportación nativa a PDF llegará pronto. Por ahora, usa el cuadro de impresión del navegador (Ctrl+P / Cmd+P) y elige "Guardar como PDF" como destino.',
+    edit: 'Editar',
+    done: 'Listo',
+    saveGuild: 'Guardar gremio',
+    selectLayerToEdit: 'Selecciona una capa para editar',
+    unsavedEdit: 'Edición sin guardar',
+    original: 'Original',
+    pending: 'Pendiente',
+    compatibleNeedsZone: 'Los reemplazos compatibles necesitan un plan generado con una zona USDA.',
+    loadingReplacements: 'Cargando reemplazos compatibles...',
+    failedLoadCandidates: 'No se pudieron cargar candidatos de reemplazo',
+    noCompatibleReplacements: 'No se encontraron reemplazos compatibles para esta capa.',
+    compatibleReplacementAvailable: 'reemplazo compatible disponible.',
+    compatibleReplacementsAvailable: 'reemplazos compatibles disponibles.',
+    suggested: 'Sugerida',
+    chosenByYou: 'Elegida por ti',
+    climateWarning: 'advertencia climática',
+    experimentalAnchor: 'ancla experimental',
+    canopyAnchor: 'Ancla de dosel',
+    mineralMatch: 'Coincidencia mineral',
+    climateFitSupport: 'Ajuste climático · Planta de apoyo',
+    otherMinerals: 'Otros minerales:',
+    mineralProfile: 'Perfil mineral:',
+    noneMapped: 'Ninguno mapeado',
+    notMappedYet: 'Aún no mapeado',
+    climateNote: 'Nota climática'
+  }
+};
+let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) === 'es' ? 'es' : 'en';
 const GUILD_LAYER_DEFINITIONS = [
   { label: '1. Canopy', canonicalKey: 'layer1_canopy', keys: ['layer1_canopy'] },
   { label: '2. Sub-Canopy', canonicalKey: 'layer2_low_tree', keys: ['layer2_low_tree'] },
@@ -19,6 +457,52 @@ const GUILD_LAYER_DEFINITIONS = [
   { label: '7. Vine', canonicalKey: 'layer7', keys: ['layer7', 'layer7_vertical'] }
 ];
 
+function t(key) {
+  return I18N[currentLanguage]?.[key] || I18N.en[key] || key;
+}
+
+function applyTranslations() {
+  document.documentElement.lang = currentLanguage;
+  document.title = t('documentTitle');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    el.innerHTML = t(el.dataset.i18nHtml);
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder));
+  });
+
+  const languageSelect = document.getElementById('languageSelect');
+  if (languageSelect) languageSelect.value = currentLanguage;
+  applyTheme(document.body.classList.contains('dark-mode') ? 'dark' : getPreferredTheme());
+}
+
+function setLanguage(language) {
+  currentLanguage = language === 'es' ? 'es' : 'en';
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+  applyTranslations();
+  if (generatedPlan) displayResults(generatedPlan);
+  updateSaveStateIndicator();
+}
+
+function getGuildLayerLabel(layerDef) {
+  const labels = {
+    layer1_canopy: currentLanguage === 'es' ? '1. Dosel' : '1. Canopy',
+    layer2_low_tree: currentLanguage === 'es' ? '2. Subdosel' : '2. Sub-Canopy',
+    layer3_shrub: currentLanguage === 'es' ? '3. Arbusto' : '3. Shrub',
+    layer4: currentLanguage === 'es' ? '4. Herbácea' : '4. Herbaceous',
+    layer5: currentLanguage === 'es' ? '5. Cobertura del suelo' : '5. Ground Cover',
+    layer6: currentLanguage === 'es' ? '6. Raíz' : '6. Root',
+    layer7: currentLanguage === 'es' ? '7. Trepadora' : '7. Vine'
+  };
+  return labels[layerDef?.canonicalKey] || layerDef?.label || '';
+}
+
 function applyTheme(theme) {
   const isDark = theme === 'dark';
   document.body.classList.toggle('dark-mode', isDark);
@@ -27,7 +511,7 @@ function applyTheme(theme) {
 
   const toggle = document.getElementById('themeToggle');
   if (toggle) {
-    toggle.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+    toggle.textContent = isDark ? t('lightMode') : t('darkMode');
   }
 }
 
@@ -48,6 +532,7 @@ function getPreferredTheme() {
 
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(getPreferredTheme());
+  applyTranslations();
   const appVersionLabel = document.getElementById('appVersionLabel');
   if (appVersionLabel) {
     appVersionLabel.textContent = APP_VERSION;
@@ -66,7 +551,7 @@ function goToStep2() {
   const scale = document.getElementById('scale').value;
 
   if (!address || !sunSign || !scale) {
-    alert('Please fill in all required fields');
+    alert(t('fillRequired'));
     return;
   }
 
@@ -82,13 +567,13 @@ function goToStep1() {
 function addFamilyMember() {
   familyMemberCount++;
   const container = document.getElementById('familyMembers');
-  
+
   const memberDiv = document.createElement('div');
   memberDiv.className = 'family-member';
   memberDiv.innerHTML = `
-    <input type="text" placeholder="Name (optional)" class="member-name">
+    <input type="text" placeholder="${t('memberNamePlaceholder')}" class="member-name">
     <select class="member-sign" required>
-      <option value="">Select sun sign...</option>
+      <option value="">${t('sunSignPlaceholder')}</option>
       <option value="aries">♈ Aries</option>
       <option value="taurus">♉ Taurus</option>
       <option value="gemini">♊ Gemini</option>
@@ -102,9 +587,9 @@ function addFamilyMember() {
       <option value="aquarius">♒ Aquarius</option>
       <option value="pisces">♓ Pisces</option>
     </select>
-    <button class="remove-btn" onclick="removeFamilyMember(this)">Remove</button>
+    <button class="remove-btn" onclick="removeFamilyMember(this)">${t('remove')}</button>
   `;
-  
+
   container.appendChild(memberDiv);
 }
 
@@ -160,8 +645,8 @@ async function generatePlan() {
   document.getElementById('step2').innerHTML = `
     <div class="loading">
       <div class="spinner"></div>
-      <h3>Generating your permaculture plan...</h3>
-      <p>Analyzing location, cell-salt themes, and planting schedules</p>
+      <h3>${t('generateLoadingTitle')}</h3>
+      <p>${t('generateLoadingText')}</p>
     </div>
   `;
 
@@ -197,7 +682,7 @@ async function generatePlan() {
     updateSaveStateIndicator();
 
   } catch (error) {
-    alert('Error generating plan: ' + error.message);
+    alert(t('generateErrorPrefix') + error.message);
     location.reload();
   }
 }
@@ -230,6 +715,70 @@ function getRecommendedPlantPreferenceGroup(plant) {
 
 function getRecommendedPlantMatchLabels(plant) {
   return [...new Set((plant?.matchLabels || []).map(label => String(label).trim()).filter(Boolean))];
+}
+
+function uniqueValues(values) {
+  return [...new Set(values.map(value => String(value || '').trim()).filter(Boolean))];
+}
+
+function getPlantingScalePlants(plan = generatedPlan) {
+  const guilds = Array.isArray(plan?.guild) ? plan.guild : (plan?.guild ? [plan.guild] : []);
+  const guildPlants = guilds.flatMap(guild => {
+    const layers = guild?.layers || guild || {};
+    return GUILD_LAYER_DEFINITIONS.map(layerDef => getGuildLayerValue(guild, layerDef.keys))
+      .map(layer => {
+        if (!layer) return '';
+        if (typeof layer === 'string') return layer.split('[')[0].trim();
+        return layer.id || layer.common_name || layer.name || layer.plant || '';
+      });
+  });
+  const recommendedPlants = (plan?.recommendedPlants || []).map(getRecommendedPlantName);
+  return uniqueValues([...guildPlants, ...recommendedPlants]).slice(0, 24);
+}
+
+function getPlantingScaleBaseUrl() {
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return 'http://localhost:5173/planting/';
+  }
+  return 'https://zodiyuga.com/planting/';
+}
+
+function buildPlantingScaleUrl(plan = generatedPlan, options = {}) {
+  const url = new URL(getPlantingScaleBaseUrl());
+  url.searchParams.set('source', 'permaculture');
+
+  const projectId = options.projectId || currentSavedSite?.siteId;
+  const guildId = options.guildId || currentSavedSite?.siteId || '';
+  const plants = getPlantingScalePlants(plan);
+  const salts = uniqueValues((plan?.cellSalts?.deficient || []).map(salt => salt.cell_salt));
+
+  const params = {
+    projectId,
+    guildId,
+    plants: plants.join(','),
+    zone: plan?.climateData?.hardinessZone,
+    koppen: plan?.climateData?.koppenCode,
+    sunSign: plan?.siteInfo?.sunSign,
+    salts: salts.join(','),
+    layer: options.layer,
+    phase: options.phase || plan?.threeYearPlan?.year0?.title
+  };
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) url.searchParams.set(key, value);
+  });
+
+  return url.toString();
+}
+
+function openPlantingScale(options = {}) {
+  if (!generatedPlan) {
+    alert(t('noPlanPlantingScale'));
+    return;
+  }
+
+  window.open(buildPlantingScaleUrl(generatedPlan, options), '_blank', 'noopener');
 }
 
 function helpsPlanDeficiency(plant, plan = generatedPlan) {
@@ -504,14 +1053,14 @@ function getGuildLayerRoleLabel(layer = {}, layerKey = '') {
   const token = `${id} ${name} ${type} ${roles.join(' ')}`;
 
   if (layerKey === 'layer3_shrub' && /(nettle|comfrey|dandelion|horsetail|yarrow|dynamic[_\s-]*accumulator|compost[_\s-]*activator|soil[_\s-]*building|potassium[_\s-]*mining)/.test(token)) {
-    return 'Support layer: tall herbaceous accumulator';
+    return currentLanguage === 'es' ? 'Capa de apoyo: acumuladora herbácea alta' : 'Support layer: tall herbaceous accumulator';
   }
-  if (layerKey === 'layer3_shrub') return 'Layer role: shrub/support layer';
-  if (layerKey === 'layer2_low_tree') return 'Layer role: low-tree/sub-canopy layer';
-  if (layerKey === 'layer4') return 'Layer role: herbaceous layer';
-  if (layerKey === 'layer5') return 'Layer role: ground-cover/living-mulch layer';
-  if (layerKey === 'layer6') return 'Layer role: root/rhizosphere layer';
-  if (layerKey === 'layer7') return 'Layer role: vine/vertical layer';
+  if (layerKey === 'layer3_shrub') return currentLanguage === 'es' ? 'Rol de capa: arbusto/apoyo' : 'Layer role: shrub/support layer';
+  if (layerKey === 'layer2_low_tree') return currentLanguage === 'es' ? 'Rol de capa: árbol bajo/subdosel' : 'Layer role: low-tree/sub-canopy layer';
+  if (layerKey === 'layer4') return currentLanguage === 'es' ? 'Rol de capa: herbácea' : 'Layer role: herbaceous layer';
+  if (layerKey === 'layer5') return currentLanguage === 'es' ? 'Rol de capa: cobertura del suelo/cobertura viva' : 'Layer role: ground-cover/living-mulch layer';
+  if (layerKey === 'layer6') return currentLanguage === 'es' ? 'Rol de capa: raíz/rizosfera' : 'Layer role: root/rhizosphere layer';
+  if (layerKey === 'layer7') return currentLanguage === 'es' ? 'Rol de capa: trepadora/vertical' : 'Layer role: vine/vertical layer';
   return '';
 }
 
@@ -547,9 +1096,12 @@ function getRecommendedPlantCategory(plant) {
 }
 
 function formatCellSaltExplanation(explanation = '') {
+  const replacement = currentLanguage === 'es'
+    ? 'Usando $1 tema$2 de sales celulares/minerales como apoyo simbólico para el diseño de siembra.'
+    : 'Using $1 cell-salt/mineral theme$2 as symbolic planting-design support.';
   return String(explanation || '').replace(
     /Supplementing\s+(\d+)\s+cell\s+salt(s?)\./i,
-    'Using $1 cell-salt/mineral theme$2 as symbolic planting-design support.'
+    replacement
   );
 }
 
@@ -645,7 +1197,7 @@ function renderRecommendedPlants(plan = generatedPlan) {
   const missingVisibleMinerals = mineralNeeds.filter(mineral => !visibleMinerals.has(String(mineral).toLowerCase()));
   const needsHtml = mineralNeeds.length
     ? mineralNeeds.map(mineral => `<span class="recommendation-tag mineral-tag">${escapeHtml(mineral)}</span>`).join('')
-    : '<span class="recommendation-empty">No symbolic mineral themes selected or mapped.</span>';
+    : `<span class="recommendation-empty">${t('noMineralThemes')}</span>`;
   const renderRecommendationGroup = (title, groupPlants) => groupPlants.length ? `
     <div class="recommended-group">
       <h4>${escapeHtml(title)}</h4>
@@ -657,55 +1209,55 @@ function renderRecommendedPlants(plan = generatedPlan) {
 
   container.innerHTML = `
     <div class="plan-mineral-needs">
-      <strong>Plan mineral themes</strong>
+      <strong>${t('planMineralThemes')}</strong>
       <div class="recommendation-tags">${needsHtml}</div>
-      ${missingVisibleMinerals.length ? '<p class="note">Some mineral themes may have fewer mapped plants in the current registry. The app prioritizes climate-fit and mapped matches where available.</p>' : ''}
+      ${missingVisibleMinerals.length ? `<p class="note">${t('fewerMappedPlants')}</p>` : ''}
     </div>
     ${showUnmappedNote ? `
       <div class="educational-note recommendation-context-note">
-        Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Koppen climate, layer role, and guild diversity - not because they directly match a symbolic cell-salt theme.
+        ${t('unmappedContext')}
       </div>
     ` : ''}
     <div class="recommended-controls">
       <label>
-        <span>Sort by</span>
+        <span>${t('sortBy')}</span>
         <select id="recommendedSort" onchange="renderRecommendedPlants(generatedPlan)">
-          <option value="best"${selectedSort === 'best' ? ' selected' : ''}>Best match</option>
-          <option value="plant"${selectedSort === 'plant' ? ' selected' : ''}>Plant name</option>
-          <option value="role"${selectedSort === 'role' ? ' selected' : ''}>Role</option>
-          <option value="mineral"${selectedSort === 'mineral' ? ' selected' : ''}>Mineral / Cell Salt</option>
-          <option value="layer"${selectedSort === 'layer' ? ' selected' : ''}>Layer</option>
+          <option value="best"${selectedSort === 'best' ? ' selected' : ''}>${t('bestMatch')}</option>
+          <option value="plant"${selectedSort === 'plant' ? ' selected' : ''}>${t('plantName')}</option>
+          <option value="role"${selectedSort === 'role' ? ' selected' : ''}>${t('role')}</option>
+          <option value="mineral"${selectedSort === 'mineral' ? ' selected' : ''}>${t('mineralCellSalt')}</option>
+          <option value="layer"${selectedSort === 'layer' ? ' selected' : ''}>${t('layer')}</option>
         </select>
       </label>
       <label>
-        <span>Filter by role</span>
+        <span>${t('filterByRole')}</span>
         <select id="recommendedRoleFilter" onchange="renderRecommendedPlants(generatedPlan)">
-          <option value="">All roles</option>
+          <option value="">${t('allRoles')}</option>
           ${roles.map(role => `<option value="${escapeHtml(role)}"${selectedRole === role ? ' selected' : ''}>${escapeHtml(formatPlantToken(role))}</option>`).join('')}
         </select>
       </label>
       <label>
-        <span>Filter by mineral</span>
+        <span>${t('filterByMineral')}</span>
         <select id="recommendedMineralFilter" onchange="renderRecommendedPlants(generatedPlan)">
-          <option value="">All minerals</option>
+          <option value="">${t('allMinerals')}</option>
           ${minerals.map(mineral => `<option value="${escapeHtml(mineral)}"${selectedMineral === mineral ? ' selected' : ''}>${escapeHtml(mineral)}</option>`).join('')}
         </select>
       </label>
       <label>
-        <span>Filter by plant type</span>
+        <span>${t('filterByPlantType')}</span>
         <select id="recommendedTypeFilter" onchange="renderRecommendedPlants(generatedPlan)">
-          <option value="">All types</option>
+          <option value="">${t('allTypes')}</option>
           ${categories.map(category => `<option value="${escapeHtml(category.value)}"${selectedType === category.value ? ' selected' : ''}>${escapeHtml(category.label)}</option>`).join('')}
         </select>
       </label>
-      <button class="btn btn-small" type="button" onclick="resetRecommendedPlantFilters()">Reset filters</button>
+      <button class="btn btn-small" type="button" onclick="resetRecommendedPlantFilters()">${t('resetFilters')}</button>
     </div>
-    ${filteredPlants.length ? '<p class="note">Used in this plan means the plant already appears in one of the generated guild layers. Additional candidates are compatible plants that match mineral, climate, or role needs but were not placed in the guild.</p>' : ''}
-    ${renderRecommendationGroup('Recommended plants used in this plan', visibleUsedPlants)}
-    ${renderRecommendationGroup('Additional recommended candidates', visibleAdditionalPlants)}
-    ${!filteredPlants.length ? '<p class="note">No recommended plants match the current filters.</p>' : ''}
+    ${filteredPlants.length ? `<p class="note">${t('usedInPlanNote')}</p>` : ''}
+    ${renderRecommendationGroup(t('recommendedUsed'), visibleUsedPlants)}
+    ${renderRecommendationGroup(t('additionalCandidates'), visibleAdditionalPlants)}
+    ${!filteredPlants.length ? `<p class="note">${t('noRecommendedMatches')}</p>` : ''}
     ${filteredPlants.length > visibleCount ?
-      `<p class="note">Showing ${visibleCount} of ${filteredPlants.length} recommended plants${plants.length !== filteredPlants.length ? ' matching current filters' : ''}.</p>` : ''}
+      `<p class="note">${t('showing')} ${visibleCount} ${t('of')} ${filteredPlants.length} ${t('recommendedPlants')}${plants.length !== filteredPlants.length ? ' ' + t('matchingFilters') : ''}.</p>` : ''}
   `;
 }
 
@@ -731,34 +1283,34 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
     .filter(label => normalizeLabel(label) !== categoryLabelKey)
     .slice(0, 3);
   const fallbackMineralNote = isClimateFallback && minerals.length === 0
-    ? 'Climate-fit recommendation. Cell-salt profile not mapped yet.'
+    ? t('climateFitUnmapped')
     : '';
   const whyShown = options.showGlobalUnmappedNote && fallbackMineralNote
-    ? (plant.recommendation_source === 'climate_fallback' ? 'Climate fit and guild diversity.' : plant.recommendation_reason || '')
+    ? (plant.recommendation_source === 'climate_fallback' ? t('climateDiversity') : plant.recommendation_reason || '')
     : fallbackMineralNote || plant.recommendation_reason || '';
 
   return `
     <div class="plant-item recommended-plant-card">
       <div class="recommended-card-header">
         <h4>${escapeHtml(formatPlantToken(name))}</h4>
-        ${supportsDeficiency ? '<span class="recommendation-badge helps">Theme match</span>' : ''}
+        ${supportsDeficiency ? `<span class="recommendation-badge helps">${t('themeMatch')}</span>` : ''}
       </div>
       ${plant.botanical_name ? `<p class="recommended-botanical">${escapeHtml(plant.botanical_name)}</p>` : ''}
       ${minerals.length || !isClimateFallback ? `<div class="recommendation-tags">
         ${minerals.length
           ? minerals.map(mineral => `<span class="recommendation-tag mineral-tag">${escapeHtml(mineral)}</span>`).join('')
-          : '<span class="recommendation-tag muted-tag">Mineral profile not mapped yet</span>'}
+          : `<span class="recommendation-tag muted-tag">${t('mineralProfileUnmapped')}</span>`}
       </div>` : ''}
       ${displayMatchLabels.length ? `<div class="recommendation-tags">${displayMatchLabels.map(label => `<span class="recommendation-tag ${/fallback|climate fit|diversity/i.test(label) ? 'preference-tag' : 'role-tag'}">${escapeHtml(label)}</span>`).join('')}</div>` : ''}
       ${shouldShowEdgeCaution ? `<div class="recommendation-tags"><span class="recommendation-tag ${edgeCaution.tone === 'fit' ? 'preference-tag' : 'warning-tag'}">${escapeHtml(edgeCaution.label)}</span></div>` : ''}
       ${roles.length ? `<div class="recommendation-tags">${roles.map(role => `<span class="recommendation-tag role-tag">${escapeHtml(formatPlantToken(role))}</span>`).join('')}</div>` : ''}
       <div class="recommendation-tags"><span class="recommendation-tag preference-tag">${escapeHtml(category.label)}</span></div>
-      ${supportFunctions.length ? `<p class="recommended-meta"><strong>Traditional cell-salt note:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
-      ${whyShown ? `<p class="recommended-meta"><strong>Why shown:</strong> ${escapeHtml(whyShown)}</p>` : ''}
+      ${supportFunctions.length ? `<p class="recommended-meta"><strong>${t('traditionalCellSaltNote')}:</strong> ${escapeHtml(supportFunctions.join('; '))}</p>` : ''}
+      ${whyShown ? `<p class="recommended-meta"><strong>${t('whyShown')}:</strong> ${escapeHtml(whyShown)}</p>` : ''}
       ${edgeCaution?.message ? `<p class="recommended-meta"><strong>${escapeHtml(edgeCaution.label)}:</strong> ${escapeHtml(edgeCaution.message)}</p>` : ''}
-      ${layerParts.length ? `<p class="recommended-meta"><strong>Layer/type:</strong> ${escapeHtml(layerParts.join(' / '))}</p>` : ''}
-      ${plant.climate_affinity ? `<p class="recommended-meta"><strong>Climate:</strong> ${escapeHtml(plant.climate_affinity)}${Array.isArray(plant.zones) && plant.zones.length ? ` · Zones ${escapeHtml(plant.zones.join('-'))}` : ''}</p>` : ''}
-      ${!mapped ? '<p class="recommended-meta"><strong>Metadata not mapped yet</strong></p>' : ''}
+      ${layerParts.length ? `<p class="recommended-meta"><strong>${t('layerType')}:</strong> ${escapeHtml(layerParts.join(' / '))}</p>` : ''}
+      ${plant.climate_affinity ? `<p class="recommended-meta"><strong>${t('climate')}:</strong> ${escapeHtml(plant.climate_affinity)}${Array.isArray(plant.zones) && plant.zones.length ? ` · ${t('zones')} ${escapeHtml(plant.zones.join('-'))}` : ''}</p>` : ''}
+      ${!mapped ? `<p class="recommended-meta"><strong>${t('metadataNotMapped')}</strong></p>` : ''}
     </div>
   `;
 }
@@ -772,51 +1324,51 @@ function displayResults(plan) {
   const loc = plan.locationData || {};
   const geoFailed = loc.error;
   const climate = plan.climateData || {};
-  
+
   // Build climate info HTML
   let climateHTML = '';
   if (climate.hardinessZone) {
-    climateHTML += `<p><strong>🌡️ USDA Hardiness Zone:</strong> ${climate.hardinessZone}`;
+    climateHTML += `<p><strong>🌡️ ${t('hardinessZone')}:</strong> ${climate.hardinessZone}`;
     if (climate.avgAnnualMinTempF !== null) {
-      climateHTML += ` <small>(avg min ${climate.avgAnnualMinTempF}°F / ${climate.avgAnnualMinTempC}°C)</small>`;
+      climateHTML += ` <small>(${t('avgMin')} ${climate.avgAnnualMinTempF}°F / ${climate.avgAnnualMinTempC}°C)</small>`;
     }
     climateHTML += `</p>`;
   }
   if (climate.koppenCode) {
-    climateHTML += `<p><strong>🌍 Köppen Climate:</strong> ${climate.koppenCode} — ${climate.koppenDescription || ''}</p>`;
+    climateHTML += `<p><strong>🌍 ${t('koppenClimate')}:</strong> ${climate.koppenCode} — ${climate.koppenDescription || ''}</p>`;
   }
   if (climate.growingSeasonDays) {
-    climateHTML += `<p><strong>📅 Est. Growing Season:</strong> ~${climate.growingSeasonDays} days</p>`;
+    climateHTML += `<p><strong>📅 ${t('growingSeason')}:</strong> ~${climate.growingSeasonDays} ${t('days')}</p>`;
   }
   if (climate.frostDates && climate.frostDates.light) {
     const fd = climate.frostDates;
-    climateHTML += `<div style="margin-top:10px;"><strong>🧊 Frost Dates (30-yr avg):</strong></div>`;
+    climateHTML += `<div style="margin-top:10px;"><strong>🧊 ${t('frostDates')}:</strong></div>`;
     if (fd.light.avgLastSpringFrost) {
-      climateHTML += `<p style="margin-left:8px;margin-top:4px;">🌱 Last spring frost (32°F/0°C): <strong>${fd.light.avgLastSpringFrost}</strong></p>`;
-      climateHTML += `<p style="margin-left:8px;">🍂 First fall frost (32°F/0°C): <strong>${fd.light.avgFirstFallFrost}</strong></p>`;
-      climateHTML += `<p style="margin-left:8px;">📊 Frost-free days: ~${fd.light.avgFrostFreeDays} days/year</p>`;
+      climateHTML += `<p style="margin-left:8px;margin-top:4px;">🌱 ${t('lastSpringFrost')}: <strong>${fd.light.avgLastSpringFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">🍂 ${t('firstFallFrost')}: <strong>${fd.light.avgFirstFallFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">📊 ${t('frostFreeDays')}: ~${fd.light.avgFrostFreeDays} ${t('days')}/year</p>`;
     }
     if (fd.hard.avgLastSpringFrost) {
-      climateHTML += `<p style="margin-left:8px;margin-top:6px;">❄️ Last hard frost (28°F/-2°C): <strong>${fd.hard.avgLastSpringFrost}</strong></p>`;
-      climateHTML += `<p style="margin-left:8px;">❄️ First hard frost (28°F/-2°C): <strong>${fd.hard.avgFirstFallFrost}</strong></p>`;
-      climateHTML += `<p style="margin-left:8px;">📊 Hard frost-free days: ~${fd.hard.avgFrostFreeDays} days/year</p>`;
+      climateHTML += `<p style="margin-left:8px;margin-top:6px;">❄️ ${t('lastHardFrost')}: <strong>${fd.hard.avgLastSpringFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">❄️ ${t('firstHardFrost')}: <strong>${fd.hard.avgFirstFallFrost}</strong></p>`;
+      climateHTML += `<p style="margin-left:8px;">📊 ${t('hardFrostFreeDays')}: ~${fd.hard.avgFrostFreeDays} ${t('days')}/year</p>`;
     }
-    climateHTML += `<p class="note" style="margin-left:8px;font-size:0.8em;">Based on ${fd.light.dataYears || 0} years of data (1991–2020)</p>`;
+    climateHTML += `<p class="note" style="margin-left:8px;font-size:0.8em;">${t('yearsDataPrefix')} ${fd.light.dataYears || 0} ${t('yearsDataSuffix')}</p>`;
   }
   if (climate.source) {
-    climateHTML += `<p class="note" style="font-size:0.85em;color:var(--text-light);">Source: ${climate.source}${climate.koppenDistanceKm ? ` (nearest Köppen point ${climate.koppenDistanceKm} km away)` : ''}</p>`;
+    climateHTML += `<p class="note" style="font-size:0.85em;color:var(--text-light);">${t('source')}: ${climate.source}${climate.koppenDistanceKm ? ` (${t('nearestKoppen')} ${climate.koppenDistanceKm} km away)` : ''}</p>`;
   }
-  
+
   document.getElementById('siteInfo').innerHTML = `
-    <p><strong>Address:</strong> ${plan.siteInfo.address}</p>
-    <p><strong>Scale:</strong> ${plan.siteInfo.scale}</p>
-    <p><strong>Primary Sun Sign:</strong> ${plan.siteInfo.sunSign}</p>
-    ${plan.siteInfo.familyMembers.length > 0 ? 
-      `<p><strong>Family Members:</strong> ${plan.siteInfo.familyMembers.map(m => m.sunSign).join(', ')}</p>` : ''}
-    ${loc.latitude ? `<p><strong>Coordinates:</strong> ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°W</p>` : ''}
-    ${loc.formattedAddress ? `<p><strong>Geocoded:</strong> ${loc.formattedAddress}</p>` : ''}
+    <p><strong>${t('address')}:</strong> ${plan.siteInfo.address}</p>
+    <p><strong>${t('scale')}:</strong> ${plan.siteInfo.scale}</p>
+    <p><strong>${t('primarySunSign')}:</strong> ${plan.siteInfo.sunSign}</p>
+    ${plan.siteInfo.familyMembers.length > 0 ?
+      `<p><strong>${t('familyMembers')}:</strong> ${plan.siteInfo.familyMembers.map(m => m.sunSign).join(', ')}</p>` : ''}
+    ${loc.latitude ? `<p><strong>${t('coordinates')}:</strong> ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°W</p>` : ''}
+    ${loc.formattedAddress ? `<p><strong>${t('geocoded')}:</strong> ${loc.formattedAddress}</p>` : ''}
     ${climateHTML ? `<div class="climate-info" style="margin-top:12px;padding:10px;background:var(--info-bg);border-left:3px solid var(--success-border);border-radius:4px;">${climateHTML}</div>` : ''}
-    ${geoFailed ? `<p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">⚠️ <strong>Location warning:</strong> ${loc.error}</p>` : ''}
+    ${geoFailed ? `<p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">⚠️ <strong>${t('locationWarning')}:</strong> ${loc.error}</p>` : ''}
   `;
 
   // Render map and sun analysis
@@ -824,7 +1376,7 @@ function displayResults(plan) {
     renderMap(loc.latitude, loc.longitude, plan.siteInfo.address);
     drawPlantSunAnalysis(loc.latitude, loc.longitude, climate);
   } else {
-    document.getElementById('siteMap').innerHTML = '<p class="note">Location map unavailable</p>';
+    document.getElementById('siteMap').innerHTML = `<p class="note">${t('locationMapUnavailable')}</p>`;
   }
 
   // AI Guilds — clear container before every render to prevent ghost data
@@ -872,8 +1424,7 @@ function displayResults(plan) {
   if (geoFailed) {
     document.getElementById('recommendedPlants').innerHTML = `
       <p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">
-        ⚠️ <strong>Location unavailable.</strong> Recommended plants require a valid USDA hardiness zone. 
-        Please enter a valid City and State (e.g., "Duluth, MN") and try again.
+        ⚠️ <strong>${t('locationUnavailable')}</strong> ${t('locationUnavailableText')}
       </p>
     `;
   } else {
@@ -913,10 +1464,10 @@ function displayResults(plan) {
 
   document.getElementById('threeYearPlan').innerHTML = `
     <div class="plan-timeline">
-      <p class="note">These plants are pulled from the generated guild layers and may appear in more than one task because they serve multiple establishment roles.</p>
+      <p class="note">${t('timelinePlantsNote')}</p>
       <div class="year-section">
-        <h4>${planData.year0.title || 'Canopy & Infrastructure'}</h4>
-        <p><em>${planData.year0.duration || planData.year0.timeframe || 'Months 0-12'}</em></p>
+        <h4>${planData.year0.title || t('canopyInfrastructure')}</h4>
+        <p><em>${planData.year0.duration || planData.year0.timeframe || t('monthsZeroTwelve')}</em></p>
         <p>${planData.year0.focus || ''}</p>
         <div style="margin-top: 15px">
           ${orderedTasks.map(task => {
@@ -937,11 +1488,11 @@ function displayResults(plan) {
               : '';
             return `
             <div class="task-item">
-              <strong>${task.task || 'Task'} - ${task.timing || ''}</strong>
+              <strong>${task.task || t('task')} - ${task.timing || ''}</strong>
               ${isCanopyTask && canopySummary.experimental.length ? `
-                ${canopySummary.recommended.length ? `<p>Recommended anchors: ${canopySummary.recommended.join(', ')}</p>` : ''}
-                <p>Experimental user-selected ${canopySummary.experimental.length === 1 ? 'anchor' : 'anchors'}: ${canopySummary.experimental.join(', ')}</p>
-              ` : (displayPlants.length ? `<p>Plants: ${displayPlants.join(', ')}</p>` : '')}
+                ${canopySummary.recommended.length ? `<p>${t('recommendedAnchors')}: ${canopySummary.recommended.join(', ')}</p>` : ''}
+                <p>${canopySummary.experimental.length === 1 ? t('experimentalUserSelectedAnchor') : t('experimentalUserSelectedAnchors')}: ${canopySummary.experimental.join(', ')}</p>
+              ` : (displayPlants.length ? `<p>${t('plants')}: ${displayPlants.join(', ')}</p>` : '')}
               <p>${task.details || ''}</p>
               ${climateWarningHtml}
             </div>`;
@@ -950,7 +1501,7 @@ function displayResults(plan) {
       </div>
 
       <div class="year-section">
-        <h4>${planData.year1.title || 'Year 1'}</h4>
+        <h4>${planData.year1.title || t('year1')}</h4>
         <p><em>${planData.year1.duration || 'Year 2'}</em></p>
         <p>${planData.year1.focus || ''}</p>
         <div style="margin-top: 15px">
@@ -961,7 +1512,7 @@ function displayResults(plan) {
             return `
             <div class="task-item">
               <strong>${task.task} - ${task.timing || ''}</strong>
-              ${dp1.length ? `<p>Plants: ${dp1.join(', ')}</p>` : ''}
+              ${dp1.length ? `<p>${t('plants')}: ${dp1.join(', ')}</p>` : ''}
               <p>${task.details || ''}</p>
             </div>`;
           }).join('')}
@@ -969,7 +1520,7 @@ function displayResults(plan) {
       </div>
 
       <div class="year-section">
-        <h4>${planData.year2.title || 'Year 2'}</h4>
+        <h4>${planData.year2.title || t('year2')}</h4>
         <p><em>${planData.year2.duration || 'Year 3'}</em></p>
         <p>${planData.year2.focus || ''}</p>
         <div style="margin-top: 15px">
@@ -979,8 +1530,8 @@ function displayResults(plan) {
             const dp2 = rawP2.map(p => typeof p === 'object' ? (p.common_name || p.name || JSON.stringify(p)) : p).filter(p => { const k=p.toLowerCase(); return seen2.has(k)?false:(seen2.add(k),true); });
             return `
             <div class="task-item">
-              <strong>${task.task || 'Task'} - ${task.timing || ''}</strong>
-              ${dp2.length ? `<p>Plants: ${dp2.join(', ')}</p>` : ''}
+              <strong>${task.task || t('task')} - ${task.timing || ''}</strong>
+              ${dp2.length ? `<p>${t('plants')}: ${dp2.join(', ')}</p>` : ''}
               <p>${task.details || ''}</p>
             </div>`;
           }).join('')}
@@ -1002,22 +1553,22 @@ function displayResults(plan) {
   const moon = plan.moonCalendar;
   document.getElementById('moonCalendar').innerHTML = `
     <div class="educational-note moon-guidance-note">
-      This prototype shows basic moon-phase planting guidance. A full date-based planting calendar with crop-specific timing is planned.
+      ${t('moonGuidanceNote')}
     </div>
     <div class="moon-phase">
       <div class="moon-card">
-        <h4>🌒 Waxing Moon</h4>
+        <h4>🌒 ${t('waxingMoon')}</h4>
         <p><em>${moon.waxingMoon.phase}</em></p>
-        <p><strong>Action:</strong> ${moon.waxingMoon.action}</p>
+        <p><strong>${t('action')}:</strong> ${moon.waxingMoon.action}</p>
         <ul>
           ${moon.waxingMoon.plant.map(p => `<li>${p}</li>`).join('')}
         </ul>
       </div>
 
       <div class="moon-card">
-        <h4>🌗 Waning Moon</h4>
+        <h4>🌗 ${t('waningMoon')}</h4>
         <p><em>${moon.waningMoon.phase}</em></p>
-        <p><strong>Action:</strong> ${moon.waningMoon.action}</p>
+        <p><strong>${t('action')}:</strong> ${moon.waningMoon.action}</p>
         <ul>
           ${moon.waningMoon.plant.map(p => `<li>${p}</li>`).join('')}
           ${moon.waningMoon.tasks.map(t => `<li>${t}</li>`).join('')}
@@ -1025,18 +1576,18 @@ function displayResults(plan) {
       </div>
 
       <div class="moon-card">
-        <h4>🌑 New Moon</h4>
-        <p><strong>Action:</strong> ${moon.newMoon.action}</p>
+        <h4>🌑 ${t('newMoon')}</h4>
+        <p><strong>${t('action')}:</strong> ${moon.newMoon.action}</p>
         <ul>
-          <li>Rest, observe, plan, or sow hardy greens where seasonally appropriate.</li>
+          <li>${t('newMoonDefault')}</li>
         </ul>
       </div>
 
       <div class="moon-card">
-        <h4>🌕 Full Moon</h4>
-        <p><strong>Action:</strong> ${moon.fullMoon.action}</p>
+        <h4>🌕 ${t('fullMoon')}</h4>
+        <p><strong>${t('action')}:</strong> ${moon.fullMoon.action}</p>
         <ul>
-          <li>Harvest herbs, observe plant vigor, or sow quick greens where seasonally appropriate.</li>
+          <li>${t('fullMoonDefault')}</li>
         </ul>
       </div>
     </div>
@@ -1047,7 +1598,7 @@ function renderMap(lat, lon, address) {
   const mapDiv = document.getElementById('siteMap');
   // Use address string for Google Maps search (better than coords for specific addresses)
   const searchQuery = encodeURIComponent(address);
-  
+
   mapDiv.innerHTML = `
     <div class="map-wrapper">
       <iframe
@@ -1062,7 +1613,7 @@ function renderMap(lat, lon, address) {
 
 function formatTime(date) {
   if (!date || isNaN(date)) return 'N/A';
-  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString(currentLanguage === 'es' ? 'es-419' : 'en-US', { hour: '2-digit', minute: '2-digit' });
 }
 
 function getCompassDirection(azimuth) {
@@ -1084,23 +1635,23 @@ function getSunDesignTip(altitude, direction) {
 function renderAIGuilds(aiData) {
   const guildsDiv = document.getElementById('aiGuilds');
   if (!aiData.guilds || aiData.guilds.length === 0) {
-    guildsDiv.innerHTML = '<p style="color:var(--danger-text);font-weight:bold;padding:12px;background:var(--warning-bg);border:1px solid var(--danger-border);border-radius:4px;">⚠️ AI failed to generate guilds. Please try again.</p>';
+    guildsDiv.innerHTML = `<p style="color:var(--danger-text);font-weight:bold;padding:12px;background:var(--warning-bg);border:1px solid var(--danger-border);border-radius:4px;">⚠️ ${currentLanguage === 'es' ? 'La IA no pudo generar gremios. Inténtalo de nuevo.' : 'AI failed to generate guilds. Please try again.'}</p>`;
     return;
   }
 
   const layerLabels = {
-    layer1_canopy: '🌳 Layer 1 — Canopy',
-    layer2_low_tree: '🌿 Layer 2 — Low Tree',
-    layer3_shrub: '🫐 Layer 3 — Shrub',
-    layer4_herbaceous: '🌱 Layer 4 — Herbaceous',
-    layer5_rhizosphere: '🥔 Layer 5 — Rhizosphere',
-    layer6_soil_surface: '🍀 Layer 6 — Soil Surface',
-    layer7_vertical: '🧗 Layer 7 — Vertical'
+    layer1_canopy: currentLanguage === 'es' ? '🌳 Capa 1 — Dosel' : '🌳 Layer 1 — Canopy',
+    layer2_low_tree: currentLanguage === 'es' ? '🌿 Capa 2 — Árbol bajo' : '🌿 Layer 2 — Low Tree',
+    layer3_shrub: currentLanguage === 'es' ? '🫐 Capa 3 — Arbusto' : '🫐 Layer 3 — Shrub',
+    layer4_herbaceous: currentLanguage === 'es' ? '🌱 Capa 4 — Herbácea' : '🌱 Layer 4 — Herbaceous',
+    layer5_rhizosphere: currentLanguage === 'es' ? '🥔 Capa 5 — Rizosfera' : '🥔 Layer 5 — Rhizosphere',
+    layer6_soil_surface: currentLanguage === 'es' ? '🍀 Capa 6 — Superficie del suelo' : '🍀 Layer 6 — Soil Surface',
+    layer7_vertical: currentLanguage === 'es' ? '🧗 Capa 7 — Vertical' : '🧗 Layer 7 — Vertical'
   };
 
   guildsDiv.innerHTML = `
     ${aiData.summary ? `<div class="note" style="margin-bottom:20px">
-      <strong>AI Summary:</strong> ${aiData.summary}
+      <strong>${currentLanguage === 'es' ? 'Resumen de IA' : 'AI Summary'}:</strong> ${aiData.summary}
     </div>` : ''}
     <div class="guild-stack">
       ${aiData.guilds.map(guild => `
@@ -1121,9 +1672,9 @@ function renderAIGuilds(aiData) {
         </div>
       `).join('')}
     </div>
-    
+
     ${aiData.companionPlanting && aiData.companionPlanting.length > 0 ? `
-      <h4 style="margin-top:20px;color:var(--primary)">🌱 Companion Planting</h4>
+      <h4 style="margin-top:20px;color:var(--primary)">🌱 ${currentLanguage === 'es' ? 'Siembra asociada' : 'Companion Planting'}</h4>
       <ul style="margin-left:20px">
         ${aiData.companionPlanting.map(pair => {
           if (Array.isArray(pair)) return `<li>${pair.join(' + ')}</li>`;
@@ -1135,26 +1686,26 @@ function renderAIGuilds(aiData) {
         }).join('')}
       </ul>
     ` : ''}
-    
+
     ${aiData.timingAdvice ? `
-      <h4 style="margin-top:20px;color:var(--primary)">📅 Timing Advice</h4>
+      <h4 style="margin-top:20px;color:var(--primary)">📅 ${currentLanguage === 'es' ? 'Consejos de tiempo' : 'Timing Advice'}</h4>
       <div class="note">${aiData.timingAdvice}</div>
     ` : ''}
-    
+
     ${aiData.soilAmendments && aiData.soilAmendments.length > 0 ? `
-      <h4 style="margin-top:20px;color:var(--primary)">🧪 Soil Amendments</h4>
+      <h4 style="margin-top:20px;color:var(--primary)">🧪 ${currentLanguage === 'es' ? 'Enmiendas del suelo' : 'Soil Amendments'}</h4>
       <ul style="margin-left:20px">
         ${aiData.soilAmendments.map(amend => `<li>${typeof amend === 'object' ? `${amend.issue}: ${amend.solution}` : amend}</li>`).join('')}
       </ul>
     ` : ''}
-    
+
     ${aiData.waterManagement ? `
-      <h4 style="margin-top:20px;color:var(--primary)">💧 Water Management</h4>
+      <h4 style="margin-top:20px;color:var(--primary)">💧 ${currentLanguage === 'es' ? 'Manejo del agua' : 'Water Management'}</h4>
       <div class="note">${aiData.waterManagement}</div>
     ` : ''}
-    
+
     ${aiData.beneficialInsectHabitat ? `
-      <h4 style="margin-top:20px;color:var(--primary)">🐞 Beneficial Insect Habitat</h4>
+      <h4 style="margin-top:20px;color:var(--primary)">🐞 ${currentLanguage === 'es' ? 'Hábitat para insectos benéficos' : 'Beneficial Insect Habitat'}</h4>
       <div class="note">${aiData.beneficialInsectHabitat}</div>
     ` : ''}
   `;
@@ -1224,8 +1775,8 @@ function updateSaveStateIndicator() {
 
   if (planDirty) {
     indicator.textContent = currentSavedSite?.name
-      ? `Unsaved changes to saved site: ${currentSavedSite.name}`
-      : 'Unsaved changes';
+      ? `${t('unsavedChangesTo')} ${currentSavedSite.name}`
+      : t('unsavedChanges');
     indicator.classList.add('dirty');
     indicator.classList.remove('hidden');
     updateSaveControls();
@@ -1233,7 +1784,7 @@ function updateSaveStateIndicator() {
   }
 
   if (currentSavedSite?.name && planSaveStatus === 'saved') {
-    indicator.textContent = `Saved: ${currentSavedSite.name}`;
+    indicator.textContent = `${t('saved')} ${currentSavedSite.name}`;
     indicator.classList.add('saved');
     indicator.classList.remove('hidden');
     updateSaveControls();
@@ -1241,14 +1792,14 @@ function updateSaveStateIndicator() {
   }
 
   if (currentSavedSite?.name) {
-    indicator.textContent = `Loaded saved site: ${currentSavedSite.name}`;
+    indicator.textContent = `${t('loadedSavedSite')} ${currentSavedSite.name}`;
     indicator.classList.add('saved');
     indicator.classList.remove('hidden');
     updateSaveControls();
     return;
   }
 
-  indicator.textContent = 'Not saved yet';
+  indicator.textContent = t('notSavedYet');
   indicator.classList.remove('hidden');
   updateSaveControls();
 }
@@ -1294,7 +1845,7 @@ function persistSite(siteId, siteName, options = {}) {
   .then(res => res.json())
   .then(data => {
     if (!data.success) {
-      throw new Error(data.error || 'Site save failed');
+      throw new Error(data.error || t('siteSaveFailed'));
     }
 
     currentSavedSite = {
@@ -1320,26 +1871,26 @@ function saveSite() {
 
 function saveAsNewSite() {
   if (!generatedPlan) {
-    alert('No plan to save. Generate a plan first.');
+    alert(t('noPlanToSave'));
     return;
   }
 
-  const rawSiteName = prompt('Enter a name for this site:', generatedPlan.siteInfo.address.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase());
+  const rawSiteName = prompt(t('enterSiteName'), generatedPlan.siteInfo.address.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase());
   const siteName = rawSiteName ? rawSiteName.trim() : '';
   if (!siteName) return;
 
   const siteId = makeSiteIdFromName(siteName);
   persistSite(siteId, siteName, { createdAt: new Date().toISOString() })
     .then(() => {
-      alert('Site saved successfully!');
+      alert(t('siteSaved'));
       if (!document.getElementById('savedSitesModal')?.classList.contains('hidden')) showSavedSites();
     })
-  .catch(err => alert('Error saving site: ' + err.message));
+  .catch(err => alert(t('errorSavingSite') + err.message));
 }
 
 function saveChanges() {
   if (!generatedPlan) {
-    alert('No plan to save. Generate a plan first.');
+    alert(t('noPlanToSave'));
     return;
   }
 
@@ -1350,14 +1901,14 @@ function saveChanges() {
 
   persistSite(currentSavedSite.siteId, currentSavedSite.name, { createdAt: currentSavedSite.createdAt })
     .then(() => {
-      alert('Changes saved successfully!');
+      alert(t('changesSaved'));
       if (!document.getElementById('savedSitesModal')?.classList.contains('hidden')) showSavedSites();
     })
-    .catch(err => alert('Error saving changes: ' + err.message));
+    .catch(err => alert(t('errorSavingChanges') + err.message));
 }
 
 function downloadPlan() {
-  alert('Native PDF export is coming soon. For now, use your browser print dialog (Ctrl+P / Cmd+P), then choose "Save as PDF" as the destination.');
+  alert(t('pdfAlert'));
 }
 
 
@@ -1369,13 +1920,13 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
   // Formula: altitude = 90° - |latitude - declination|
   const toRad = Math.PI / 180;
   const absLat = Math.abs(lat);
-  
+
   // Summer solstice: sun declination = +23.44°
   const summerAlt = (90 - Math.abs(absLat - 23.44)).toFixed(1);
-  
+
   // Winter solstice: sun declination = -23.44°
   const winterAlt = (90 - Math.abs(absLat + 23.44)).toFixed(1);
-  
+
   // Equinox: sun declination = 0°
   const equinoxAlt = (90 - absLat).toFixed(1);
   const isHighLatitudeSun = Number(summerAlt) < 60 || Number(winterAlt) < 15;
@@ -1392,31 +1943,63 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
   const isColdSubarctic = /^(Dfc|Dfd|ET|EF)/.test(koppenCode) || (frostFreeDays > 0 && frostFreeDays < 150);
   const isWarmFrostFree = isTropical || zoneNumber >= 10 || climate?.frostDates?.light?.frostFree === true;
   const winterImpact = isWarmFrostFree
-    ? 'Lower seasonal light still matters, but frost is unlikely. Use wind protection, mulch, and dry-season irrigation planning for young tropical plants.'
-    : 'Low-angle light, long shadows. Southern exposure critical. Protect tender plants from frost.';
+    ? (currentLanguage === 'es'
+      ? 'La luz estacional más baja todavía importa, pero es poco probable que haya heladas. Usa protección contra viento, acolchado y riego de temporada seca para plantas tropicales jóvenes.'
+      : 'Lower seasonal light still matters, but frost is unlikely. Use wind protection, mulch, and dry-season irrigation planning for young tropical plants.')
+    : (currentLanguage === 'es'
+      ? 'Luz de ángulo bajo y sombras largas. La exposición sur es clave. Protege plantas sensibles de las heladas.'
+      : 'Low-angle light, long shadows. Southern exposure critical. Protect tender plants from frost.');
+  const localizedSummerImpact = currentLanguage === 'es'
+    ? (isHighLatitudeSun
+      ? 'Los días largos de verano ofrecen buena luz de crecimiento, pero el sol permanece más bajo que en sitios templados o tropicales. Usa exposiciones cálidas y protegidas del viento para cultivos de fruto.'
+      : 'Luz intensa desde arriba. Alta evaporación y sombras cortas. Los árboles frutales y plantas de dosel prosperan.')
+    : summerImpact;
+  const localizedEquinoxImpact = currentLanguage === 'es'
+    ? (isHighLatitudeSun
+      ? 'El ángulo solar moderado a bajo crea sombras más largas. Prioriza exposición sur y evita sombrear plantas jóvenes con edificios, cercas o árboles maduros.'
+      : 'Luz equilibrada. Sombras moderadas. Ideal para la mayoría de hortalizas y plantas de sotobosque.')
+    : equinoxImpact;
   const recommendationItems = isColdSubarctic
-    ? [
+    ? (currentLanguage === 'es' ? [
+        '<li><strong>Microclimas orientados al sur:</strong> Prioriza los lugares más cálidos y protegidos para frutales, bayas y camas con extensión de temporada.</li>',
+        '<li><strong>Manejo de viento y nieve:</strong> Usa cercas, setos y estructuras para reducir el viento invernal, capturar nieve aislante y proteger árboles jóvenes.</li>',
+        '<li><strong>Cultivos de temporada corta:</strong> Prefiere variedades tempranas y anuales de ciclo corto; usa almácigos, manta térmica, túneles bajos o invernadero para cultivos de calor.</li>',
+        '<li><strong>Protección contra fauna:</strong> Cerca o protege árboles jóvenes y bayas donde puedan ramonear ciervos, conejos u otros animales.</li>',
+        '<li><strong>Calentamiento y drenaje del suelo:</strong> Usa camas elevadas, manejo del acolchado y montículos bien drenados donde el suelo frío o húmedo retrase la primavera.</li>'
+      ] : [
         '<li><strong>South-facing microclimates:</strong> Prioritize the warmest protected sites for fruit trees, berries, and season-extension beds.</li>',
         '<li><strong>Wind and snow management:</strong> Use fences, hedges, and structures to reduce winter wind, catch insulating snow, and protect young trees.</li>',
         '<li><strong>Short-season crops:</strong> Favor early-ripening cultivars and short-season annuals; use starts, row cover, low tunnels, or greenhouse space for warm-season crops.</li>',
         '<li><strong>Wildlife protection:</strong> Fence or cage young trees and berry plantings where moose, deer, rabbits, or voles may browse trunks and shoots.</li>',
         '<li><strong>Soil warming and drainage:</strong> Use raised beds, mulch timing, and well-drained planting mounds where cold or wet soil delays spring growth.</li>'
-      ]
+      ])
     : isWarmFrostFree
-    ? [
+    ? (currentLanguage === 'es' ? [
+        '<li><strong>Árboles tropicales jóvenes:</strong> Usa acolchado, protección contra viento y sombra temporal por la tarde mientras se establecen las raíces.</li>',
+        '<li><strong>Riego de temporada seca:</strong> Agrupa cultivos con alta demanda de agua donde líneas de goteo o captación de lluvia puedan sostenerlos.</li>',
+        '<li><strong>Cobertura viva del suelo:</strong> Mantén el suelo cubierto con camote, maní perenne u otra cobertura viva para reducir calor y erosión.</li>',
+        '<li><strong>Exposición a sal y viento:</strong> Coloca plantas sensibles detrás de arbustos, palmas, setos u otra estructura que filtre el viento.</li>',
+        '<li><strong>Cultivos de sotobosque:</strong> Usa banana, taro, jengibre, cúrcuma, cacao o café donde haya sombra parcial y humedad.</li>'
+      ] : [
         '<li><strong>Young tropical trees:</strong> Use mulch, wind protection, and temporary afternoon shade while roots establish.</li>',
         '<li><strong>Dry-season irrigation:</strong> Group thirsty crops where drip lines or rain catchment can support them.</li>',
         '<li><strong>Living soil cover:</strong> Keep ground covered with sweet potato, perennial peanut, or other living mulch to reduce heat and erosion.</li>',
         '<li><strong>Salt and wind exposure:</strong> Place sensitive plants behind shrubs, palms, hedges, or other wind-filtering structure.</li>',
         '<li><strong>Understory crops:</strong> Use bananas, taro, ginger, turmeric, cacao, or coffee where partial shade and moisture are available.</li>'
-      ]
-    : [
+      ])
+    : (currentLanguage === 'es' ? [
+        '<li><strong>Camas orientadas al sur:</strong> Más soleadas todo el año. Buenas para frutales, tomates, pimientos y calabazas.</li>',
+        '<li><strong>Camas orientadas al este:</strong> Sol de mañana y sombra de tarde. Buenas para hojas verdes, hierbas y fresas.</li>',
+        '<li><strong>Camas orientadas al oeste:</strong> Sol caliente de tarde. Buenas para hierbas mediterráneas y perennes resistentes a sequía.</li>',
+        '<li><strong>Camas orientadas al norte:</strong> Más frescas y sombreadas. Mejores para plantas tolerantes a sombra: hostas, helechos, hongos.</li>',
+        '<li><strong>Bajo árboles caducifolios:</strong> Sol pleno en invierno cuando no tienen hojas y sombra moteada en verano. Perfecto para sotobosque amante de sombra.</li>'
+      ] : [
         '<li><strong>South-facing beds:</strong> Sunniest all year. Best for fruit trees, tomatoes, peppers, squash.</li>',
         '<li><strong>East-facing beds:</strong> Morning sun, afternoon shade. Good for leafy greens, herbs, strawberries.</li>',
         '<li><strong>West-facing beds:</strong> Hot afternoon sun. Good for Mediterranean herbs, drought-tolerant perennials.</li>',
         '<li><strong>North-facing beds:</strong> Coolest, most shade. Best for shade-tolerant plants: hostas, ferns, mushrooms.</li>',
         '<li><strong>Under deciduous trees:</strong> Full sun in winter (when bare), dappled shade in summer. Perfect for shade-loving understory.</li>'
-      ];
+      ]);
 
   // Shadow length for a 10ft tree
   function shadowLength(sunAltDeg) {
@@ -1427,29 +2010,29 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
   container.innerHTML = `
     <div class="sun-analysis-grid">
       <div class="sun-card sun-summer">
-        <h4>☀️ Summer Peak (Jun 21)</h4>
-        <p><strong>Sun Angle:</strong> ${summerAlt}° above horizon</p>
-        <p><strong>Shadow:</strong> ${shadowLength(summerAlt)} for 10ft tree</p>
-        <p><strong>Impact:</strong> ${summerImpact}</p>
+        <h4>☀️ ${t('summerPeak')} (Jun 21)</h4>
+        <p><strong>${t('sunAngle')}:</strong> ${summerAlt}° above horizon</p>
+        <p><strong>${t('shadow')}:</strong> ${shadowLength(summerAlt)} ${t('forTree')}</p>
+        <p><strong>${t('impact')}:</strong> ${localizedSummerImpact}</p>
       </div>
 
       <div class="sun-card sun-equinox">
-        <h4>🌿 Equinox (Mar/Sept)</h4>
-        <p><strong>Sun Angle:</strong> ${equinoxAlt}° above horizon</p>
-        <p><strong>Shadow:</strong> ${shadowLength(equinoxAlt)} for 10ft tree</p>
-        <p><strong>Impact:</strong> ${equinoxImpact}</p>
+        <h4>🌿 ${t('equinox')} (Mar/Sept)</h4>
+        <p><strong>${t('sunAngle')}:</strong> ${equinoxAlt}° above horizon</p>
+        <p><strong>${t('shadow')}:</strong> ${shadowLength(equinoxAlt)} ${t('forTree')}</p>
+        <p><strong>${t('impact')}:</strong> ${localizedEquinoxImpact}</p>
       </div>
 
       <div class="sun-card sun-winter">
-        <h4>❄️ Winter Low (Dec 21)</h4>
-        <p><strong>Sun Angle:</strong> ${winterAlt}° above horizon</p>
-        <p><strong>Shadow:</strong> ${shadowLength(winterAlt)} for 10ft tree</p>
-        <p><strong>Impact:</strong> ${winterImpact}</p>
+        <h4>❄️ ${t('winterLow')} (Dec 21)</h4>
+        <p><strong>${t('sunAngle')}:</strong> ${winterAlt}° above horizon</p>
+        <p><strong>${t('shadow')}:</strong> ${shadowLength(winterAlt)} ${t('forTree')}</p>
+        <p><strong>${t('impact')}:</strong> ${winterImpact}</p>
       </div>
     </div>
 
     <div class="sun-recommendations">
-      <h4>🌱 Planting Recommendations</h4>
+      <h4>🌱 ${t('plantingRecommendations')}</h4>
       <ul>
         ${recommendationItems.join('')}
       </ul>
@@ -1465,7 +2048,7 @@ function showSavedSites() {
   const modal = document.getElementById('savedSitesModal');
   const listContainer = document.getElementById('savedSitesList');
   modal.classList.remove('hidden');
-  listContainer.innerHTML = '<p class="note">Loading saved sites...</p>';
+  listContainer.innerHTML = `<p class="note">${t('loadingSavedSites')}</p>`;
 
   fetch('/api/sites')
     .then(res => res.json())
@@ -1473,8 +2056,8 @@ function showSavedSites() {
       if (!sites || sites.length === 0) {
         listContainer.innerHTML = `
           <div class="empty-state">
-            <p><strong>No saved sites yet.</strong></p>
-            <p>Generate a plan and click "💾 Save Site" to store it here.</p>
+            <p><strong>${t('noSavedSites')}</strong></p>
+            <p>${t('saveSitePrompt')}</p>
           </div>
         `;
         return;
@@ -1489,21 +2072,21 @@ function showSavedSites() {
       listContainer.innerHTML = sortedSites.map(site => `
         <div class="saved-site-item">
           <div class="saved-site-info">
-            <h4>${escapeHtml(site.name || 'Unnamed Site')}</h4>
-            <p>${escapeHtml(site.description || 'No description')}</p>
+            <h4>${escapeHtml(site.name || t('unnamedSite'))}</h4>
+            <p>${escapeHtml(site.description || t('noDescription'))}</p>
             <p class="site-meta">
-              ${site.updated ? 'Updated: ' + formatDate(site.updated) : (site.created ? 'Created: ' + formatDate(site.created) : '')}
+              ${site.updated ? t('updated') + ': ' + formatDate(site.updated) : (site.created ? t('created') + ': ' + formatDate(site.created) : '')}
             </p>
           </div>
           <div class="saved-site-actions">
-            <button class="btn btn-primary" onclick="loadSite('${escapeHtml(site.siteId)}')">📂 Open</button>
+            <button class="btn btn-primary" onclick="loadSite('${escapeHtml(site.siteId)}')">${t('open')}</button>
             <button class="btn btn-danger" onclick="deleteSite('${escapeHtml(site.siteId)}')">🗑️</button>
           </div>
         </div>
       `).join('');
     })
     .catch(err => {
-      listContainer.innerHTML = `<p class="note" style="color:var(--danger-text);">Error loading sites: ${escapeHtml(err.message)}</p>`;
+      listContainer.innerHTML = `<p class="note" style="color:var(--danger-text);">${t('errorLoadingSites')}${escapeHtml(err.message)}</p>`;
     });
 }
 
@@ -1514,13 +2097,13 @@ function closeSavedSites() {
 function loadSite(siteId) {
   fetch(`/api/sites/${encodeURIComponent(siteId)}`)
     .then(res => {
-      if (!res.ok) throw new Error('Site not found');
+      if (!res.ok) throw new Error(t('siteNotFound'));
       return res.json();
     })
     .then(siteData => {
       const plan = siteData.plan;
       if (!plan) {
-        alert('Site data is incomplete (no plan found).');
+        alert(t('incompleteSite'));
         return;
       }
       generatedPlan = plan;
@@ -1548,11 +2131,11 @@ function loadSite(siteId) {
       // Close modal
       closeSavedSites();
     })
-    .catch(err => alert('Error loading site: ' + err.message));
+    .catch(err => alert(t('errorLoadingSite') + err.message));
 }
 
 function deleteSite(siteId) {
-  if (!confirm(`Delete "${siteId}"? This cannot be undone.`)) return;
+  if (!confirm(`Delete "${siteId}"? ${t('deleteConfirmSuffix')}`)) return;
 
   fetch(`/api/sites/${encodeURIComponent(siteId)}`, { method: 'DELETE' })
     .then(res => res.json())
@@ -1563,7 +2146,7 @@ function deleteSite(siteId) {
         alert('Error: ' + data.error);
       }
     })
-    .catch(err => alert('Error deleting site: ' + err.message));
+    .catch(err => alert(t('errorDeletingSite') + err.message));
 }
 
 function escapeHtml(text) {
@@ -1581,7 +2164,7 @@ function formatDate(isoString) {
   if (!isoString) return '';
   try {
     const d = new Date(isoString);
-    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return d.toLocaleDateString(currentLanguage === 'es' ? 'es-419' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   } catch (e) {
     return isoString;
   }
@@ -1601,13 +2184,13 @@ function getGuildLayerValue(guildItem, keys) {
 }
 
 function getGuildLayerPlantLabel(layer) {
-  if (!layer) return 'No plants selected yet';
+  if (!layer) return t('noPlantsSelected');
   if (typeof layer === 'string') {
     const value = layer.trim();
-    return value && value.toLowerCase() !== 'none' ? value : 'No plants selected yet';
+    return value && value.toLowerCase() !== 'none' ? value : t('noPlantsSelected');
   }
-  if (Array.isArray(layer)) return layer.length ? layer.join(', ') : 'No plants selected yet';
-  return layer.name || layer.plant || layer.common_name || 'No plants selected yet';
+  if (Array.isArray(layer)) return layer.length ? layer.join(', ') : t('noPlantsSelected');
+  return layer.name || layer.plant || layer.common_name || t('noPlantsSelected');
 }
 
 function getPlanGuildCanopyNames(plan) {
@@ -1619,7 +2202,7 @@ function getPlanGuildCanopyNames(plan) {
   guilds.forEach(guildItem => {
     const canopy = getGuildLayerValue(guildItem, ['layer1_canopy']);
     const name = getGuildLayerPlantLabel(canopy);
-    if (!name || name === 'No plants selected yet' || name.toLowerCase() === 'none') return;
+    if (!name || name === t('noPlantsSelected') || name.toLowerCase() === 'none') return;
 
     const key = name.toLowerCase();
     if (seen.has(key)) return;
@@ -1757,7 +2340,7 @@ function openGuildEditModal(guildIndex, layerKey = null) {
   modal.dataset.guildIndex = String(guildIndex);
   title.textContent = `Edit ${getGuildTitle(guildItem, guildIndex)}`;
   select.innerHTML = GUILD_LAYER_DEFINITIONS
-    .map(layerDef => `<option value="${escapeHtml(layerDef.canonicalKey)}">${escapeHtml(layerDef.label)}</option>`)
+    .map(layerDef => `<option value="${escapeHtml(layerDef.canonicalKey)}">${escapeHtml(getGuildLayerLabel(layerDef))}</option>`)
     .join('');
   select.value = layerKey || GUILD_LAYER_DEFINITIONS[0].canonicalKey;
   const layerField = select.closest('.form-group');
@@ -1789,12 +2372,12 @@ async function loadGuildReplacementCandidates() {
   replacementSelect.innerHTML = '';
 
   if (!layerDef || !zone) {
-    status.textContent = 'Compatible replacements need a generated plan with a USDA zone.';
+    status.textContent = t('compatibleNeedsZone');
     replacementSelect.disabled = true;
     return;
   }
 
-  status.textContent = 'Loading compatible replacements...';
+  status.textContent = t('loadingReplacements');
   replacementSelect.disabled = true;
 
   try {
@@ -1817,13 +2400,13 @@ async function loadGuildReplacementCandidates() {
     const response = await fetch(`/api/guild-layer-candidates?${params.toString()}`);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || 'Failed to load replacement candidates');
+      throw new Error(errorData.error || t('failedLoadCandidates'));
     }
 
     const data = await response.json();
     const candidates = Array.isArray(data.candidates) ? data.candidates : [];
     if (!candidates.length) {
-      status.textContent = 'No compatible replacements found for this layer.';
+      status.textContent = t('noCompatibleReplacements');
       return;
     }
 
@@ -1836,7 +2419,7 @@ async function loadGuildReplacementCandidates() {
       .join('');
     replacementSelect.dataset.candidates = JSON.stringify(candidates);
     replacementSelect.disabled = false;
-    status.textContent = `${candidates.length} compatible replacement${candidates.length === 1 ? '' : 's'} available.`;
+    status.textContent = `${candidates.length} ${candidates.length === 1 ? t('compatibleReplacementAvailable') : t('compatibleReplacementsAvailable')}`;
   } catch (error) {
     status.textContent = error.message;
   }
@@ -1919,13 +2502,13 @@ function renderSevenLayerGuild(guild) {
   };
 
   const renderLayerPlant = (layer) => {
-    if (!layer) return 'No plants selected yet';
+    if (!layer) return t('noPlantsSelected');
     if (typeof layer === 'string') {
       const value = layer.trim();
-      return value && value.toLowerCase() !== 'none' ? value : 'No plants selected yet';
+      return value && value.toLowerCase() !== 'none' ? value : t('noPlantsSelected');
     }
-    if (Array.isArray(layer)) return layer.length ? layer.join(', ') : 'No plants selected yet';
-    return layer.name || layer.plant || layer.common_name || 'No plants selected yet';
+    if (Array.isArray(layer)) return layer.length ? layer.join(', ') : t('noPlantsSelected');
+    return layer.name || layer.plant || layer.common_name || t('noPlantsSelected');
   };
 
   const renderLayerMeta = (layer, layerKey = '') => {
@@ -1936,13 +2519,13 @@ function renderSevenLayerGuild(guild) {
     if (layer.tier === 'Anchor') {
       const isChosen = layer.selection_reason === 'Chosen by you';
       const hasClimateWarning = Boolean(layer.climate_warning);
-      label = (isChosen ? 'Chosen by you' : 'Suggested') + (hasClimateWarning ? ' · climate warning · experimental anchor' : ' · Canopy anchor');
+      label = (isChosen ? t('chosenByYou') : t('suggested')) + (hasClimateWarning ? ` · ${t('climateWarning')} · ${t('experimentalAnchor')}` : ` · ${t('canopyAnchor')}`);
       badgeClass = hasClimateWarning ? 'climate-warning' : (isChosen ? 'chosen-by-you' : 'suggested-anchor');
     } else if (layer.tier === 'A') {
-      label = 'Mineral match' + (layer.salt_content ? ' · ' + layer.salt_content : '');
+      label = t('mineralMatch') + (layer.salt_content ? ' · ' + layer.salt_content : '');
       badgeClass = 'mineral-match';
     } else if (layer.tier === 'B') {
-      label = 'Climate fit · Support plant';
+      label = t('climateFitSupport');
       badgeClass = 'climate-fit';
     } else if (layer.selection_reason) {
       label = layer.selection_reason;
@@ -1959,11 +2542,11 @@ function renderSevenLayerGuild(guild) {
     const roleText = Array.isArray(roles) && roles.length
       ? roles.map(role => String(role).replace(/_/g, ' ')).join(', ')
       : '';
-    const mineralLabel = layer.salt_content ? 'Other minerals: ' : 'Mineral profile: ';
+    const mineralLabel = layer.salt_content ? `${t('otherMinerals')} ` : `${t('mineralProfile')} `;
     const mineralValue = mineralText
       ? mineralText
-      : (layer.salt_content ? 'None mapped' : 'Not mapped yet');
-    const roleValue = roleText || 'Not mapped yet';
+      : (layer.salt_content ? t('noneMapped') : t('notMappedYet'));
+    const roleValue = roleText || t('notMappedYet');
     const edgeCaution = getEdgeClimateCaution(layer, generatedPlan, layerKey);
     const invasiveCaution = getInvasiveRiskCaution(layer);
     const layerRoleLabel = getGuildLayerRoleLabel(layer, layerKey);
@@ -1977,7 +2560,7 @@ function renderSevenLayerGuild(guild) {
     }
     metaParts.push('<span>' + escapeHtml(mineralLabel) + escapeHtml(mineralValue) + '</span>');
     if (layerRoleLabel) metaParts.push('<span>' + escapeHtml(layerRoleLabel) + '</span>');
-    metaParts.push('<span>Role: ' + escapeHtml(roleValue) + '</span>');
+    metaParts.push('<span>' + t('role') + ': ' + escapeHtml(roleValue) + '</span>');
     if (invasiveCaution) {
       metaParts.push(
         '<div class="guild-climate-warning">' +
@@ -2000,7 +2583,7 @@ function renderSevenLayerGuild(guild) {
         : '';
       metaParts.push(
         '<div class="guild-climate-warning">' +
-          '<span><strong>Climate note:</strong> ' + escapeHtml(warning.reason || 'This user-selected canopy may be marginal for the mapped site climate.') + '</span>' +
+          '<span><strong>' + t('climateNote') + ':</strong> ' + escapeHtml(warning.reason || 'This user-selected canopy may be marginal for the mapped site climate.') + '</span>' +
           alternatives +
         '</div>'
       );
@@ -2017,7 +2600,7 @@ function renderSevenLayerGuild(guild) {
     return '<div class="guild-comparison-column ' + className + '">' +
       '<div class="guild-comparison-label">' + escapeHtml(label) + '</div>' +
       '<div class="guild-comparison-plant">' + escapeHtml(plantName) + '</div>' +
-      (meta || '<div class="guild-plant-meta"><span>Mineral profile: Not mapped yet</span><span>Role: Not mapped yet</span></div>') +
+      (meta || '<div class="guild-plant-meta"><span>' + t('mineralProfile') + ' ' + t('notMappedYet') + '</span><span>' + t('role') + ': ' + t('notMappedYet') + '</span></div>') +
     '</div>';
   };
 
@@ -2042,11 +2625,11 @@ function renderSevenLayerGuild(guild) {
     htmlParts.push('  <div class="guild-card-header">');
     htmlParts.push('    <h4 style="margin:0;">' + escapeHtml(title) + (isExperimentalGuild ? ' <span class="guild-badge climate-warning">Experimental</span>' : '') + '</h4>');
     htmlParts.push('    <div class="guild-card-actions">');
-    htmlParts.push('      <button class="btn btn-guild-save' + (hasPendingEdits ? '' : ' hidden') + '" type="button" data-guild-index="' + index + '" onclick="saveGuildEdits(' + index + ')"' + (hasPendingEdits ? '' : ' disabled') + '>Save Guild</button>');
-    htmlParts.push('      <button class="btn btn-guild-edit" type="button" data-guild-index="' + index + '" onclick="toggleGuildEditMode(' + index + ')">' + (isEditMode ? 'Done' : 'Edit') + '</button>');
+    htmlParts.push('      <button class="btn btn-guild-save' + (hasPendingEdits ? '' : ' hidden') + '" type="button" data-guild-index="' + index + '" onclick="saveGuildEdits(' + index + ')"' + (hasPendingEdits ? '' : ' disabled') + '>' + t('saveGuild') + '</button>');
+    htmlParts.push('      <button class="btn btn-guild-edit" type="button" data-guild-index="' + index + '" onclick="toggleGuildEditMode(' + index + ')">' + (isEditMode ? t('done') : t('edit')) + '</button>');
     htmlParts.push('    </div>');
     htmlParts.push('  </div>');
-    if (isEditMode) htmlParts.push('  <p class="guild-edit-hint">Select a layer to edit</p>');
+    if (isEditMode) htmlParts.push('  <p class="guild-edit-hint">' + t('selectLayerToEdit') + '</p>');
     htmlParts.push('  <div class="layer-grid" style="display:grid;gap:8px;">');
 
     layerDefinitions.forEach(layerDef => {
@@ -2054,12 +2637,12 @@ function renderSevenLayerGuild(guild) {
       const dirtyKey = `${index}:${layerDef.canonicalKey}`;
       const hasUnsavedLayerEdit = dirtyGuildLayers.has(dirtyKey);
       htmlParts.push('    <div class="guild-layer-card layer-card' + (hasUnsavedLayerEdit ? ' pending-edit' : '') + (isEditMode ? ' selectable' : '') + '"' + (isEditMode ? ' role="button" tabindex="0" data-guild-index="' + index + '" data-layer-key="' + escapeHtml(layerDef.canonicalKey) + '" onclick="openGuildEditModal(' + index + ', \'' + escapeHtml(layerDef.canonicalKey) + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openGuildEditModal(' + index + ', \'' + escapeHtml(layerDef.canonicalKey) + '\');}"' : '') + '>');
-      htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(layerDef.label) + (hasUnsavedLayerEdit ? ' <span class="unsaved-edit-badge">Unsaved edit</span>' : '') + '</strong>');
+      htmlParts.push('      <strong style="font-size:0.95em;">' + escapeHtml(getGuildLayerLabel(layerDef)) + (hasUnsavedLayerEdit ? ' <span class="unsaved-edit-badge">' + t('unsavedEdit') + '</span>' : '') + '</strong>');
       if (hasUnsavedLayerEdit) {
         const originalLayer = originalGuildLayers.has(dirtyKey) ? originalGuildLayers.get(dirtyKey) : null;
         htmlParts.push('      <div class="guild-layer-comparison">');
-        htmlParts.push('        ' + renderComparisonColumn('Original', originalLayer, 'original', layerDef.canonicalKey));
-        htmlParts.push('        ' + renderComparisonColumn('Pending', layer, 'pending', layerDef.canonicalKey));
+        htmlParts.push('        ' + renderComparisonColumn(t('original'), originalLayer, 'original', layerDef.canonicalKey));
+        htmlParts.push('        ' + renderComparisonColumn(t('pending'), layer, 'pending', layerDef.canonicalKey));
         htmlParts.push('      </div>');
       } else {
         htmlParts.push('      <span style="font-size:1.05em;">' + escapeHtml(renderLayerPlant(layer)) + '</span>');
