@@ -19,7 +19,7 @@ const I18N = {
   en: {
     documentTitle: 'Permaculture Design Generator',
     appTitle: '🌱 Permaculture Design Generator',
-    appSubtitle: 'Symbolic Cell Salt / Mineral Theme Planting Plans',
+    appSubtitle: 'Carey/Schuessler Tissue-Salt Mineral Theme Planting Plans',
     languageLabel: 'Language',
     translationNote: 'Spanish is a first-pass prototype translation. Plant names, registry tags, and some generated notes may remain in English.',
     prototypeLabel: 'Prototype / Early Access',
@@ -64,9 +64,9 @@ const I18N = {
     sourceApproximate: 'Approximate',
     sunSignLabel: 'Your Sun Sign *',
     sunSignPlaceholder: 'Select your sun sign...',
-    sunSignHelp: 'Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes',
+    sunSignHelp: 'Uses your sun sign and neighboring signs as tissue-salt mineral themes',
     familyMembersLabel: 'Family Members (Optional)',
-    familyMembersHelp: 'Add sun signs for family members to combine symbolic mineral / cell-salt themes',
+    familyMembersHelp: 'Add sun signs for family members to combine tissue-salt mineral themes',
     addFamilyMember: '+ Add Family Member',
     projectScale: 'Project Scale *',
     scalePlaceholder: 'Select scale...',
@@ -79,18 +79,15 @@ const I18N = {
     soilComingSoonText: 'We’re preparing soil-test upload and interpretation tools. For now, generate the plan without soil-test inputs.',
     back: '← Back',
     generatePlan: '🌱 Generate Plan',
-    resultsTitle: 'Your Permaculture Plan',
     saveChanges: 'Save Changes',
     saveAsNew: 'Save As New',
     openPlantingScale: 'Open Planting Timeline',
-    testingPrompt: 'Testing this?',
-    testingText: 'Note confusing recommendations, missing plants, bad zone matches, or features you expected. Early feedback will guide the next registry and editing passes.',
     siteInfoTitle: '📍 Site Information',
     sunAnalysisTitle: '☀️ Sun Analysis for Plants',
-    cellSaltTitle: '🧪 Symbolic Cell Salt / Mineral Themes',
+    openSunCalc: 'Open in SunCalc',
+    cellSaltTitle: 'Carey/Schuessler Tissue-Salt Mineral Themes',
     howToRead: 'How to read this:',
-    cellSaltDisclaimer: 'This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice.',
-    cellSaltNote: 'These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.',
+    cellSaltDisclaimer: 'This prototype uses the Carey/Schuessler tissue-salt correspondence framework as one layer of the planting design process.\n\nThe twelve tissue salts are inorganic mineral salts traditionally associated with cellular structure, fluid balance, nerve function, tissue repair, elimination, oxygenation, and other body processes. Schuessler focused on them as essential mineral compounds in cellular function; Carey later extended the system into zodiacal correspondences.\n\nIn this app, those correspondences are used as a mineral-pattern language for food forest design. Your sun sign and neighboring signs select tissue-salt mineral themes, which are compared with plant registry tags, guild layers, and ecological functions.\n\nClimate and site reality still come first. This is planting-design context only, not medical advice, diagnosis, treatment, supplement guidance, or dosage instruction.',
     aiGuildsTitle: '🤖 AI-Designed Plant Guilds',
     sevenLayerGuildTitle: '🌿 7-Layer Edible Guild',
     whatIsGuild: 'What is a guild?',
@@ -109,7 +106,7 @@ const I18N = {
     downloadCompletePdf: 'Download Complete PDF Plan',
     downloadingPdf: 'Generating PDF...',
     pdfExportNote: 'Generates a printable Complete Food Forest Plan PDF from the current plan.',
-    footerText: 'Carey / Schüssler-inspired symbolic cell-salt themes for planting design',
+    footerText: 'Carey/Schuessler tissue-salt mineral themes for planting design',
     modalSavedSitesTitle: '📂 My Saved Sites',
     loadingSavedSites: 'Loading saved sites...',
     editGuildLayer: 'Edit Guild Layer',
@@ -165,9 +162,9 @@ const I18N = {
     locationUnavailable: 'Location unavailable.',
     locationUnavailableText: 'Recommended plants require a valid USDA hardiness zone. Please enter a valid City and State (e.g., "Duluth, MN") and try again.',
     planMineralThemes: 'Plan mineral themes',
-    noMineralThemes: 'No symbolic mineral themes selected or mapped.',
+    noMineralThemes: 'No tissue-salt mineral themes selected or mapped.',
     fewerMappedPlants: 'Some mineral themes may have fewer mapped plants in the current registry. The app prioritizes climate-fit and mapped matches where available.',
-    unmappedContext: 'Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Köppen climate, layer role, and guild diversity - not because they directly match a symbolic cell-salt theme.',
+    unmappedContext: 'Some climate-fit plants are shown even though their cell-salt profile is not mapped yet. These are included for USDA zone, Köppen climate, layer role, and guild diversity - not because they directly match a tissue-salt mineral theme.',
     sortBy: 'Sort by',
     bestMatch: 'Best match',
     plantName: 'Plant name',
@@ -281,7 +278,7 @@ const I18N = {
   es: {
     documentTitle: 'Generador de Diseño de Permacultura',
     appTitle: '🌱 Generador de Diseño de Permacultura',
-    appSubtitle: 'Planes de siembra con temas simbólicos de sales celulares / minerales',
+    appSubtitle: 'Planes de siembra con temas minerales de sales tisulares Carey/Schuessler',
     languageLabel: 'Idioma',
     translationNote: 'El español es una traducción inicial de prototipo. Los nombres de plantas, etiquetas del registro y algunas notas generadas pueden permanecer en inglés.',
     prototypeLabel: 'Prototipo / Acceso temprano',
@@ -326,9 +323,9 @@ const I18N = {
     sourceApproximate: 'Aproximada',
     sunSignLabel: 'Tu signo solar *',
     sunSignPlaceholder: 'Selecciona tu signo solar...',
-    sunSignHelp: 'Usa tu signo solar y los signos vecinos como temas simbólicos de minerales / sales celulares',
+    sunSignHelp: 'Usa tu signo solar y los signos vecinos como temas minerales de sales tisulares',
     familyMembersLabel: 'Integrantes de la familia (opcional)',
-    familyMembersHelp: 'Agrega signos solares de familiares para combinar temas simbólicos de minerales / sales celulares',
+    familyMembersHelp: 'Agrega signos solares de familiares para combinar temas minerales de sales tisulares',
     addFamilyMember: '+ Agregar familiar',
     projectScale: 'Escala del proyecto *',
     scalePlaceholder: 'Selecciona la escala...',
@@ -341,18 +338,15 @@ const I18N = {
     soilComingSoonText: 'Estamos preparando herramientas para subir e interpretar análisis de suelo. Por ahora, genera el plan sin datos de suelo.',
     back: '← Atrás',
     generatePlan: '🌱 Generar plan',
-    resultsTitle: 'Tu plan de permacultura',
-    saveChanges: 'Guardar cambios',
-    saveAsNew: 'Guardar como nuevo',
+    saveChanges: 'Guardar Cambios',
+    saveAsNew: 'Guardar Como Nuevo',
     openPlantingScale: 'Abrir calendario de siembra',
-    testingPrompt: '¿Estás probando esto?',
-    testingText: 'Anota recomendaciones confusas, plantas faltantes, malas coincidencias de zona o funciones que esperabas. Los comentarios tempranos guiarán las próximas mejoras del registro y la edición.',
     siteInfoTitle: '📍 Información del sitio',
     sunAnalysisTitle: '☀️ Análisis solar para plantas',
-    cellSaltTitle: '🧪 Temas simbólicos de sales celulares / minerales',
+    openSunCalc: 'Abrir en SunCalc',
+    cellSaltTitle: 'Temas minerales de sales tisulares Carey/Schuessler',
     howToRead: 'Cómo leer esto:',
-    cellSaltDisclaimer: 'Este prototipo usa un marco simbólico inspirado en Carey / Schüssler. Trata el signo solar y los signos vecinos como temas de minerales o sales celulares para el diseño de siembra. Estas asociaciones tradicionales se muestran solo como contexto simbólico para diseño de siembra. No son afirmaciones de salud, diagnóstico, guía de tratamiento ni consejo sobre suplementos.',
-    cellSaltNote: 'Estos temas simbólicos de minerales / sales celulares se basan en tu signo solar y signos vecinos. Las plantas recomendadas se asocian con estas etiquetas del registro y metadatos de temas minerales.',
+    cellSaltDisclaimer: 'Este prototipo usa el marco de correspondencias de sales tisulares Carey/Schuessler como una capa del proceso de diseño de siembra.\n\nLas doce sales tisulares son sales minerales inorgánicas tradicionalmente asociadas con estructura celular, equilibrio de fluidos, función nerviosa, reparación de tejidos, eliminación, oxigenación y otros procesos corporales. Schuessler se enfocó en ellas como compuestos minerales esenciales en la función celular; Carey luego extendió el sistema hacia correspondencias zodiacales.\n\nEn esta app, esas correspondencias se usan como lenguaje de patrones minerales para el diseño de bosques comestibles. Tu signo solar y los signos vecinos seleccionan temas minerales de sales tisulares, que se comparan con etiquetas del registro de plantas, capas del gremio y funciones ecológicas.\n\nEl clima y la realidad del sitio siguen siendo lo primero. Esto es solo contexto de diseño de siembra, no consejo médico, diagnóstico, tratamiento, guía de suplementos ni instrucción de dosis.',
     aiGuildsTitle: '🤖 Gremios de plantas diseñados por IA',
     sevenLayerGuildTitle: '🌿 Gremio comestible de 7 capas',
     whatIsGuild: '¿Qué es un gremio?',
@@ -371,7 +365,7 @@ const I18N = {
     downloadCompletePdf: 'Descargar plan PDF completo',
     downloadingPdf: 'Generando PDF...',
     pdfExportNote: 'Genera un Plan PDF completo imprimible desde el plan actual.',
-    footerText: 'Temas simbólicos de sales celulares inspirados en Carey / Schüssler para diseño de siembra',
+    footerText: 'Temas minerales de sales tisulares Carey/Schuessler para diseño de siembra',
     modalSavedSitesTitle: '📂 Mis sitios guardados',
     loadingSavedSites: 'Cargando sitios guardados...',
     editGuildLayer: 'Editar capa del gremio',
@@ -427,9 +421,9 @@ const I18N = {
     locationUnavailable: 'Ubicación no disponible.',
     locationUnavailableText: 'Las plantas recomendadas requieren una zona de rusticidad USDA válida. Ingresa una ciudad y estado válidos (ej., "Duluth, MN") e inténtalo de nuevo.',
     planMineralThemes: 'Temas minerales del plan',
-    noMineralThemes: 'No se seleccionaron ni mapearon temas minerales simbólicos.',
+    noMineralThemes: 'No se seleccionaron ni mapearon temas minerales de sales tisulares.',
     fewerMappedPlants: 'Algunos temas minerales pueden tener menos plantas mapeadas en el registro actual. La app prioriza el ajuste climático y las coincidencias mapeadas cuando están disponibles.',
-    unmappedContext: 'Algunas plantas con buen ajuste climático se muestran aunque su perfil de sales celulares aún no esté mapeado. Se incluyen por zona USDA, clima Köppen, rol de capa y diversidad del gremio, no porque coincidan directamente con un tema simbólico de sales celulares.',
+    unmappedContext: 'Algunas plantas con buen ajuste climático se muestran aunque su perfil de sales tisulares aún no esté mapeado. Se incluyen por zona USDA, clima Köppen, rol de capa y diversidad del gremio, no porque coincidan directamente con un tema mineral de sales tisulares.',
     sortBy: 'Ordenar por',
     bestMatch: 'Mejor coincidencia',
     plantName: 'Nombre de planta',
@@ -488,7 +482,7 @@ const I18N = {
     plantingRecommendations: 'Recomendaciones de siembra',
     forTree: 'para un árbol de 10 pies',
     noSavedSites: 'Aún no hay sitios guardados.',
-    saveSitePrompt: 'Genera un plan y haz clic en "Guardar como nuevo" para guardarlo aquí.',
+    saveSitePrompt: 'Genera un plan y haz clic en "Guardar Como Nuevo" para guardarlo aquí.',
     unnamedSite: 'Sitio sin nombre',
     noDescription: 'Sin descripción',
     updated: 'Actualizado',
@@ -511,7 +505,7 @@ const I18N = {
     siteSaved: '¡Sitio guardado correctamente!',
     errorSavingSite: 'Error al guardar el sitio: ',
     changesSaved: '¡Cambios guardados correctamente!',
-    errorSavingChanges: 'Error al guardar cambios: ',
+    errorSavingChanges: 'Error al Guardar Cambios: ',
     pdfAlert: 'Genera o carga un plan primero.',
     pdfExportFailed: 'Error al exportar PDF: ',
     edit: 'Editar',
@@ -605,6 +599,8 @@ function applyTheme(theme) {
   document.body.classList.toggle('theme-light', !isDark);
   updatePlantingTimelineButtonImages(isDark);
   updatePdfDownloadButtonImages(isDark);
+  updateResultsTitleImage(isDark);
+  updateCellSaltHeadingIcon(isDark);
 
   const toggle = document.getElementById('themeToggle');
   if (toggle) {
@@ -630,6 +626,26 @@ function updatePdfDownloadButtonImages(isDark) {
   });
 }
 
+function updateResultsTitleImage(isDark) {
+  const src = isDark
+    ? '/your%20permaculture%20plan.png'
+    : '/Your%20plan%20light.png';
+
+  document.querySelectorAll('.results-title-image-heading img').forEach(img => {
+    img.src = src;
+  });
+}
+
+function updateCellSaltHeadingIcon(isDark) {
+  const src = isDark
+    ? '/Cell%20Salts%20dark.png'
+    : '/Cell%20Salts%20light.png';
+
+  document.querySelectorAll('.cell-salt-heading-icon').forEach(img => {
+    img.src = src;
+  });
+}
+
 function toggleTheme() {
   const nextTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
   localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
@@ -650,6 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
   loadAddressProviderConfig();
   setupAddressAutocomplete();
+  setupZodiacSelects();
   const appVersionLabel = document.getElementById('appVersionLabel');
   if (appVersionLabel) {
     appVersionLabel.textContent = APP_VERSION;
@@ -661,6 +678,130 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+const ZODIAC_SIGNS = {
+  aries: { glyph: '♈︎', element: 'fire' },
+  taurus: { glyph: '♉︎', element: 'earth' },
+  gemini: { glyph: '♊︎', element: 'air' },
+  cancer: { glyph: '♋︎', element: 'water' },
+  leo: { glyph: '♌︎', element: 'fire' },
+  virgo: { glyph: '♍︎', element: 'earth' },
+  libra: { glyph: '♎︎', element: 'air' },
+  scorpio: { glyph: '♏︎', element: 'water' },
+  sagittarius: { glyph: '♐︎', element: 'fire' },
+  capricorn: { glyph: '♑︎', element: 'earth' },
+  aquarius: { glyph: '♒︎', element: 'air' },
+  pisces: { glyph: '♓︎', element: 'water' }
+};
+
+function getZodiacGlyphClass(sign) {
+  const element = ZODIAC_SIGNS[sign]?.element;
+  return element ? `zodiac-glyph-${element}` : '';
+}
+
+function getZodiacLabel(option) {
+  return option?.textContent.replace(/^[^\s]+\s*/, '') || '';
+}
+
+function closeZodiacSelect(select) {
+  const custom = select?.nextElementSibling;
+  if (!custom?.classList.contains('zodiac-select')) return;
+  custom.classList.remove('open');
+  custom.querySelector('.zodiac-select-button')?.setAttribute('aria-expanded', 'false');
+}
+
+function closeOtherZodiacSelects(currentSelect) {
+  document.querySelectorAll('#sunSign, .member-sign').forEach(select => {
+    if (select !== currentSelect) closeZodiacSelect(select);
+  });
+}
+
+function renderZodiacSelect(select) {
+  const custom = select?.nextElementSibling;
+  if (!custom?.classList.contains('zodiac-select')) return;
+
+  const button = custom.querySelector('.zodiac-select-button');
+  const menu = custom.querySelector('.zodiac-select-menu');
+  const selectedOption = select.selectedOptions[0] || select.options[0];
+  const sign = select.value;
+  const signMeta = ZODIAC_SIGNS[sign];
+
+  button.innerHTML = signMeta
+    ? `<span class="zodiac-glyph ${getZodiacGlyphClass(sign)}">${signMeta.glyph}</span><span>${escapeHtml(getZodiacLabel(selectedOption))}</span>`
+    : `<span class="zodiac-select-placeholder">${escapeHtml(selectedOption?.textContent || t('sunSignPlaceholder'))}</span>`;
+
+  menu.querySelectorAll('.zodiac-select-option').forEach(optionButton => {
+    optionButton.classList.toggle('selected', optionButton.dataset.value === sign);
+  });
+}
+
+function createZodiacSelect(select) {
+  if (!select || select.dataset.zodiacSelectReady === 'true') return;
+  select.dataset.zodiacSelectReady = 'true';
+  select.classList.add('zodiac-native-select');
+
+  const custom = document.createElement('div');
+  custom.className = 'zodiac-select';
+  custom.innerHTML = `
+    <button class="zodiac-select-button" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+    <div class="zodiac-select-menu" role="listbox"></div>
+  `;
+
+  const menu = custom.querySelector('.zodiac-select-menu');
+  Array.from(select.options).forEach(option => {
+    const optionButton = document.createElement('button');
+    optionButton.type = 'button';
+    optionButton.className = 'zodiac-select-option';
+    optionButton.role = 'option';
+    optionButton.dataset.value = option.value;
+
+    const signMeta = ZODIAC_SIGNS[option.value];
+    if (signMeta) {
+      optionButton.innerHTML = `<span class="zodiac-glyph ${getZodiacGlyphClass(option.value)}">${signMeta.glyph}</span><span>${escapeHtml(getZodiacLabel(option))}</span>`;
+    } else {
+      optionButton.innerHTML = `<span class="zodiac-select-placeholder">${escapeHtml(option.textContent)}</span>`;
+    }
+
+    optionButton.addEventListener('click', () => {
+      select.value = option.value;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      closeZodiacSelect(select);
+    });
+    menu.appendChild(optionButton);
+  });
+
+  custom.querySelector('.zodiac-select-button')?.addEventListener('click', () => {
+    const isOpen = custom.classList.toggle('open');
+    closeOtherZodiacSelects(select);
+    custom.classList.toggle('open', isOpen);
+    custom.querySelector('.zodiac-select-button')?.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  select.insertAdjacentElement('afterend', custom);
+  select.addEventListener('change', () => renderZodiacSelect(select));
+  renderZodiacSelect(select);
+}
+
+function setupZodiacSelects(root = document) {
+  root.querySelectorAll('#sunSign, .member-sign').forEach(createZodiacSelect);
+}
+
+document.addEventListener('click', event => {
+  if (event.target.closest('.zodiac-select')) return;
+  document.querySelectorAll('#sunSign, .member-sign').forEach(closeZodiacSelect);
+});
+
+function getZodiacElementClass(sign) {
+  if (['aries', 'leo', 'sagittarius'].includes(sign)) return 'zodiac-selected-fire';
+  if (['taurus', 'virgo', 'capricorn'].includes(sign)) return 'zodiac-selected-earth';
+  if (['gemini', 'libra', 'aquarius'].includes(sign)) return 'zodiac-selected-air';
+  if (['cancer', 'scorpio', 'pisces'].includes(sign)) return 'zodiac-selected-water';
+  return '';
+}
+
+function updateZodiacSelectClass(select) {
+  renderZodiacSelect(select);
+}
 
 async function loadAddressProviderConfig() {
   try {
@@ -957,23 +1098,24 @@ function addFamilyMember() {
     <input type="text" placeholder="${t('memberNamePlaceholder')}" class="member-name">
     <select class="member-sign" required>
       <option value="">${t('sunSignPlaceholder')}</option>
-      <option value="aries">♈ Aries</option>
-      <option value="taurus">♉ Taurus</option>
-      <option value="gemini">♊ Gemini</option>
-      <option value="cancer">♋ Cancer</option>
-      <option value="leo">♌ Leo</option>
-      <option value="virgo">♍ Virgo</option>
-      <option value="libra">♎ Libra</option>
-      <option value="scorpio">♏ Scorpio</option>
-      <option value="sagittarius">♐ Sagittarius</option>
-      <option value="capricorn">♑ Capricorn</option>
-      <option value="aquarius">♒ Aquarius</option>
-      <option value="pisces">♓ Pisces</option>
+      <option value="aries" class="zodiac-fire">♈︎ Aries</option>
+      <option value="taurus" class="zodiac-earth">♉︎ Taurus</option>
+      <option value="gemini" class="zodiac-air">♊︎ Gemini</option>
+      <option value="cancer" class="zodiac-water">♋︎ Cancer</option>
+      <option value="leo" class="zodiac-fire">♌︎ Leo</option>
+      <option value="virgo" class="zodiac-earth">♍︎ Virgo</option>
+      <option value="libra" class="zodiac-air">♎︎ Libra</option>
+      <option value="scorpio" class="zodiac-water">♏︎ Scorpio</option>
+      <option value="sagittarius" class="zodiac-fire">♐︎ Sagittarius</option>
+      <option value="capricorn" class="zodiac-earth">♑︎ Capricorn</option>
+      <option value="aquarius" class="zodiac-air">♒︎ Aquarius</option>
+      <option value="pisces" class="zodiac-water">♓︎ Pisces</option>
     </select>
     <button class="remove-btn" onclick="removeFamilyMember(this)">${t('remove')}</button>
   `;
 
   container.appendChild(memberDiv);
+  setupZodiacSelects(memberDiv);
 }
 
 function removeFamilyMember(btn) {
@@ -1111,6 +1253,18 @@ function formatCoordinatePair(latitude, longitude) {
   return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 }
 
+function buildSunCalcUrl(latitude, longitude) {
+  const lat = Number(latitude);
+  const lon = Number(longitude);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return '';
+
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  return `https://www.suncalc.org/#/${lat.toFixed(6)},${lon.toFixed(6)},16/${yyyy}.${mm}.${dd}/12:00/1/3`;
+}
+
 function formatGeocodeConfidence(loc = {}) {
   switch (loc.geocodeConfidence) {
     case 'exact':
@@ -1203,6 +1357,7 @@ function restoreLoadedSiteForm(plan = {}) {
   if (sunSignInput) sunSignInput.value = site.sunSign || '';
   if (scaleInput) scaleInput.value = site.scale || '';
   if (desiredPlantsInput) desiredPlantsInput.value = site.userDesiredPlants || '';
+  updateZodiacSelectClass(sunSignInput);
 
   if (latitudeInput && longitudeInput) {
     if (loc.userConfirmedCoordinates && Number.isFinite(Number(loc.latitude)) && Number.isFinite(Number(loc.longitude))) {
@@ -1636,20 +1791,12 @@ function getRecommendedPlantCategory(plant) {
 
 function formatCellSaltExplanation(explanation = '') {
   const replacement = currentLanguage === 'es'
-    ? 'Usando $1 tema$2 de sales celulares/minerales como apoyo simbólico para el diseño de siembra.'
-    : 'Using $1 cell-salt/mineral theme$2 as symbolic planting-design support.';
+    ? 'Usando $1 tema$2 minerales de sales tisulares como apoyo del diseño de siembra.'
+    : 'Using $1 tissue-salt mineral theme$2 as planting-design support.';
   return String(explanation || '').replace(
     /Supplementing\s+(\d+)\s+cell\s+salt(s?)\./i,
     replacement
   );
-}
-
-function softenCellSaltStaticCopy() {
-  const note = document.querySelector('#cellSaltsCard > p.note');
-  if (!note) return;
-  if (/cell salts are deficient/i.test(note.textContent || '')) {
-    note.textContent = 'These are symbolic cell-salt/mineral themes highlighted by the selected sun signs and neighboring signs in a Carey / Schüssler-inspired planting-design framework. Matching registry tags help explain the planting logic; this is not medical guidance.';
-  }
 }
 
 function getRecommendedPlantControls(plan = generatedPlan) {
@@ -1858,8 +2005,6 @@ function displayResults(plan) {
   normalizeLocationConfidenceForDisplay(plan);
   document.getElementById('step2').classList.add('hidden');
   document.getElementById('results').classList.remove('hidden');
-  softenCellSaltStaticCopy();
-
   // Site Info
   const loc = plan.locationData || {};
   const geoFailed = loc.error;
@@ -2526,6 +2671,15 @@ async function downloadPlan() {
 function drawPlantSunAnalysis(lat, lon, climate = {}) {
   const container = document.getElementById('plantSunAnalysis');
   if (!container) return;
+  const sunCalcUrl = buildSunCalcUrl(lat, lon);
+  const sunCalcAction = document.getElementById('sunCalcAction');
+  if (sunCalcAction) {
+    sunCalcAction.innerHTML = sunCalcUrl ? `
+      <a class="btn btn-secondary sun-calc-link-btn" href="${escapeHtml(sunCalcUrl)}" target="_blank" rel="noopener noreferrer">
+        ${escapeHtml(t('openSunCalc'))}
+      </a>
+    ` : '';
+  }
 
   // Manual solar altitude calculation for solstices at solar noon
   // Formula: altitude = 90° - |latitude - declination|

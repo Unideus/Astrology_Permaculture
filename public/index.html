@@ -15,7 +15,7 @@
 
     <header>
       <h1 data-i18n="appTitle">🌱 Permaculture Design Generator</h1>
-      <p class="subtitle" data-i18n="appSubtitle">Symbolic Cell Salt / Mineral Theme Planting Plans</p>
+      <p class="subtitle" data-i18n="appSubtitle">Carey/Schuessler Tissue-Salt Mineral Theme Planting Plans</p>
       <div class="top-controls">
         <div class="language-control">
           <label for="languageSelect" data-i18n="languageLabel">Language</label>
@@ -42,7 +42,7 @@
             <small data-i18n="addressLookupHelp">For best results, select a verified address from the suggestions. Manual coordinates override address lookup.</small>
             <div id="addressProviderNotice" class="address-provider-notice hidden" data-i18n="mapboxUnavailableNotice">Verified address search is not configured. Suggestions may be approximate; enter exact coordinates for property-level SunCalc and shade planning.</div>
             <div class="address-lookup">
-              <input type="text" id="address" placeholder="123 Main St, City, State ZIP" data-i18n-placeholder="addressPlaceholder" required>
+              <input type="text" id="address" placeholder="123 Main St, City, State ZIP" data-i18n-placeholder="addressPlaceholder" autocomplete="off" autocapitalize="off" spellcheck="false" required>
               <div id="addressSuggestions" class="address-suggestions hidden"></div>
             </div>
             <small data-i18n="addressHelp">Used to determine hardiness zone, climate, and frost dates</small>
@@ -73,25 +73,25 @@
             <label for="sunSign" data-i18n="sunSignLabel">Your Sun Sign *</label>
             <select id="sunSign" required>
               <option value="" data-i18n="sunSignPlaceholder">Select your sun sign...</option>
-              <option value="aries">♈ Aries (Mar 21 - Apr 19)</option>
-              <option value="taurus">♉ Taurus (Apr 20 - May 20)</option>
-              <option value="gemini">♊ Gemini (May 21 - Jun 20)</option>
-              <option value="cancer">♋ Cancer (Jun 21 - Jul 22)</option>
-              <option value="leo">♌ Leo (Jul 23 - Aug 22)</option>
-              <option value="virgo">♍ Virgo (Aug 23 - Sep 22)</option>
-              <option value="libra">♎ Libra (Sep 23 - Oct 22)</option>
-              <option value="scorpio">♏ Scorpio (Oct 23 - Nov 21)</option>
-              <option value="sagittarius">♐ Sagittarius (Nov 22 - Dec 21)</option>
-              <option value="capricorn">♑ Capricorn (Dec 22 - Jan 19)</option>
-              <option value="aquarius">♒ Aquarius (Jan 20 - Feb 18)</option>
-              <option value="pisces">♓ Pisces (Feb 19 - Mar 20)</option>
+              <option value="aries" class="zodiac-fire">♈︎ Aries (Mar 21 - Apr 19)</option>
+              <option value="taurus" class="zodiac-earth">♉︎ Taurus (Apr 20 - May 20)</option>
+              <option value="gemini" class="zodiac-air">♊︎ Gemini (May 21 - Jun 20)</option>
+              <option value="cancer" class="zodiac-water">♋︎ Cancer (Jun 21 - Jul 22)</option>
+              <option value="leo" class="zodiac-fire">♌︎ Leo (Jul 23 - Aug 22)</option>
+              <option value="virgo" class="zodiac-earth">♍︎ Virgo (Aug 23 - Sep 22)</option>
+              <option value="libra" class="zodiac-air">♎︎ Libra (Sep 23 - Oct 22)</option>
+              <option value="scorpio" class="zodiac-water">♏︎ Scorpio (Oct 23 - Nov 21)</option>
+              <option value="sagittarius" class="zodiac-fire">♐︎ Sagittarius (Nov 22 - Dec 21)</option>
+              <option value="capricorn" class="zodiac-earth">♑︎ Capricorn (Dec 22 - Jan 19)</option>
+              <option value="aquarius" class="zodiac-air">♒︎ Aquarius (Jan 20 - Feb 18)</option>
+              <option value="pisces" class="zodiac-water">♓︎ Pisces (Feb 19 - Mar 20)</option>
             </select>
-            <small data-i18n="sunSignHelp">Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes</small>
+            <small data-i18n="sunSignHelp">Uses your sun sign and neighboring signs as tissue-salt mineral themes</small>
           </div>
 
           <div class="form-group family-section">
             <label><strong data-i18n="familyMembersLabel">Family Members (Optional)</strong></label>
-            <p class="family-description" data-i18n="familyMembersHelp">Add sun signs for family members to combine symbolic mineral / cell-salt themes</p>
+            <p class="family-description" data-i18n="familyMembersHelp">Add sun signs for family members to combine tissue-salt mineral themes</p>
             <div id="familyMembers"></div>
             <button type="button" class="btn btn-secondary" onclick="addFamilyMember()" data-i18n="addFamilyMember">+ Add Family Member</button>
           </div>
@@ -116,7 +116,7 @@
           <h3 data-i18n="desiredPlantsSectionTitle">Desired Plants</h3>
           <div class="form-group">
             <label for="userDesiredPlants" data-i18n="desiredPlants">Desired Canopy Trees / Plants (optional)</label>
-            <input type="text" id="userDesiredPlants" placeholder="e.g., Apple, Peach, Pawpaw" data-i18n-placeholder="desiredPlantsPlaceholder">
+            <input type="text" id="userDesiredPlants" placeholder="e.g., Apple, Peach, Pawpaw" data-i18n-placeholder="desiredPlantsPlaceholder" autocomplete="off" autocapitalize="off" spellcheck="false">
             <small data-i18n="desiredPlantsHelp">Enter one or more desired canopy plants, separated by commas. Example: apple, peach, pear. Leave blank for suggested anchors.</small>
           </div>
         </div>
@@ -142,13 +142,9 @@
       <!-- Results -->
       <section class="results-section hidden" id="results">
         <div class="results-header">
-          <div class="results-title-group">
-            <h2 data-i18n="resultsTitle">Your Permaculture Plan</h2>
-            <div class="results-title-pills">
-              <div id="saveStateIndicator" class="save-state-indicator hidden"></div>
-              <button id="saveAsNewBtn" class="save-state-indicator save-as-new-pill" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
-            </div>
-          </div>
+          <h2 class="results-title-image-heading">
+            <img src="/your%20permaculture%20plan.png" alt="Your Permaculture Plan">
+          </h2>
           <div class="results-header-actions">
             <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled data-i18n="saveChanges">Save Changes</button>
             <button id="openPlantingScaleBtn" class="planting-timeline-image-btn" type="button" onclick="openPlantingScale()" aria-label="Open Planting Timeline" title="Open Planting Timeline">
@@ -157,11 +153,11 @@
             <button id="downloadPdfTopBtn" class="pdf-download-image-btn" type="button" onclick="downloadPlan()" aria-label="Download Complete PDF Plan" title="Download Complete PDF Plan">
               <img src="/PDF%20dark.png" alt="Download Complete PDF Plan">
             </button>
+            <div class="results-title-pills">
+              <div id="saveStateIndicator" class="save-state-indicator hidden"></div>
+              <button id="saveAsNewBtn" class="save-state-indicator save-as-new-pill" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
+            </div>
           </div>
-        </div>
-        <div class="prototype-feedback-card">
-          <strong data-i18n="testingPrompt">Testing this?</strong>
-          <span data-i18n="testingText">Note confusing recommendations, missing plants, bad zone matches, or features you expected. Early feedback will guide the next registry and editing passes.</span>
         </div>
 
         <div class="result-card">
@@ -171,18 +167,23 @@
         </div>
 
         <div class="result-card">
-          <h3 data-i18n="sunAnalysisTitle">☀️ Sun Analysis for Plants</h3>
+          <div class="sun-analysis-heading-row">
+            <h3 data-i18n="sunAnalysisTitle">☀️ Sun Analysis for Plants</h3>
+            <div id="sunCalcAction" class="sun-analysis-actions"></div>
+          </div>
           <div id="plantSunAnalysis"></div>
         </div>
 
         <div class="result-card">
-          <h3 data-i18n="cellSaltTitle">🧪 Symbolic Cell Salt / Mineral Themes</h3>
+          <h3 class="cell-salt-heading">
+            <img class="cell-salt-heading-icon" src="/Cell%20Salts%20dark.png" alt="" aria-hidden="true">
+            <span data-i18n="cellSaltTitle">Carey/Schuessler Tissue-Salt Mineral Themes</span>
+          </h3>
           <div class="educational-note">
             <strong data-i18n="howToRead">How to read this:</strong>
-            <span data-i18n="cellSaltDisclaimer">This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice.</span>
+            <span data-i18n="cellSaltDisclaimer">This prototype uses the Carey/Schuessler tissue-salt correspondence framework as one layer of the planting design process. The twelve tissue salts are inorganic mineral salts traditionally associated with cellular structure, fluid balance, nerve function, tissue repair, elimination, oxygenation, and other body processes. Schuessler focused on them as essential mineral compounds in cellular function; Carey later extended the system into zodiacal correspondences. In this app, those correspondences are used as a mineral-pattern language for food forest design. Your sun sign and neighboring signs select tissue-salt mineral themes, which are compared with plant registry tags, guild layers, and ecological functions. Climate and site reality still come first. This is planting-design context only, not medical advice, diagnosis, treatment, supplement guidance, or dosage instruction.</span>
           </div>
           <div id="cellSalts"></div>
-          <p class="note" data-i18n="cellSaltNote">These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.</p>
         </div>
 
         <div class="result-card" id="aiGuildsCard" style="display:none">
@@ -251,7 +252,7 @@
 
     <footer>
       <p><span id="appVersionLabel" class="app-version-label">Prototype v0.1</span></p>
-      <p data-i18n="footerText">Carey / Schüssler-inspired symbolic cell-salt themes for planting design</p>
+      <p data-i18n="footerText">Carey/Schuessler tissue-salt mineral themes for planting design</p>
     </footer>
   </div>
 
