@@ -386,7 +386,7 @@ tr {
 .guild-illustration {
   display: block;
   width: 100%;
-  max-height: 7.15in;
+  max-height: 5.35in;
   object-fit: contain;
   border: 1px solid #d6ddcf;
   border-radius: 5px;
@@ -400,6 +400,26 @@ tr {
   font-size: 10px;
   font-weight: 700;
   text-align: center;
+}
+
+.guild-principles-callout {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #cfd8cb;
+  border-left: 4px solid #5e9b6c;
+  border-radius: 8px;
+  background: #f4faf1;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.guild-principles-callout h3 {
+  margin-top: 0;
+  color: #23422c;
+}
+
+.guild-principles-callout p:last-child {
+  margin-bottom: 0;
 }
 
 .guild-section {
@@ -542,6 +562,20 @@ tr {
 
 .suncalc-callout h3 {
   margin-top: 0;
+}
+
+.tissue-salt-intro {
+  border-left: 4px solid #5e9b6c;
+  background: #f4faf1;
+}
+
+.tissue-salt-intro h3 {
+  margin-top: 0;
+  color: #23422c;
+}
+
+.tissue-salt-intro p:last-child {
+  margin-bottom: 0;
 }
 
 .pdf-link-button {

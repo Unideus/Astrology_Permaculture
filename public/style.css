@@ -849,6 +849,10 @@ select:-webkit-autofill:focus {
   max-width: 320px;
 }
 
+.results-header-actions .planting-timeline-image-btn {
+  margin-left: auto;
+}
+
 .results-header-actions .pdf-download-image-btn {
   flex-basis: 245px;
   max-width: 340px;
@@ -945,6 +949,10 @@ select:-webkit-autofill:focus {
   padding: 10px 12px;
   font-size: 0.95rem;
   white-space: nowrap;
+}
+
+.results-section > .btn-group .footer-planting-timeline-btn {
+  margin-left: auto;
 }
 
 .save-state-indicator {

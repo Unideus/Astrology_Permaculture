@@ -147,16 +147,16 @@
           </h2>
           <div class="results-header-actions">
             <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled data-i18n="saveChanges">Save Changes</button>
+            <div class="results-title-pills">
+              <div id="saveStateIndicator" class="save-state-indicator hidden"></div>
+              <button id="saveAsNewBtn" class="save-state-indicator save-as-new-pill" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
+            </div>
             <button id="openPlantingScaleBtn" class="planting-timeline-image-btn" type="button" onclick="openPlantingScale()" aria-label="Open Planting Timeline" title="Open Planting Timeline">
               <img src="/Open%20in%20Timeline%20button.png" alt="Open Planting Timeline">
             </button>
             <button id="downloadPdfTopBtn" class="pdf-download-image-btn" type="button" onclick="downloadPlan()" aria-label="Download Complete PDF Plan" title="Download Complete PDF Plan">
               <img src="/PDF%20dark.png" alt="Download Complete PDF Plan">
             </button>
-            <div class="results-title-pills">
-              <div id="saveStateIndicator" class="save-state-indicator hidden"></div>
-              <button id="saveAsNewBtn" class="save-state-indicator save-as-new-pill" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
-            </div>
           </div>
         </div>
 
@@ -239,11 +239,11 @@
           <button class="btn" onclick="startOver()" data-i18n="startOver">Start Over</button>
           <button id="footerSaveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled data-i18n="saveChanges">Save Changes</button>
           <button id="footerSaveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
-          <button id="downloadPdfBottomBtn" class="pdf-download-image-btn footer-pdf-download-btn" type="button" onclick="downloadPlan()" aria-label="Download Complete PDF Plan" title="Download Complete PDF Plan">
-            <img src="/PDF%20dark.png" alt="Download Complete PDF Plan">
-          </button>
           <button id="footerOpenPlantingScaleBtn" class="planting-timeline-image-btn footer-planting-timeline-btn" type="button" onclick="openPlantingScale()" aria-label="Open Planting Timeline" title="Open Planting Timeline">
             <img src="/Open%20in%20Timeline%20button.png" alt="Open Planting Timeline">
+          </button>
+          <button id="downloadPdfBottomBtn" class="pdf-download-image-btn footer-pdf-download-btn" type="button" onclick="downloadPlan()" aria-label="Download Complete PDF Plan" title="Download Complete PDF Plan">
+            <img src="/PDF%20dark.png" alt="Download Complete PDF Plan">
           </button>
         </div>
         <p class="coming-soon-note" data-i18n="pdfExportNote">Generates a printable Complete Food Forest Plan PDF from the current plan.</p>

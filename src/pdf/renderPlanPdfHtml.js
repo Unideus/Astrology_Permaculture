@@ -280,7 +280,12 @@ function formatCoordinateSource(locationData = {}) {
 }
 
 const shortMedicalDisclaimer = 'Tissue-salt correspondences are used here for planting-design context only, not as medical advice or health guidance.';
-const tissueSaltDisclaimer = 'This plan uses Carey/Schuessler tissue-salt correspondences for planting-design context only. It does not provide medical advice, diagnosis, treatment guidance, supplement advice, dosage recommendations, or instructions for using tissue salts for health purposes.';
+const tissueSaltIntro = [
+  'This prototype uses the Carey/Schuessler tissue-salt correspondence framework as one layer of the planting design process.',
+  'The twelve tissue salts are inorganic mineral salts traditionally associated with cellular structure, fluid balance, nerve function, tissue repair, elimination, oxygenation, and other body processes. Schuessler focused on them as essential mineral compounds in cellular function; Carey later extended the system into zodiacal correspondences.',
+  'In this app, those correspondences are used as a mineral-pattern language for food forest design. Your sun sign and neighboring signs select tissue-salt mineral themes, which are compared with plant registry tags, guild layers, and ecological functions.',
+  'Climate and site reality still come first. This is planting-design context only, not medical advice, diagnosis, treatment, supplement guidance, or dosage instruction.'
+];
 
 function renderVineDivider() {
   return `
@@ -346,8 +351,8 @@ function renderPlanSummary(plan, propertyMap = {}) {
         </div>
       </div>
       <h3>Design Intent</h3>
-      <p>This Complete Food Forest Plan organizes the generated site profile, tissue-salt mineral themes, climate-fit guilds, implementation phases, moon planting guidance, and printable field worksheets into one working document.</p>
-      <p>This plan uses a Carey/Schuessler-inspired tissue-salt correspondence framework as one layer of the planting design process.</p>
+      <p>This Complete Food Forest Plan organizes the generated site profile, Carey/Schuessler tissue-salt mineral themes, climate-fit guilds, implementation phases, moon planting guidance, and printable field worksheets into one working document.</p>
+      <p>The tissue-salt layer uses the Carey/Schuessler correspondence framework as mineral-pattern context for food forest design.</p>
       <p class="disclaimer">${shortMedicalDisclaimer}</p>
       <h3>Property Map</h3>
       ${renderPropertyMapCard(plan, propertyMap, 'compact')}
@@ -429,13 +434,13 @@ function renderSunAnalysis(plan) {
   if (sunCalcUrl && trustedLocation) {
     sunCalcContent = `
       <p>Use SunCalc to inspect sunrise, sunset, solar noon, seasonal shadows, and sun angle for this property.</p>
-      <p><a class="pdf-link-button" href="${escapeHtml(sunCalcUrl)}">View Sun Path for This Property</a></p>
+      <p><a class="pdf-link-button" href="${escapeHtml(sunCalcUrl)}">Open in SunCalc</a></p>
       <p class="small raw-url">${escapeHtml(sunCalcUrl)}</p>
     `;
   } else if (sunCalcUrl) {
     sunCalcContent = `
       <p class="warning">SunCalc link uses approximate coordinates. Confirm the property location before using this for shade planning.</p>
-      <p><a class="pdf-link-button" href="${escapeHtml(sunCalcUrl)}">View Approximate Sun Path</a></p>
+      <p><a class="pdf-link-button" href="${escapeHtml(sunCalcUrl)}">Open in SunCalc</a></p>
       <p class="small raw-url">${escapeHtml(sunCalcUrl)}</p>
     `;
   }
@@ -468,11 +473,13 @@ function renderCellSalts(plan) {
   return `
     <section class="page">
       ${sectionTitle('Carey/Schuessler Tissue-Salt Mineral Themes')}
-      <p>The twelve tissue salts are inorganic mineral salts traditionally associated with zodiacal, constitutional, and functional correspondences. In this PDF, those correspondences are used to organize planting themes, guild roles, mineral-cycling plants, accumulator species, support plants, and ecological design emphasis.</p>
+      <div class="callout tissue-salt-intro">
+        <h3>How to read this:</h3>
+        ${tissueSaltIntro.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('')}
+      </div>
       <h3>How These Themes Influence the Guild</h3>
       <p>A tissue-salt correspondence may influence plant selection when a plant is tagged with a matching mineral theme, supports a needed food forest layer, or serves a related ecological role such as mineral cycling, living mulch, biomass production, moisture support, pollinator forage, or anchor-tree support.</p>
       <p>A tissue-salt match does not automatically override climate fit. The strongest recommendations combine hardiness zone, Köppen climate, guild layer, ecological role, and tissue-salt correspondence.</p>
-      <p class="disclaimer">${tissueSaltDisclaimer}</p>
       ${salts.length ? table(['Sign', 'Tissue salt / mineral salt', 'Planting-design correspondence'], salts.map(salt => [
         escapeHtml(formatZodiacSign(salt.sign) || ''),
         escapeHtml(salt.cell_salt || ''),
@@ -505,6 +512,11 @@ function renderGuilds(plan) {
           <figcaption>Visual Example: 7-Layer Apple Guild</figcaption>
         </figure>
       ` : ''}
+      <div class="guild-principles-callout">
+        <h3>What Is a Guild?</h3>
+        <p>A guild is a deliberately arranged plant community built around an anchor plant, usually a canopy tree. Instead of treating each plant as a separate crop, a guild combines layers that feed, shade, protect, pollinate, mulch, mine minerals, hold moisture, fix nitrogen, disrupt pests, and create habitat.</p>
+        <p>The permaculture value is relationship: every element should support more than one function, and every important function should be supported by more than one element. A strong guild turns a garden from a collection of plants into a small, resilient ecosystem that stacks yields, builds soil, cycles nutrients, reduces outside inputs, and becomes easier to manage as it matures.</p>
+      </div>
       ${guilds.length ? guilds.map((guild, index) => `
         <div class="guild-card guild-section">
           <h3>${escapeHtml(cleanDisplayName(guild.name || `Guild ${index + 1}`))}</h3>
