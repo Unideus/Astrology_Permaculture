@@ -1,12 +1,13 @@
 // Permaculture Design App Server
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const fsSync = require('fs');
 const fs = require('fs').promises;
 const PermacultureApp = require('./app.js');
 const { KoppenLookup } = require('koppen-climate-lookup');
-
-loadLocalEnv();
+const { generatePlanPdf } = require('./src/pdf/planPdfService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ const OLLAMA_URL = process.env.OLLAMA_URL || 'http://127.0.0.1:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'deepseek-v4-flash';
 const OLLAMA_TIMEOUT_MS = parseInt(process.env.OLLAMA_TIMEOUT_MS || '120000', 10);
 const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY || '';
+const MAPBOX_ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN || '';
 
 if (ENABLE_AI_ENHANCEMENT) {
   console.log('AI enhancement enabled:', {
@@ -61,7 +63,7 @@ const TENDER_PERENNIALS = [
 ];
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static('public'));
 
 // Initialize app
@@ -76,6 +78,253 @@ const SITES_DIR = path.join(__dirname, 'sites');
 // =========================================================
 // TIER 1: GEOCODING (OpenStreetMap Nominatim)
 // =========================================================
+function parseCoordinate(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function hasManualCoordinates(data = {}) {
+  return parseCoordinate(data.latitude) !== null && parseCoordinate(data.longitude) !== null;
+}
+
+function isLikelyStreetAddress(address = '') {
+  const value = String(address).trim();
+  return /^\d+\s+/.test(value) || /\b(street|st|avenue|ave|road|rd|drive|dr|lane|ln|terrace|ter|trail|trl|court|ct|circle|cir|boulevard|blvd|place|pl|way|highway|hwy)\b\.?/i.test(value);
+}
+
+function classifyGeocodeResult(result = {}, requestedAddress = '', options = {}) {
+  const resultClass = String(result.class || '').toLowerCase();
+  const resultType = String(result.type || result.addresstype || '').toLowerCase();
+  const address = result.address || {};
+  const addressType = String(result.addresstype || '').toLowerCase();
+  const streetRequested = isLikelyStreetAddress(requestedAddress);
+  const broadTypes = new Set([
+    'city', 'town', 'village', 'hamlet', 'municipality', 'county', 'state',
+    'administrative', 'boundary', 'locality', 'suburb', 'neighbourhood',
+    'postcode', 'region'
+  ]);
+  const exactTypes = new Set([
+    'house', 'building', 'apartments', 'detached'
+  ]);
+  const hasHouseAndRoad = Boolean(address.house_number && (address.road || address.pedestrian || address.footway));
+  const isBroadResult = resultClass === 'boundary' ||
+    broadTypes.has(resultType) ||
+    broadTypes.has(addressType) ||
+    (resultClass === 'place' && broadTypes.has(resultType));
+
+  let geocodeConfidence = 'unknown';
+  let isApproximate = true;
+  let geocodeWarning = 'Coordinate confidence is unknown. Confirm coordinates before using sun/shadow planning.';
+
+  if (options.cityFallback) {
+    geocodeConfidence = 'approximate';
+    geocodeWarning = 'Exact property address was not resolved. Coordinates are approximate.';
+  } else if (hasHouseAndRoad || exactTypes.has(resultType)) {
+    geocodeConfidence = streetRequested ? 'exact' : 'approximate';
+    isApproximate = !streetRequested;
+    geocodeWarning = isApproximate
+      ? 'Coordinates resolve to a specific place, but no street address was entered. Confirm coordinates before property-level planning.'
+      : '';
+  } else if (isBroadResult) {
+    geocodeConfidence = 'approximate';
+    geocodeWarning = streetRequested
+      ? 'Exact property address was not resolved. Coordinates are approximate.'
+      : 'Coordinates resolve to a broad locality. Confirm coordinates before using sun/shadow planning.';
+  } else {
+    geocodeConfidence = streetRequested ? 'approximate' : 'unknown';
+    geocodeWarning = streetRequested
+      ? 'Street address did not resolve to a confirmed property-level result. Confirm coordinates before using sun/shadow planning.'
+      : 'Confirm coordinates before using sun/shadow planning.';
+  }
+
+  return {
+    isApproximate,
+    geocodeConfidence,
+    geocodeWarning
+  };
+}
+
+function buildLocationDataFromGeocode(result, requestedAddress, options = {}) {
+  const confidence = classifyGeocodeResult(result, requestedAddress, options);
+  return {
+    latitude: parseFloat(result.lat),
+    longitude: parseFloat(result.lon),
+    formattedAddress: result.display_name,
+    placeId: result.place_id,
+    osmType: result.osm_type,
+    osmId: result.osm_id,
+    resultClass: result.class,
+    resultType: result.type || result.addresstype,
+    addressType: result.addresstype,
+    importance: result.importance,
+    boundingBox: result.boundingbox,
+    addressComponents: result.address || null,
+    queryUsed: options.queryUsed,
+    isApproximate: confidence.isApproximate,
+    geocodeConfidence: confidence.geocodeConfidence,
+    geocodeWarning: confidence.geocodeWarning,
+    userConfirmedCoordinates: false
+  };
+}
+
+function isPropertyLevelMapboxResult(address = {}) {
+  const provider = String(address.provider || '').toLowerCase();
+  const featureType = String(address.featureType || '').toLowerCase();
+  const accuracy = String(address.accuracy || '').toLowerCase();
+  const confidence = String(address.matchCode?.confidence || '').toLowerCase();
+  const addressLike = featureType === 'address';
+  const propertyAccuracy = ['rooftop', 'parcel', 'point'].includes(accuracy);
+  const confidenceOk = !confidence || ['exact', 'high'].includes(confidence);
+
+  return provider === 'mapbox' && addressLike && propertyAccuracy && confidenceOk;
+}
+
+function buildLocationDataFromSelectedAddress(address = {}) {
+  const latitude = parseCoordinate(address.latitude);
+  const longitude = parseCoordinate(address.longitude);
+  if (latitude === null || longitude === null) return null;
+
+  const provider = address.provider || 'unknown';
+  const propertyLevel = isPropertyLevelMapboxResult(address);
+  const isManual = provider === 'manual';
+  const isApproximate = isManual ? false : !propertyLevel;
+  const geocodeConfidence = isManual
+    ? 'user-confirmed'
+    : (propertyLevel ? 'verified' : 'approximate');
+
+  return {
+    latitude,
+    longitude,
+    formattedAddress: address.formattedAddress || address.placeName || address.label || address.address || '',
+    provider,
+    providerPlaceId: address.providerPlaceId || address.mapboxId || address.placeId || address.id || null,
+    mapboxId: address.mapboxId || null,
+    featureType: address.featureType || null,
+    accuracy: address.accuracy || null,
+    matchCode: address.matchCode || null,
+    resultType: address.resultType || address.featureType || null,
+    raw: address.raw || null,
+    userSelectedAddress: provider !== 'manual',
+    userConfirmedCoordinates: isManual,
+    isApproximate,
+    geocodeConfidence,
+    geocodeWarning: isApproximate
+      ? 'Selected address is not verified to a property-level point. Confirm exact coordinates before using SunCalc or shade planning.'
+      : ''
+  };
+}
+
+function normalizeMapboxSuggestion(feature = {}) {
+  const props = feature.properties || {};
+  const coordinates = props.coordinates || {};
+  const geometryCoords = Array.isArray(feature.geometry?.coordinates) ? feature.geometry.coordinates : [];
+  const longitude = parseCoordinate(coordinates.longitude ?? geometryCoords[0]);
+  const latitude = parseCoordinate(coordinates.latitude ?? geometryCoords[1]);
+  const mapboxId = props.mapbox_id || feature.id || '';
+  const label = [props.name, props.place_formatted].filter(Boolean).join(', ') ||
+    props.full_address ||
+    props.address ||
+    mapboxId;
+
+  return {
+    id: mapboxId,
+    label,
+    address: props.full_address || props.name || label,
+    placeName: label,
+    formattedAddress: label,
+    provider: 'mapbox',
+    providerPlaceId: mapboxId,
+    mapboxId,
+    featureType: props.feature_type || '',
+    accuracy: coordinates.accuracy || '',
+    matchCode: props.match_code || null,
+    latitude,
+    longitude,
+    raw: feature
+  };
+}
+
+function normalizeNominatimSuggestion(result = {}) {
+  const locationData = buildLocationDataFromGeocode(result, result.display_name || '', {
+    queryUsed: 'nominatim-suggest'
+  });
+
+  return {
+    id: String(result.place_id || `${result.lat},${result.lon}`),
+    label: result.display_name || '',
+    address: result.display_name || '',
+    placeName: result.display_name || '',
+    formattedAddress: result.display_name || '',
+    provider: 'nominatim',
+    providerPlaceId: result.place_id || null,
+    featureType: result.class || result.type || result.addresstype || '',
+    accuracy: 'approximate',
+    matchCode: null,
+    latitude: locationData.latitude,
+    longitude: locationData.longitude,
+    isApproximate: true,
+    geocodeConfidence: 'approximate',
+    raw: result
+  };
+}
+
+app.get('/api/address-config', (req, res) => {
+  res.json({
+    mapboxAvailable: Boolean(process.env.MAPBOX_ACCESS_TOKEN)
+  });
+});
+
+app.get('/api/address-suggest', async (req, res) => {
+  try {
+    const q = String(req.query.q || '').trim();
+    if (!q) return res.status(400).json({ error: 'q required' });
+    if (q.length < 3) return res.json([]);
+
+    if (MAPBOX_ACCESS_TOKEN) {
+      try {
+        const params = new URLSearchParams({
+          q,
+          access_token: MAPBOX_ACCESS_TOKEN,
+          country: 'us',
+          types: 'address,secondary_address',
+          autocomplete: 'true',
+          limit: '5'
+        });
+        const mapboxUrl = `https://api.mapbox.com/search/geocode/v6/forward?${params.toString()}`;
+        const response = await fetch(mapboxUrl, {
+          headers: { Accept: 'application/json' }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          return res.json((data.features || [])
+            .map(normalizeMapboxSuggestion)
+            .filter(suggestion => suggestion.id && suggestion.latitude !== null && suggestion.longitude !== null));
+        }
+
+        console.warn('Mapbox suggest failed:', response.status);
+      } catch (error) {
+        console.warn('Mapbox suggest unavailable:', error.message);
+      }
+    }
+
+    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(q)}&countrycodes=us&limit=5`;
+    const response = await fetch(nominatimUrl, {
+      headers: {
+        'User-Agent': 'Zodi-Yuga-Permaculture/1.0',
+        Accept: 'application/json'
+      }
+    });
+    if (!response.ok) return res.json([]);
+    const data = await response.json();
+    res.json((data || []).map(normalizeNominatimSuggestion));
+  } catch (error) {
+    console.error('Address suggest error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/geocode', async (req, res) => {
   try {
     const { address } = req.body;
@@ -131,7 +380,7 @@ app.post('/api/geocode', async (req, res) => {
     };
 
     if (city) {
-      const params = new URLSearchParams({ format: 'json', limit: '1', countrycodes: 'us' });
+      const params = new URLSearchParams({ format: 'json', addressdetails: '1', limit: '1', countrycodes: 'us' });
       if (street)  params.set('street',  street);
       params.set('city',   city);
       if (stateName) params.set('state', stateName);
@@ -143,14 +392,9 @@ app.post('/api/geocode', async (req, res) => {
           const data = await r.json();
           if (data && data.length > 0) {
             const result = data[0];
-            return res.json({
-              latitude: parseFloat(result.lat),
-              longitude: parseFloat(result.lon),
-              formattedAddress: result.display_name,
-              placeId: result.place_id,
-              boundingBox: result.boundingbox,
+            return res.json(buildLocationDataFromGeocode(result, baseAddress, {
               queryUsed: `structured:${params.toString().slice(0,60)}`
-            });
+            }));
           } else {
           }
         }
@@ -160,21 +404,16 @@ app.post('/api/geocode', async (req, res) => {
     }
 
     // ── Strategy 2: Free-text with countrycodes=us lock ─────────────────
-    const freeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(baseAddress)}&countrycodes=us&limit=1`;
+    const freeUrl = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(baseAddress)}&countrycodes=us&limit=1`;
     try {
       const r = await fetch(freeUrl, { headers });
       if (r.ok) {
         const data = await r.json();
         if (data && data.length > 0) {
           const result = data[0];
-          return res.json({
-            latitude: parseFloat(result.lat),
-            longitude: parseFloat(result.lon),
-            formattedAddress: result.display_name,
-            placeId: result.place_id,
-            boundingBox: result.boundingbox,
+          return res.json(buildLocationDataFromGeocode(result, baseAddress, {
             queryUsed: 'free-text+countrycodes'
-          });
+          }));
         } else {
         }
       } else {
@@ -206,6 +445,10 @@ app.post('/api/generate-plan', async (req, res) => {
     // Get geocoded location — try full address first, then strip to City, State on failure
     let locationData = null;
     const fullAddress = userData.address;
+    const manualLatitude = parseCoordinate(userData.latitude);
+    const manualLongitude = parseCoordinate(userData.longitude);
+    const selectedAddress = userData.selectedAddress || userData.verifiedAddress || null;
+    const allowFallbackGeocode = userData.allowFallbackGeocode === true;
     
     const tryGeocode = async (address) => {
       const geoResponse = await fetch(`http://localhost:${PORT}/api/geocode`, {
@@ -217,10 +460,43 @@ app.post('/api/generate-plan', async (req, res) => {
       return null;
     };
 
-    locationData = await tryGeocode(fullAddress);
+    if ((manualLatitude === null) !== (manualLongitude === null)) {
+      return res.status(400).json({ error: 'Enter both latitude and longitude, or leave both blank.' });
+    }
+
+    if (manualLatitude !== null && (manualLatitude < -90 || manualLatitude > 90)) {
+      return res.status(400).json({ error: 'Latitude must be between -90 and 90.' });
+    }
+
+    if (manualLongitude !== null && (manualLongitude < -180 || manualLongitude > 180)) {
+      return res.status(400).json({ error: 'Longitude must be between -180 and 180.' });
+    }
+
+    if (hasManualCoordinates(userData)) {
+      locationData = {
+        latitude: manualLatitude,
+        longitude: manualLongitude,
+        formattedAddress: userData.address,
+        provider: 'manual',
+        isApproximate: false,
+        geocodeConfidence: 'user-confirmed',
+        geocodeWarning: '',
+        userConfirmedCoordinates: true,
+        userSelectedAddress: false,
+        queryUsed: 'manual-coordinate-override'
+      };
+    } else if (selectedAddress && parseCoordinate(selectedAddress.latitude) !== null && parseCoordinate(selectedAddress.longitude) !== null) {
+      locationData = buildLocationDataFromSelectedAddress(selectedAddress);
+    } else if (selectedAddress) {
+      return res.status(400).json({ error: 'Selected address is missing coordinates. Please select another verified address or enter manual coordinates.' });
+    } else if (allowFallbackGeocode) {
+      locationData = await tryGeocode(fullAddress);
+    } else {
+      return res.status(400).json({ error: 'Please select a verified address from the suggestions for accurate SunCalc and shade planning.' });
+    }
 
     // Fallback: if full address fails, strip to City, State and retry
-    if (!locationData) {
+    if (!locationData && allowFallbackGeocode) {
       console.warn(`Full address geocode failed (${fullAddress}), trying City, State fallback...`);
       // Extract City, State from the address string
       const commaParts = fullAddress.split(',').map(p => p.trim()).filter(Boolean);
@@ -244,6 +520,11 @@ app.post('/api/generate-plan', async (req, res) => {
       if (cityStateFallback && cityStateFallback !== fullAddress) {
         locationData = await tryGeocode(cityStateFallback);
         if (locationData) {
+          locationData.isApproximate = true;
+          locationData.geocodeConfidence = 'approximate';
+          locationData.geocodeWarning = 'Exact property address was not resolved. Coordinates are approximate.';
+          locationData.userConfirmedCoordinates = false;
+          locationData.queryUsed = `${locationData.queryUsed || 'geocode'}; city-state-fallback:${cityStateFallback}`;
           console.warn(`City/State fallback succeeded: ${cityStateFallback}`);
         }
       }
@@ -638,7 +919,11 @@ app.post('/api/generate-plan', async (req, res) => {
         latitude: null,
         longitude: null,
         formattedAddress: userData.address,
-        error: 'Could not geocode address. Please try a different format (e.g., "City, State").'
+        isApproximate: true,
+        geocodeConfidence: 'unknown',
+        geocodeWarning: 'SunCalc link unavailable because coordinates are missing.',
+        userConfirmedCoordinates: false,
+        error: 'Could not geocode address. Please try a different format (e.g., "City, State") or enter exact latitude/longitude.'
       };
     }
 
@@ -1371,6 +1656,29 @@ app.delete('/api/sites/:siteId', async (req, res) => {
     }
     console.error('Delete site error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// =========================================================
+// COMPLETE FOOD FOREST PLAN PDF EXPORT
+// =========================================================
+app.post('/api/generated-plan/export/pdf', async (req, res) => {
+  try {
+    const { plan } = req.body || {};
+
+    if (!plan || typeof plan !== 'object') {
+      return res.status(400).json({ error: 'Generated plan required' });
+    }
+
+    const pdfBuffer = await generatePlanPdf(plan);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="zodi-yuga-food-forest-plan.pdf"');
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('PDF export error:', error);
+    res.status(500).json({ error: 'Failed to generate PDF plan' });
   }
 });
 

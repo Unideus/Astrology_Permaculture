@@ -36,9 +36,31 @@
 
         <div class="form-group">
           <label for="address" data-i18n="propertyAddress">Property Address *</label>
-          <input type="text" id="address" placeholder="123 Main St, City, State ZIP" data-i18n-placeholder="addressPlaceholder" required>
+          <small data-i18n="addressLookupHelp">For best results, select a verified address from the suggestions. Manual coordinates override address lookup.</small>
+          <div class="address-lookup">
+            <input type="text" id="address" placeholder="123 Main St, City, State ZIP" data-i18n-placeholder="addressPlaceholder" required>
+            <div id="addressSuggestions" class="address-suggestions hidden"></div>
+          </div>
           <small data-i18n="addressHelp">Used to determine hardiness zone, climate, and frost dates</small>
+          <div id="addressStatus" class="address-status unverified" data-i18n="unverifiedAddressState">Address not verified</div>
+          <div id="addressWarning" class="address-warning hidden"></div>
+          <div id="manualCoordinatePrompt" class="manual-coordinate-prompt hidden"></div>
         </div>
+
+        <details class="advanced-coordinates hidden" id="advancedCoordinates">
+          <summary data-i18n="manualCoordinatesLabel">Advanced: Enter coordinates manually</summary>
+          <div class="form-group">
+            <div class="form-row">
+              <div>
+                <input type="number" id="latitude" placeholder="Latitude" data-i18n-placeholder="latitudePlaceholder" step="any" min="-90" max="90">
+              </div>
+              <div>
+                <input type="number" id="longitude" placeholder="Longitude" data-i18n-placeholder="longitudePlaceholder" step="any" min="-180" max="180">
+              </div>
+            </div>
+            <small data-i18n="manualCoordinatesHelp">Optional but recommended when address lookup is approximate. Manual coordinates override geocoding and are used for climate, SunCalc, and PDF output.</small>
+          </div>
+        </details>
 
         <div class="form-group">
           <label for="sunSign" data-i18n="sunSignLabel">Your Sun Sign *</label>
@@ -111,6 +133,7 @@
           <button id="saveChangesBtn" class="btn btn-primary hidden" type="button" onclick="saveChanges()" disabled data-i18n="saveChanges">Save Changes</button>
           <button id="saveAsNewBtn" class="btn btn-secondary" type="button" onclick="saveAsNewSite()" data-i18n="saveAsNew">Save As New</button>
           <button id="openPlantingScaleBtn" class="btn btn-secondary" type="button" onclick="openPlantingScale()" data-i18n="openPlantingScale">Open Planting Timeline</button>
+          <button id="downloadPdfTopBtn" class="btn btn-secondary" type="button" onclick="downloadPlan()" data-i18n="downloadCompletePdf">Download Complete PDF Plan</button>
         </div>
         <div class="prototype-feedback-card">
           <strong data-i18n="testingPrompt">Testing this?</strong>
@@ -132,7 +155,7 @@
           <h3 data-i18n="cellSaltTitle">🧪 Symbolic Cell Salt / Mineral Themes</h3>
           <div class="educational-note">
             <strong data-i18n="howToRead">How to read this:</strong>
-            <span data-i18n="cellSaltDisclaimer">This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested.</span>
+            <span data-i18n="cellSaltDisclaimer">This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice.</span>
           </div>
           <div id="cellSalts"></div>
           <p class="note" data-i18n="cellSaltNote">These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.</p>
@@ -187,9 +210,9 @@
 
         <div class="btn-group">
           <button class="btn" onclick="startOver()" data-i18n="startOver">Start Over</button>
-          <button class="btn btn-primary" onclick="downloadPlan()" data-i18n="printPdf">Print / Save PDF</button>
+          <button id="downloadPdfBottomBtn" class="btn btn-primary" type="button" onclick="downloadPlan()" data-i18n="downloadCompletePdf">Download Complete PDF Plan</button>
         </div>
-        <p class="coming-soon-note" data-i18n="pdfComingSoon">Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”</p>
+        <p class="coming-soon-note" data-i18n="pdfExportNote">Generates a printable Complete Food Forest Plan PDF from the current plan.</p>
       </section>
     </main>
 

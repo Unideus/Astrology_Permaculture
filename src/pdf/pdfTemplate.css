@@ -1,0 +1,630 @@
+@page {
+  size: Letter;
+  margin: 0.55in 0.55in 0.72in;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #1f2a20;
+  background: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+h1,
+h2,
+h3 {
+  color: #23422c;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+}
+
+h1 {
+  margin: 0 0 10px;
+  font-size: 31px;
+  line-height: 1.05;
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+  border-bottom: 0;
+  font-size: 20px;
+}
+
+h3 {
+  margin: 16px 0 8px;
+  font-size: 14px;
+}
+
+p {
+  margin: 0 0 8px;
+}
+
+.botanical-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 15px;
+  color: #5e7d55;
+}
+
+.divider-line {
+  height: 1px;
+  flex: 1 1 auto;
+  background: linear-gradient(90deg, rgba(138, 111, 42, 0.72), rgba(138, 111, 42, 0.18));
+}
+
+.divider-line:first-child {
+  max-width: 1.05in;
+}
+
+.divider-line:last-child {
+  background: linear-gradient(90deg, rgba(138, 111, 42, 0.18), rgba(138, 111, 42, 0.72));
+}
+
+.divider-leaf {
+  width: 96px;
+  height: 22px;
+  flex: 0 0 auto;
+  color: #5e7d55;
+  opacity: 0.82;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 14px;
+}
+
+th,
+td {
+  border: 1px solid #cfd8cb;
+  padding: 6px 7px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #1f3524;
+  background: #edf3e9;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+ul {
+  margin: 6px 0 12px 18px;
+  padding: 0;
+}
+
+li {
+  margin: 0 0 4px;
+}
+
+.page {
+  position: relative;
+  break-after: page;
+}
+
+.page:last-child {
+  break-after: auto;
+}
+
+.cover {
+  position: relative;
+  display: flex;
+  min-height: 9.3in;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid #8a6f2a;
+  padding: 44px;
+  background: linear-gradient(180deg, #fbfcf7 0%, #eef5ec 100%);
+  overflow: hidden;
+}
+
+.cover > *,
+.ornamented > *,
+.botanical-watermark > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ornamented {
+  padding: 10px 12px 4px;
+  border: 1px solid rgba(138, 111, 42, 0.22);
+  border-radius: 7px;
+}
+
+.botanical-watermark {
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(251,252,247,0.28));
+}
+
+.corner-vine {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.corner-vine .vine-stem {
+  fill: none;
+  stroke: #8a6f2a;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.corner-vine .vine-secondary,
+.corner-vine .vine-tendril {
+  stroke: #5e7d55;
+  stroke-width: 1.15;
+}
+
+.corner-vine .vine-leaf {
+  fill: #4a6f43;
+}
+
+.corner-vine-top-right {
+  top: 0.14in;
+  right: 0.13in;
+  width: 1.42in;
+  height: 1.42in;
+  opacity: 0.3;
+  transform: scaleX(-1);
+}
+
+.corner-vine-bottom-left {
+  left: 0.16in;
+  bottom: 0.12in;
+  width: 1.36in;
+  height: 1.36in;
+  opacity: 0.18;
+  transform: rotate(180deg);
+}
+
+.corner-vine-cover-top-left {
+  top: 0.26in;
+  left: 0.28in;
+  width: 2.34in;
+  height: 2.34in;
+  opacity: 0.34;
+}
+
+.corner-vine-cover-bottom-right {
+  right: 0.28in;
+  bottom: 0.28in;
+  width: 2.38in;
+  height: 2.38in;
+  opacity: 0.32;
+  transform: rotate(180deg);
+}
+
+.brand {
+  color: #8a341f;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  max-width: 5.6in;
+  color: #465645;
+  font-size: 15px;
+}
+
+.cover-meta {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.meta-card,
+.callout,
+.plant-card,
+.guild-card,
+.worksheet-box {
+  border: 1px solid #cfd8cb;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fbfcf7;
+}
+
+.callout,
+.plant-card,
+.guild-card,
+.worksheet-box,
+tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.meta-label {
+  display: block;
+  color: #63715e;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.meta-value {
+  color: #1f2a20;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.property-map-page {
+  min-height: 9.25in;
+}
+
+.property-map-card {
+  overflow: hidden;
+  border: 1px solid #c9d5c3;
+  border-radius: 9px;
+  background: #fbfcf7;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.property-map-card-compact {
+  max-width: 5.25in;
+  margin: 0 auto;
+}
+
+.property-map-image,
+.property-map-placeholder {
+  display: block;
+  width: 100%;
+  height: 3.75in;
+  border-bottom: 1px solid #cfd8cb;
+}
+
+.property-map-card-compact .property-map-image,
+.property-map-card-compact .property-map-placeholder {
+  height: 3.05in;
+}
+
+.property-map-image {
+  object-fit: contain;
+  background: #edf3e9;
+}
+
+.property-map-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  color: #53604f;
+  background: linear-gradient(180deg, #f7faf4 0%, #eef5ec 100%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.property-map-details {
+  padding: 12px 14px 6px;
+  columns: 2;
+  column-gap: 24px;
+}
+
+.property-map-card-compact .property-map-details {
+  padding: 8px 12px 2px;
+  columns: 2;
+  column-gap: 18px;
+  font-size: 9.6px;
+}
+
+.property-map-details p {
+  margin-bottom: 6px;
+  break-inside: avoid;
+}
+
+.property-map-card-compact .property-map-details p {
+  margin-bottom: 3px;
+}
+
+.warning-text {
+  color: #8a341f;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.map-attribution {
+  margin: 0;
+  padding: 0 14px 10px;
+  color: #667064;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8px;
+}
+
+.property-map-card-compact .map-attribution {
+  padding: 0 12px 8px;
+  font-size: 7.5px;
+}
+
+.plant-grid,
+.guild-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.plant-card h3,
+.guild-card h3 {
+  margin-top: 0;
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.guild-illustration-figure {
+  margin: 8px 0 18px;
+  padding: 10px;
+  border: 1px solid #cfd8cb;
+  border-radius: 8px;
+  background: #fbfcf7;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.guild-illustration {
+  display: block;
+  width: 100%;
+  max-height: 7.15in;
+  object-fit: contain;
+  border: 1px solid #d6ddcf;
+  border-radius: 5px;
+  background: #ffffff;
+}
+
+.guild-illustration-figure figcaption {
+  margin-top: 7px;
+  color: #53604f;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.guild-section {
+  margin: 0 0 14px;
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+}
+
+.guild-section table {
+  margin-bottom: 0;
+}
+
+.roadmap-year {
+  margin: 12px 0 18px;
+  border: 1px solid #c9d5c3;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fbfcf7 0%, #f3f8ef 100%);
+  break-inside: avoid-page;
+  page-break-inside: avoid;
+  overflow: hidden;
+}
+
+.roadmap-year-header {
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid #d4ddcf;
+  background: linear-gradient(90deg, rgba(237, 243, 233, 0.96), rgba(247, 242, 223, 0.62));
+}
+
+.roadmap-year-header h3 {
+  margin: 0 0 4px;
+  color: #23422c;
+  font-size: 15px;
+}
+
+.roadmap-year-header p {
+  margin: 0;
+  color: #465645;
+  font-size: 10.4px;
+}
+
+.roadmap-table {
+  margin: 0;
+  font-size: 9.5px;
+}
+
+.roadmap-table th,
+.roadmap-table td {
+  padding: 5px 6px;
+}
+
+.roadmap-table th:first-child,
+.roadmap-table td:first-child {
+  width: 24px;
+  text-align: center;
+}
+
+.roadmap-table th:nth-child(2),
+.roadmap-table td:nth-child(2) {
+  width: 0.86in;
+  color: #4d624e;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8.8px;
+  font-weight: 700;
+}
+
+.roadmap-table th:nth-child(3),
+.roadmap-table td:nth-child(3) {
+  width: 1.02in;
+}
+
+.roadmap-table th:nth-child(4),
+.roadmap-table td:nth-child(4) {
+  width: 1.36in;
+  font-weight: 700;
+}
+
+.task-check {
+  color: #8a6f2a;
+  font-size: 11px;
+}
+
+.plants-table {
+  font-size: 9.4px;
+}
+
+.plants-table th,
+.plants-table td {
+  padding: 4px 5px;
+}
+
+.plants-table th:first-child,
+.plants-table td:first-child {
+  width: 20%;
+  font-weight: 700;
+}
+
+.plants-table th:nth-child(2),
+.plants-table td:nth-child(2) {
+  width: 15%;
+}
+
+.plants-table th:nth-child(3),
+.plants-table td:nth-child(3) {
+  width: 21%;
+}
+
+.plants-table th:nth-child(4),
+.plants-table td:nth-child(4) {
+  width: 20%;
+}
+
+.plants-table th:nth-child(5),
+.plants-table td:nth-child(5) {
+  width: 24%;
+}
+
+.tag {
+  display: inline-block;
+  margin: 0 4px 4px 0;
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: #29402e;
+  background: #e4eddf;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+}
+
+.warning {
+  border-color: #d6a25c;
+  background: #fff8ea;
+}
+
+.muted {
+  color: #667064;
+}
+
+.small {
+  font-size: 9px;
+}
+
+.suncalc-callout h3 {
+  margin-top: 0;
+}
+
+.pdf-link-button {
+  display: inline-block;
+  padding: 7px 12px;
+  border: 1px solid #8a6f2a;
+  border-radius: 999px;
+  color: #23422c;
+  background: #f7f2df;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.raw-url {
+  margin-top: 6px;
+  color: #53604f;
+  overflow-wrap: anywhere;
+}
+
+.disclaimer {
+  border-left: 4px solid #8a6f2a;
+  padding: 9px 10px;
+  background: #f7f2df;
+}
+
+.worksheet-lines {
+  width: 100%;
+  height: 150px;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 23px,
+    #d8ded4 24px
+  );
+}
+
+.worksheet-box {
+  position: relative;
+  margin-bottom: 12px;
+  border-color: #c9d5c3;
+  background: linear-gradient(180deg, rgba(251, 252, 247, 0.96), rgba(247, 250, 245, 0.96));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+}
+
+.worksheet-box h3 {
+  margin-top: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(138, 111, 42, 0.22);
+}
+
+.notes-page table {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(251, 252, 247, 0.95), rgba(255, 255, 255, 0.95));
+}
+
+.notes-page.botanical-watermark {
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(251,252,247,0.24));
+}
+
+.worksheet-table {
+  font-size: 9.5px;
+}
+
+.worksheet-table th,
+.worksheet-table td {
+  height: 28px;
+  padding: 4px 5px;
+}
+
+.worksheet-table.tall-rows td {
+  height: 34px;
+}
+
+.checkbox-list td:first-child {
+  width: 22px;
+  text-align: center;
+}
+
+.footer-note {
+  margin-top: 18px;
+  color: #667064;
+  font-size: 9px;
+}

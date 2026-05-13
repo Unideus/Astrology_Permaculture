@@ -7,6 +7,11 @@ let planSaveStatus = null;
 const dirtyGuildLayers = new Set();
 const originalGuildLayers = new Map();
 let activeGuildEditIndex = null;
+let selectedAddress = null;
+let addressSuggestTimer = null;
+let addressProviderConfig = { mapboxAvailable: false };
+let fallbackGeocodeAllowed = false;
+let addressSuggestionsCache = [];
 const APP_VERSION = 'Prototype v0.1';
 const THEME_STORAGE_KEY = 'permacultureTheme';
 const LANGUAGE_STORAGE_KEY = 'language';
@@ -26,6 +31,31 @@ const I18N = {
     propertyAddress: 'Property Address *',
     addressPlaceholder: '123 Main St, City, State ZIP',
     addressHelp: 'Used to determine hardiness zone, climate, and frost dates',
+    manualCoordinatesLabel: 'Advanced: Enter coordinates manually',
+    latitudePlaceholder: 'Latitude',
+    longitudePlaceholder: 'Longitude',
+    manualCoordinatesHelp: 'Optional but recommended when address lookup is approximate. Manual coordinates override geocoding and are used for climate, SunCalc, and PDF output.',
+    addressLookupHelp: 'Select a verified address from the suggestions for accurate SunCalc and shade planning.',
+    selectedAddressLabel: 'Selected address',
+    verifiedAddressState: 'Address verified',
+    unverifiedAddressState: 'Address not verified',
+    approximateAddressState: 'Approximate location',
+    noAddressSuggestions: 'No verified address suggestions found.',
+    addressSuggestError: 'Address suggestions unavailable.',
+    useTopSuggestion: 'Use top suggestion',
+    approximateSuggestionWarning: 'This match is approximate. It can be used for rough climate planning, but not accurate SunCalc or shade planning.',
+    useApproximateAnyway: 'Use approximate location anyway',
+    manualCoordinatePrompt: "Can't find your address? Enter coordinates manually.",
+    approximateCoordinatePrompt: 'This match is approximate. You can use it for rough climate planning or enter exact coordinates.',
+    advancedCoordinateEntry: 'Advanced coordinate entry',
+    selectVerifiedAddressRequired: 'Please select a verified address from the suggestions for accurate SunCalc and shade planning.',
+    fallbackAddressConfirm: 'Mapbox address verification is not configured. Continue with approximate Nominatim fallback coordinates?',
+    coordinateSource: 'Coordinate source',
+    coordinateAccuracy: 'Accuracy',
+    sourceMapbox: 'Mapbox verified',
+    sourceManual: 'Manual',
+    sourceNominatim: 'Nominatim fallback',
+    sourceApproximate: 'Approximate',
     sunSignLabel: 'Your Sun Sign *',
     sunSignPlaceholder: 'Select your sun sign...',
     sunSignHelp: 'Uses your sun sign and neighboring signs as symbolic mineral / cell-salt themes',
@@ -53,7 +83,7 @@ const I18N = {
     sunAnalysisTitle: '☀️ Sun Analysis for Plants',
     cellSaltTitle: '🧪 Symbolic Cell Salt / Mineral Themes',
     howToRead: 'How to read this:',
-    cellSaltDisclaimer: 'This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice. Matching plant tags help explain why accumulator, edible, pollinator, and support plants are suggested.',
+    cellSaltDisclaimer: 'This prototype uses a Carey / Schüssler-inspired symbolic framework. It treats the sun sign and neighboring signs as mineral or cell-salt themes for planting design. These traditional associations are shown for symbolic planting-design context only. They are not health claims, diagnosis, treatment guidance, or supplement advice.',
     cellSaltNote: 'These symbolic mineral / cell-salt themes are based on your sun sign(s) and neighboring signs. Recommended plants are associated with these registry tags and mineral-theme metadata.',
     aiGuildsTitle: '🤖 AI-Designed Plant Guilds',
     sevenLayerGuildTitle: '🌿 7-Layer Edible Guild',
@@ -69,8 +99,10 @@ const I18N = {
     threeYearTitle: '📅 3-Year Implementation Plan',
     moonTitle: '🌙 Basic Moon Planting Guidance',
     startOver: 'Start Over',
-    printPdf: 'Print / Save PDF',
-    pdfComingSoon: 'Native PDF export is coming soon. For now, use your browser print dialog and choose “Save as PDF.”',
+    printPdf: 'Download Complete PDF Plan',
+    downloadCompletePdf: 'Download Complete PDF Plan',
+    downloadingPdf: 'Generating PDF...',
+    pdfExportNote: 'Generates a printable Complete Food Forest Plan PDF from the current plan.',
     footerText: 'Carey / Schüssler-inspired symbolic cell-salt themes for planting design',
     modalSavedSitesTitle: '📂 My Saved Sites',
     loadingSavedSites: 'Loading saved sites...',
@@ -95,6 +127,17 @@ const I18N = {
     familyMembers: 'Family Members',
     coordinates: 'Coordinates',
     geocoded: 'Geocoded',
+    coordinateConfidence: 'Coordinate confidence',
+    coordinateApproximate: 'Approximate city-level result',
+    coordinateExact: 'Exact property-level result',
+    coordinateUserConfirmed: 'User-confirmed coordinates',
+    coordinateLegacyApproximate: 'Legacy approximate coordinates',
+    coordinateUnknown: 'Unknown',
+    approximateLocationWarning: 'Address resolved only to an approximate location. Enter exact latitude/longitude for accurate SunCalc and sun/shadow planning.',
+    approximateCoordinatesWarning: 'Approximate coordinates: this location resolved to a city/area, not a confirmed property point. Enter exact latitude/longitude and regenerate before using SunCalc or shade planning.',
+    legacyCoordinatesWarning: 'This saved plan was created before coordinate confirmation. Coordinates may be city-level. Enter exact latitude/longitude and regenerate before using SunCalc or shade planning.',
+    regenerateCoordinatesPrompt: 'Enter exact latitude/longitude, then click Generate Plan again. Save the updated plan afterward.',
+    editCoordinatesButton: 'Enter exact coordinates',
     hardinessZone: 'USDA Hardiness Zone',
     avgMin: 'avg min',
     koppenClimate: 'Köppen Climate',
@@ -201,7 +244,8 @@ const I18N = {
     errorSavingSite: 'Error saving site: ',
     changesSaved: 'Changes saved successfully!',
     errorSavingChanges: 'Error saving changes: ',
-    pdfAlert: 'Native PDF export is coming soon. For now, use your browser print dialog (Ctrl+P / Cmd+P), then choose "Save as PDF" as the destination.',
+    pdfAlert: 'Generate or load a plan first.',
+    pdfExportFailed: 'PDF export failed: ',
     edit: 'Edit',
     done: 'Done',
     saveGuild: 'Save Guild',
@@ -243,6 +287,31 @@ const I18N = {
     propertyAddress: 'Dirección del terreno *',
     addressPlaceholder: '123 Main St, ciudad, estado, código postal',
     addressHelp: 'Se usa para determinar zona de rusticidad, clima y fechas de heladas',
+    manualCoordinatesLabel: 'Avanzado: ingresar coordenadas manualmente',
+    latitudePlaceholder: 'Latitud',
+    longitudePlaceholder: 'Longitud',
+    manualCoordinatesHelp: 'Opcional pero recomendado cuando la búsqueda de dirección es aproximada. Las coordenadas manuales reemplazan la geocodificación y se usan para clima, SunCalc y PDF.',
+    addressLookupHelp: 'Selecciona una dirección verificada de las sugerencias para una planificación precisa de SunCalc y sombra.',
+    selectedAddressLabel: 'Dirección seleccionada',
+    verifiedAddressState: 'Dirección verificada',
+    unverifiedAddressState: 'Dirección no verificada',
+    approximateAddressState: 'Ubicación aproximada',
+    noAddressSuggestions: 'No se encontraron sugerencias de dirección verificadas.',
+    addressSuggestError: 'Las sugerencias de dirección no están disponibles.',
+    useTopSuggestion: 'Usar la primera sugerencia',
+    approximateSuggestionWarning: 'Esta coincidencia es aproximada. Puede usarse para planificación climática general, pero no para SunCalc ni planificación de sombra precisa.',
+    useApproximateAnyway: 'Usar ubicación aproximada de todos modos',
+    manualCoordinatePrompt: '¿No encuentras tu dirección? Ingresa coordenadas manualmente.',
+    approximateCoordinatePrompt: 'Esta coincidencia es aproximada. Puedes usarla para planificación climática general o ingresar coordenadas exactas.',
+    advancedCoordinateEntry: 'Entrada avanzada de coordenadas',
+    selectVerifiedAddressRequired: 'Selecciona una dirección verificada de las sugerencias para una planificación precisa de SunCalc y sombra.',
+    fallbackAddressConfirm: 'La verificación de direcciones de Mapbox no está configurada. ¿Continuar con coordenadas aproximadas de Nominatim?',
+    coordinateSource: 'Fuente de coordenadas',
+    coordinateAccuracy: 'Precisión',
+    sourceMapbox: 'Mapbox verificado',
+    sourceManual: 'Manual',
+    sourceNominatim: 'Nominatim de respaldo',
+    sourceApproximate: 'Aproximada',
     sunSignLabel: 'Tu signo solar *',
     sunSignPlaceholder: 'Selecciona tu signo solar...',
     sunSignHelp: 'Usa tu signo solar y los signos vecinos como temas simbólicos de minerales / sales celulares',
@@ -270,7 +339,7 @@ const I18N = {
     sunAnalysisTitle: '☀️ Análisis solar para plantas',
     cellSaltTitle: '🧪 Temas simbólicos de sales celulares / minerales',
     howToRead: 'Cómo leer esto:',
-    cellSaltDisclaimer: 'Este prototipo usa un marco simbólico inspirado en Carey / Schüssler. Trata el signo solar y los signos vecinos como temas de minerales o sales celulares para el diseño de siembra. Estas asociaciones tradicionales se muestran solo como contexto simbólico para diseño de siembra. No son afirmaciones de salud, diagnóstico, guía de tratamiento ni consejo sobre suplementos. Las etiquetas de plantas ayudan a explicar por qué se sugieren plantas acumuladoras, comestibles, polinizadoras y de apoyo.',
+    cellSaltDisclaimer: 'Este prototipo usa un marco simbólico inspirado en Carey / Schüssler. Trata el signo solar y los signos vecinos como temas de minerales o sales celulares para el diseño de siembra. Estas asociaciones tradicionales se muestran solo como contexto simbólico para diseño de siembra. No son afirmaciones de salud, diagnóstico, guía de tratamiento ni consejo sobre suplementos.',
     cellSaltNote: 'Estos temas simbólicos de minerales / sales celulares se basan en tu signo solar y signos vecinos. Las plantas recomendadas se asocian con estas etiquetas del registro y metadatos de temas minerales.',
     aiGuildsTitle: '🤖 Gremios de plantas diseñados por IA',
     sevenLayerGuildTitle: '🌿 Gremio comestible de 7 capas',
@@ -286,8 +355,10 @@ const I18N = {
     threeYearTitle: '📅 Plan de implementación de 3 años',
     moonTitle: '🌙 Guía básica de siembra lunar',
     startOver: 'Empezar de nuevo',
-    printPdf: 'Imprimir / Guardar PDF',
-    pdfComingSoon: 'La exportación nativa a PDF llegará pronto. Por ahora, usa el cuadro de impresión del navegador y elige “Guardar como PDF”.',
+    printPdf: 'Descargar plan PDF completo',
+    downloadCompletePdf: 'Descargar plan PDF completo',
+    downloadingPdf: 'Generando PDF...',
+    pdfExportNote: 'Genera un Plan PDF completo imprimible desde el plan actual.',
     footerText: 'Temas simbólicos de sales celulares inspirados en Carey / Schüssler para diseño de siembra',
     modalSavedSitesTitle: '📂 Mis sitios guardados',
     loadingSavedSites: 'Cargando sitios guardados...',
@@ -312,6 +383,17 @@ const I18N = {
     familyMembers: 'Integrantes de la familia',
     coordinates: 'Coordenadas',
     geocoded: 'Geocodificado',
+    coordinateConfidence: 'Confianza de coordenadas',
+    coordinateApproximate: 'Resultado aproximado a nivel de ciudad',
+    coordinateExact: 'Resultado exacto del terreno',
+    coordinateUserConfirmed: 'Coordenadas confirmadas por usuario',
+    coordinateLegacyApproximate: 'Coordenadas aproximadas heredadas',
+    coordinateUnknown: 'Desconocida',
+    approximateLocationWarning: 'La dirección se resolvió solo a una ubicación aproximada. Ingresa latitud/longitud exactas para SunCalc y planificación de sol/sombra.',
+    approximateCoordinatesWarning: 'Coordenadas aproximadas: esta ubicación se resolvió a una ciudad/área, no a un punto confirmado del terreno. Ingresa latitud/longitud exactas y vuelve a generar antes de usar SunCalc o planificar sombra.',
+    legacyCoordinatesWarning: 'Este plan guardado fue creado antes de la confirmación de coordenadas. Las coordenadas pueden ser de ciudad. Ingresa latitud/longitud exactas y vuelve a generar antes de usar SunCalc o planificar sombra.',
+    regenerateCoordinatesPrompt: 'Ingresa latitud/longitud exactas, luego haz clic en Generar plan otra vez. Guarda el plan actualizado después.',
+    editCoordinatesButton: 'Ingresar coordenadas exactas',
     hardinessZone: 'Zona de rusticidad USDA',
     avgMin: 'mín. promedio',
     koppenClimate: 'Clima Köppen',
@@ -418,7 +500,8 @@ const I18N = {
     errorSavingSite: 'Error al guardar el sitio: ',
     changesSaved: '¡Cambios guardados correctamente!',
     errorSavingChanges: 'Error al guardar cambios: ',
-    pdfAlert: 'La exportación nativa a PDF llegará pronto. Por ahora, usa el cuadro de impresión del navegador (Ctrl+P / Cmd+P) y elige "Guardar como PDF" como destino.',
+    pdfAlert: 'Genera o carga un plan primero.',
+    pdfExportFailed: 'Error al exportar PDF: ',
     edit: 'Editar',
     done: 'Listo',
     saveGuild: 'Guardar gremio',
@@ -533,6 +616,8 @@ function getPreferredTheme() {
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(getPreferredTheme());
   applyTranslations();
+  loadAddressProviderConfig();
+  setupAddressAutocomplete();
   const appVersionLabel = document.getElementById('appVersionLabel');
   if (appVersionLabel) {
     appVersionLabel.textContent = APP_VERSION;
@@ -545,14 +630,272 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+async function loadAddressProviderConfig() {
+  try {
+    const response = await fetch('/api/address-config');
+    if (response.ok) {
+      addressProviderConfig = await response.json();
+    }
+  } catch (error) {
+    addressProviderConfig = { mapboxAvailable: false };
+  }
+}
+
+function setupAddressAutocomplete() {
+  const addressInput = document.getElementById('address');
+  if (!addressInput) return;
+
+  addressInput.addEventListener('input', () => {
+    if (selectedAddress && addressInput.value !== (selectedAddress.label || selectedAddress.placeName || selectedAddress.formattedAddress)) {
+      selectedAddress = null;
+      fallbackGeocodeAllowed = false;
+      updateAddressStatus();
+    }
+    clearAddressWarning();
+
+    window.clearTimeout(addressSuggestTimer);
+    const query = addressInput.value.trim();
+    if (query.length < 3) {
+      renderAddressSuggestions([]);
+      showManualCoordinatePrompt(false);
+      return;
+    }
+
+    addressSuggestTimer = window.setTimeout(() => fetchAddressSuggestions(query), 300);
+  });
+
+  addressInput.addEventListener('keydown', event => {
+    if (event.key !== 'Enter') return;
+    const topSuggestion = addressSuggestionsCache[0];
+    if (!topSuggestion) return;
+    event.preventDefault();
+    selectAddressSuggestion(topSuggestion);
+  });
+
+  document.addEventListener('click', event => {
+    const suggestions = document.getElementById('addressSuggestions');
+    const addressGroup = event.target.closest('.form-group');
+    if (suggestions && !addressGroup?.contains(suggestions) && event.target.id !== 'address') {
+      suggestions.classList.add('hidden');
+    }
+  });
+}
+
+function setAdvancedCoordinatesVisible(visible, open = false) {
+  const advanced = document.getElementById('advancedCoordinates') || document.querySelector('.advanced-coordinates');
+  if (!advanced) return;
+  advanced.classList.toggle('hidden', !visible);
+  if (open) advanced.open = true;
+}
+
+function showManualCoordinatePrompt(visible, messageKey = 'manualCoordinatePrompt') {
+  const prompt = document.getElementById('manualCoordinatePrompt');
+  if (!prompt) return;
+
+  if (!visible) {
+    prompt.innerHTML = '';
+    prompt.classList.add('hidden');
+    return;
+  }
+
+  prompt.innerHTML = `
+    <span>${escapeHtml(t(messageKey))}</span>
+    <button class="manual-coordinate-link" type="button" id="showAdvancedCoordinatesBtn">${escapeHtml(t('advancedCoordinateEntry'))}</button>
+  `;
+  prompt.classList.remove('hidden');
+  document.getElementById('showAdvancedCoordinatesBtn')?.addEventListener('click', () => {
+    setAdvancedCoordinatesVisible(true, true);
+  });
+}
+
+function updateAddressStatus() {
+  const status = document.getElementById('addressStatus');
+  if (!status) return;
+
+  if (selectedAddress) {
+    const propertyLevel = isPropertyLevelSuggestion(selectedAddress);
+    status.textContent = `${propertyLevel ? t('verifiedAddressState') : t('approximateAddressState')}: ${selectedAddress.label || selectedAddress.placeName || ''}`;
+    status.classList.remove('unverified', 'verified', 'approximate');
+    status.classList.add(propertyLevel ? 'verified' : 'approximate');
+  } else {
+    status.textContent = t('unverifiedAddressState');
+    status.classList.remove('verified', 'approximate');
+    status.classList.add('unverified');
+  }
+}
+
+function isPropertyLevelSuggestion(suggestion = {}) {
+  const provider = String(suggestion.provider || '').toLowerCase();
+  const featureType = String(suggestion.featureType || '').toLowerCase();
+  const accuracy = String(suggestion.accuracy || '').toLowerCase();
+  const confidence = String(suggestion.matchCode?.confidence || '').toLowerCase();
+  return provider === 'mapbox' &&
+    featureType === 'address' &&
+    ['rooftop', 'parcel', 'point'].includes(accuracy) &&
+    (!confidence || ['exact', 'high'].includes(confidence));
+}
+
+function clearAddressWarning() {
+  const warning = document.getElementById('addressWarning');
+  if (!warning) return;
+  warning.innerHTML = '';
+  warning.classList.add('hidden');
+}
+
+function showApproximateAddressWarning(suggestion) {
+  const warning = document.getElementById('addressWarning');
+  if (!warning) return;
+  warning.innerHTML = `
+    <span>${escapeHtml(t('approximateSuggestionWarning'))}</span>
+    <button class="btn btn-secondary btn-small" type="button" id="useApproximateAddressBtn">${escapeHtml(t('useApproximateAnyway'))}</button>
+  `;
+  warning.classList.remove('hidden');
+  showManualCoordinatePrompt(true, 'approximateCoordinatePrompt');
+  document.getElementById('useApproximateAddressBtn')?.addEventListener('click', () => {
+    selectAddressSuggestion(suggestion);
+  });
+}
+
+async function fetchAddressSuggestions(query) {
+  const suggestions = document.getElementById('addressSuggestions');
+  if (!suggestions) return;
+
+  try {
+    const response = await fetch(`/api/address-suggest?q=${encodeURIComponent(query)}`);
+    if (!response.ok) throw new Error('suggest failed');
+    const data = await response.json();
+    const results = Array.isArray(data) ? data : [];
+    addressSuggestionsCache = results;
+    if (!results.length) {
+      suggestions.innerHTML = `<div class="address-suggestion empty">${t('noAddressSuggestions')}</div>`;
+      suggestions.classList.remove('hidden');
+      showManualCoordinatePrompt(query.length >= 5);
+      return;
+    }
+    setAdvancedCoordinatesVisible(hasManualCoordinateInput(), false);
+    showManualCoordinatePrompt(false);
+    renderAddressSuggestions(results);
+  } catch (error) {
+    suggestions.innerHTML = `<div class="address-suggestion empty">${t('addressSuggestError')}</div>`;
+    suggestions.classList.remove('hidden');
+    showManualCoordinatePrompt(true);
+  }
+}
+
+function renderAddressSuggestions(suggestions = []) {
+  const container = document.getElementById('addressSuggestions');
+  if (!container) return;
+  addressSuggestionsCache = suggestions;
+
+  if (!suggestions.length) {
+    container.innerHTML = '';
+    container.classList.add('hidden');
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="address-suggestions-actions">
+      <button class="btn btn-secondary btn-small" type="button" id="useTopAddressSuggestion">${escapeHtml(t('useTopSuggestion'))}</button>
+    </div>
+    ${suggestions.map((suggestion, index) => `
+    <button class="address-suggestion ${index === 0 ? 'top-suggestion' : ''}" type="button" data-address-suggestion-index="${index}">
+      <span>${escapeHtml(suggestion.label || suggestion.placeName || suggestion.address || '')}</span>
+      <small>${escapeHtml([suggestion.provider, suggestion.accuracy, suggestion.featureType].filter(Boolean).join(' · '))}</small>
+    </button>
+  `).join('')}`;
+  container.classList.remove('hidden');
+  document.getElementById('useTopAddressSuggestion')?.addEventListener('click', () => {
+    selectAddressSuggestion(suggestions[0]);
+  });
+  container.querySelectorAll('[data-address-suggestion-index]').forEach(button => {
+    button.addEventListener('click', () => {
+      const suggestion = suggestions[Number(button.dataset.addressSuggestionIndex)];
+      selectAddressSuggestion(suggestion);
+    });
+  });
+}
+
+function selectAddressSuggestion(suggestion) {
+  selectedAddress = suggestion;
+  fallbackGeocodeAllowed = false;
+  clearAddressWarning();
+  showManualCoordinatePrompt(false);
+  setAdvancedCoordinatesVisible(hasManualCoordinateInput(), false);
+  const addressInput = document.getElementById('address');
+  if (addressInput) {
+    addressInput.value = suggestion.label || suggestion.placeName || suggestion.formattedAddress || suggestion.address || '';
+  }
+  document.getElementById('addressSuggestions')?.classList.add('hidden');
+  updateAddressStatus();
+}
+
+function ensureAddressReadyForPlanning() {
+  if (selectedAddress || hasManualCoordinateInput()) {
+    return true;
+  }
+
+  const topSuggestion = addressSuggestionsCache[0];
+  if (topSuggestion) {
+    if (isPropertyLevelSuggestion(topSuggestion)) {
+      selectAddressSuggestion(topSuggestion);
+      return true;
+    }
+    showApproximateAddressWarning(topSuggestion);
+    updateAddressStatus();
+    return false;
+  }
+
+  if (addressProviderConfig.mapboxAvailable) {
+    clearAddressWarning();
+    alert(t('selectVerifiedAddressRequired'));
+    return false;
+  }
+
+  if (!fallbackGeocodeAllowed && !confirm(t('fallbackAddressConfirm'))) {
+    return false;
+  }
+  fallbackGeocodeAllowed = true;
+  return true;
+}
+
+function hasManualCoordinateInput() {
+  const latitude = document.getElementById('latitude')?.value.trim() || '';
+  const longitude = document.getElementById('longitude')?.value.trim() || '';
+  return Boolean(latitude && longitude);
+}
+
 function goToStep2() {
   const address = document.getElementById('address').value;
   const sunSign = document.getElementById('sunSign').value;
   const scale = document.getElementById('scale').value;
+  const latitude = document.getElementById('latitude')?.value.trim() || '';
+  const longitude = document.getElementById('longitude')?.value.trim() || '';
 
   if (!address || !sunSign || !scale) {
     alert(t('fillRequired'));
     return;
+  }
+
+  if ((latitude && !longitude) || (!latitude && longitude)) {
+    alert('Enter both latitude and longitude, or leave both blank.');
+    return;
+  }
+
+  if (latitude || longitude) {
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    if (!Number.isFinite(lat) || lat < -90 || lat > 90 || !Number.isFinite(lon) || lon < -180 || lon > 180) {
+      alert('Latitude must be between -90 and 90, and longitude must be between -180 and 180.');
+      return;
+    }
+  }
+
+  if (!ensureAddressReadyForPlanning()) {
+    return;
+  }
+
+  if (selectedAddress || hasManualCoordinateInput()) {
+    fallbackGeocodeAllowed = false;
   }
 
   document.getElementById('step1').classList.add('hidden');
@@ -613,6 +956,13 @@ if (soilTestToggle) {
 }
 
 async function generatePlan() {
+  const latitude = document.getElementById('latitude')?.value.trim() || '';
+  const longitude = document.getElementById('longitude')?.value.trim() || '';
+
+  if (!selectedAddress && !hasManualCoordinateInput()) {
+    if (!ensureAddressReadyForPlanning()) return;
+  }
+
   // Gather all data
   const userData = {
     address: document.getElementById('address').value,
@@ -621,6 +971,15 @@ async function generatePlan() {
     userDesiredPlants: document.getElementById('userDesiredPlants').value.trim() || null,
     familyMembers: []
   };
+
+  if (latitude && longitude) {
+    userData.latitude = Number(latitude);
+    userData.longitude = Number(longitude);
+  } else if (selectedAddress) {
+    userData.selectedAddress = selectedAddress;
+  } else if (fallbackGeocodeAllowed) {
+    userData.allowFallbackGeocode = true;
+  }
 
   // Get family members
   document.querySelectorAll('.family-member').forEach(member => {
@@ -669,7 +1028,7 @@ async function generatePlan() {
       throw new Error(message);
     }
 
-    generatedPlan = await response.json();
+    generatedPlan = normalizeLocationConfidenceForDisplay(await response.json());
     currentSavedSite = null;
     planDirty = false;
     planSaveStatus = null;
@@ -703,6 +1062,146 @@ function getRecommendedPlantName(plant) {
 
 function getRecommendedPlantMinerals(plant) {
   return [...new Set((plant?.minerals || []).map(mineral => String(mineral).trim()).filter(Boolean))];
+}
+
+function formatCoordinatePair(latitude, longitude) {
+  const lat = Number(latitude);
+  const lon = Number(longitude);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return '';
+  return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+}
+
+function formatGeocodeConfidence(loc = {}) {
+  switch (loc.geocodeConfidence) {
+    case 'exact':
+      return t('coordinateExact');
+    case 'verified':
+      return t('verifiedAddressState');
+    case 'user-confirmed':
+      return t('coordinateUserConfirmed');
+    case 'legacy-approximate':
+      return t('coordinateLegacyApproximate');
+    case 'city':
+    case 'approximate':
+      return t('coordinateApproximate');
+    default:
+      return t('coordinateUnknown');
+  }
+}
+
+function formatCoordinateSource(loc = {}) {
+  if (loc.provider === 'manual' || loc.userConfirmedCoordinates) return t('sourceManual');
+  if (loc.provider === 'mapbox' && !loc.isApproximate) return t('sourceMapbox');
+  if (loc.provider === 'nominatim') return t('sourceNominatim');
+  return t('sourceApproximate');
+}
+
+function hasUsableCoordinates(loc = {}) {
+  return Number.isFinite(Number(loc.latitude)) && Number.isFinite(Number(loc.longitude));
+}
+
+function isBroadGeocodeLocation(loc = {}) {
+  const broadTokens = new Set([
+    'boundary', 'administrative', 'city', 'town', 'village', 'hamlet',
+    'county', 'municipality', 'locality', 'suburb', 'neighbourhood',
+    'postcode', 'region', 'state'
+  ]);
+  return [loc.resultClass, loc.resultType, loc.addressType]
+    .map(value => String(value || '').trim().toLowerCase())
+    .some(value => broadTokens.has(value));
+}
+
+function looksLikeAreaOnlyAddress(loc = {}) {
+  const formatted = String(loc.formattedAddress || '').trim();
+  if (!formatted) return false;
+  return !/\d/.test(formatted) && /\b(city|county|village|town|united states|florida|kentucky|dunnellon|benton)\b/i.test(formatted);
+}
+
+function normalizeLocationConfidenceForDisplay(plan = {}) {
+  if (!plan.locationData) return plan;
+
+  const loc = plan.locationData;
+  if (loc.userConfirmedCoordinates === true || loc.geocodeConfidence === 'user-confirmed') {
+    loc.userConfirmedCoordinates = true;
+    loc.isApproximate = false;
+    loc.geocodeConfidence = 'user-confirmed';
+    loc.geocodeWarning = loc.geocodeWarning || '';
+    return plan;
+  }
+
+  const missingConfidence = !loc.geocodeConfidence || loc.isApproximate === undefined;
+  const legacyLooksApproximate = hasUsableCoordinates(loc) && (
+    missingConfidence ||
+    isBroadGeocodeLocation(loc) ||
+    looksLikeAreaOnlyAddress(loc)
+  );
+
+  if (legacyLooksApproximate) {
+    loc.isApproximate = true;
+    loc.geocodeConfidence = missingConfidence ? 'legacy-approximate' : 'approximate';
+    loc.geocodeWarning = missingConfidence
+      ? t('legacyCoordinatesWarning')
+      : (loc.geocodeWarning || t('approximateCoordinatesWarning'));
+    loc.userConfirmedCoordinates = false;
+  }
+
+  return plan;
+}
+
+function restoreLoadedSiteForm(plan = {}) {
+  normalizeLocationConfidenceForDisplay(plan);
+  const site = plan.siteInfo || {};
+  const loc = plan.locationData || {};
+  const addressInput = document.getElementById('address');
+  const latitudeInput = document.getElementById('latitude');
+  const longitudeInput = document.getElementById('longitude');
+  const sunSignInput = document.getElementById('sunSign');
+  const scaleInput = document.getElementById('scale');
+  const desiredPlantsInput = document.getElementById('userDesiredPlants');
+
+  if (addressInput) addressInput.value = site.address || loc.formattedAddress || '';
+  if (sunSignInput) sunSignInput.value = site.sunSign || '';
+  if (scaleInput) scaleInput.value = site.scale || '';
+  if (desiredPlantsInput) desiredPlantsInput.value = site.userDesiredPlants || '';
+
+  if (latitudeInput && longitudeInput) {
+    if (loc.userConfirmedCoordinates && Number.isFinite(Number(loc.latitude)) && Number.isFinite(Number(loc.longitude))) {
+      latitudeInput.value = Number(loc.latitude);
+      longitudeInput.value = Number(loc.longitude);
+    } else {
+      latitudeInput.value = '';
+      longitudeInput.value = '';
+    }
+  }
+
+  selectedAddress = loc.userSelectedAddress ? {
+    id: loc.providerPlaceId || loc.mapboxId || '',
+    label: loc.formattedAddress || site.address || '',
+    address: loc.formattedAddress || site.address || '',
+    placeName: loc.formattedAddress || site.address || '',
+    formattedAddress: loc.formattedAddress || site.address || '',
+    provider: loc.provider,
+    providerPlaceId: loc.providerPlaceId,
+    mapboxId: loc.mapboxId,
+    featureType: loc.featureType,
+    accuracy: loc.accuracy,
+    matchCode: loc.matchCode,
+    latitude: loc.latitude,
+    longitude: loc.longitude
+  } : null;
+  updateAddressStatus();
+}
+
+function showCoordinateRegenerationForm() {
+  if (generatedPlan) {
+    restoreLoadedSiteForm(generatedPlan);
+  }
+  document.getElementById('results')?.classList.add('hidden');
+  document.getElementById('step2')?.classList.add('hidden');
+  document.getElementById('step1')?.classList.remove('hidden');
+  const advanced = document.querySelector('.advanced-coordinates');
+  if (advanced) advanced.open = true;
+  document.getElementById('latitude')?.focus();
 }
 
 function getRecommendedPlantRoles(plant) {
@@ -741,7 +1240,7 @@ function getPlantingScaleBaseUrl() {
   if (host === 'localhost' || host === '127.0.0.1') {
     return 'http://localhost:5173/planting/';
   }
-  return 'https://zodiyuga.com/planting/';
+  return 'https://zodiyuga.com/app-timeline/planting/';
 }
 
 function buildPlantingScaleUrl(plan = generatedPlan, options = {}) {
@@ -1316,6 +1815,7 @@ function renderRecommendedPlantCard(plant, plan = generatedPlan, options = {}) {
 }
 
 function displayResults(plan) {
+  normalizeLocationConfidenceForDisplay(plan);
   document.getElementById('step2').classList.add('hidden');
   document.getElementById('results').classList.remove('hidden');
   softenCellSaltStaticCopy();
@@ -1324,6 +1824,17 @@ function displayResults(plan) {
   const loc = plan.locationData || {};
   const geoFailed = loc.error;
   const climate = plan.climateData || {};
+  const coordinateText = formatCoordinatePair(loc.latitude, loc.longitude);
+  const confidenceText = loc.geocodeConfidence ? formatGeocodeConfidence(loc) : '';
+  const coordinateSourceText = coordinateText ? formatCoordinateSource(loc) : '';
+  const coordinateDisplay = loc.userConfirmedCoordinates
+    ? `${coordinateText} — user confirmed`
+    : coordinateText;
+  const geocodeWarning = loc.isApproximate
+    ? (loc.geocodeConfidence === 'legacy-approximate'
+      ? t('legacyCoordinatesWarning')
+      : t('approximateCoordinatesWarning'))
+    : '';
 
   // Build climate info HTML
   let climateHTML = '';
@@ -1365,16 +1876,20 @@ function displayResults(plan) {
     <p><strong>${t('primarySunSign')}:</strong> ${plan.siteInfo.sunSign}</p>
     ${plan.siteInfo.familyMembers.length > 0 ?
       `<p><strong>${t('familyMembers')}:</strong> ${plan.siteInfo.familyMembers.map(m => m.sunSign).join(', ')}</p>` : ''}
-    ${loc.latitude ? `<p><strong>${t('coordinates')}:</strong> ${loc.latitude.toFixed(4)}°N, ${loc.longitude.toFixed(4)}°W</p>` : ''}
-    ${loc.formattedAddress ? `<p><strong>${t('geocoded')}:</strong> ${loc.formattedAddress}</p>` : ''}
+    ${coordinateText ? `<p><strong>${t('coordinates')}:</strong> ${escapeHtml(coordinateDisplay)}</p>` : ''}
+    ${coordinateSourceText ? `<p><strong>${t('coordinateSource')}:</strong> ${escapeHtml(coordinateSourceText)}</p>` : ''}
+    ${loc.accuracy ? `<p><strong>${t('coordinateAccuracy')}:</strong> ${escapeHtml(loc.accuracy)}</p>` : ''}
+    ${confidenceText ? `<p><strong>${t('coordinateConfidence')}:</strong> ${confidenceText}</p>` : ''}
+    ${loc.formattedAddress ? `<p><strong>${t('geocoded')}:</strong> ${escapeHtml(loc.formattedAddress)}</p>` : ''}
+    ${loc.isApproximate ? `<div class="note geocode-warning">⚠️ <strong>${t('locationWarning')}:</strong> ${escapeHtml(geocodeWarning)}<br>${escapeHtml(t('regenerateCoordinatesPrompt'))}<br><button class="btn btn-secondary coordinate-fix-btn" type="button" onclick="showCoordinateRegenerationForm()">${t('editCoordinatesButton')}</button></div>` : ''}
     ${climateHTML ? `<div class="climate-info" style="margin-top:12px;padding:10px;background:var(--info-bg);border-left:3px solid var(--success-border);border-radius:4px;">${climateHTML}</div>` : ''}
-    ${geoFailed ? `<p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">⚠️ <strong>${t('locationWarning')}:</strong> ${loc.error}</p>` : ''}
+    ${geoFailed ? `<p class="note" style="background:var(--warning-bg);border-color:var(--danger-border);">⚠️ <strong>${t('locationWarning')}:</strong> ${escapeHtml(loc.error)}</p>` : ''}
   `;
 
   // Render map and sun analysis
-  if (loc.latitude && loc.longitude) {
-    renderMap(loc.latitude, loc.longitude, plan.siteInfo.address);
-    drawPlantSunAnalysis(loc.latitude, loc.longitude, climate);
+  if (coordinateText) {
+    renderMap(Number(loc.latitude), Number(loc.longitude), plan.siteInfo.address);
+    drawPlantSunAnalysis(Number(loc.latitude), Number(loc.longitude), climate);
   } else {
     document.getElementById('siteMap').innerHTML = `<p class="note">${t('locationMapUnavailable')}</p>`;
   }
@@ -1405,9 +1920,7 @@ function displayResults(plan) {
   }
 
   // Cell Salts
-  const cellSaltExplanation = formatCellSaltExplanation(plan.cellSalts?.explanation || '');
   document.getElementById('cellSalts').innerHTML = `
-    <p>${escapeHtml(cellSaltExplanation)}</p>
     <div class="plant-list">
       ${plan.cellSalts.deficient.map(salt => `
         <div class="plant-item">
@@ -1821,7 +2334,11 @@ function buildSiteData(siteName, createdAt = null) {
     location: {
       address: generatedPlan.siteInfo.address,
       latitude: generatedPlan.locationData?.latitude,
-      longitude: generatedPlan.locationData?.longitude
+      longitude: generatedPlan.locationData?.longitude,
+      isApproximate: generatedPlan.locationData?.isApproximate,
+      geocodeConfidence: generatedPlan.locationData?.geocodeConfidence,
+      geocodeWarning: generatedPlan.locationData?.geocodeWarning,
+      userConfirmedCoordinates: generatedPlan.locationData?.userConfirmedCoordinates
     },
     designerProfile: {
       sunSign: generatedPlan.siteInfo.sunSign,
@@ -1907,8 +2424,56 @@ function saveChanges() {
     .catch(err => alert(t('errorSavingChanges') + err.message));
 }
 
-function downloadPlan() {
-  alert(t('pdfAlert'));
+function setPdfDownloadState(isDownloading) {
+  ['downloadPdfTopBtn', 'downloadPdfBottomBtn'].forEach(id => {
+    const button = document.getElementById(id);
+    if (!button) return;
+    button.disabled = isDownloading;
+    button.textContent = isDownloading ? t('downloadingPdf') : t('downloadCompletePdf');
+  });
+}
+
+async function downloadPlan() {
+  if (!generatedPlan) {
+    alert(t('pdfAlert'));
+    return;
+  }
+
+  normalizeLocationConfidenceForDisplay(generatedPlan);
+  setPdfDownloadState(true);
+
+  try {
+    const response = await fetch('/api/generated-plan/export/pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: generatedPlan })
+    });
+
+    if (!response.ok) {
+      let message = 'Unable to generate PDF';
+      try {
+        const errorData = await response.json();
+        message = errorData.error || message;
+      } catch (parseError) {
+        // Keep the generic message if the server did not return JSON.
+      }
+      throw new Error(message);
+    }
+
+    const pdfBlob = await response.blob();
+    const downloadUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'zodi-yuga-food-forest-plan.pdf';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    alert(t('pdfExportFailed') + error.message);
+  } finally {
+    setPdfDownloadState(false);
+  }
 }
 
 
@@ -1978,13 +2543,13 @@ function drawPlantSunAnalysis(lat, lon, climate = {}) {
         '<li><strong>Árboles tropicales jóvenes:</strong> Usa acolchado, protección contra viento y sombra temporal por la tarde mientras se establecen las raíces.</li>',
         '<li><strong>Riego de temporada seca:</strong> Agrupa cultivos con alta demanda de agua donde líneas de goteo o captación de lluvia puedan sostenerlos.</li>',
         '<li><strong>Cobertura viva del suelo:</strong> Mantén el suelo cubierto con camote, maní perenne u otra cobertura viva para reducir calor y erosión.</li>',
-        '<li><strong>Exposición a sal y viento:</strong> Coloca plantas sensibles detrás de arbustos, palmas, setos u otra estructura que filtre el viento.</li>',
+        '<li><strong>Exposición al viento:</strong> Coloca plantas sensibles detrás de arbustos, palmas, setos u otra estructura que filtre el viento. En sitios costeros o propensos a salinidad, protege también las plantas sensibles del rocío salino o riego con sales.</li>',
         '<li><strong>Cultivos de sotobosque:</strong> Usa banana, taro, jengibre, cúrcuma, cacao o café donde haya sombra parcial y humedad.</li>'
       ] : [
         '<li><strong>Young tropical trees:</strong> Use mulch, wind protection, and temporary afternoon shade while roots establish.</li>',
         '<li><strong>Dry-season irrigation:</strong> Group thirsty crops where drip lines or rain catchment can support them.</li>',
         '<li><strong>Living soil cover:</strong> Keep ground covered with sweet potato, perennial peanut, or other living mulch to reduce heat and erosion.</li>',
-        '<li><strong>Salt and wind exposure:</strong> Place sensitive plants behind shrubs, palms, hedges, or other wind-filtering structure.</li>',
+        '<li><strong>Wind exposure:</strong> Place sensitive plants behind shrubs, palms, hedges, or other wind-filtering structure. In coastal or salt-prone sites, also protect sensitive plants from salt spray or salty irrigation.</li>',
         '<li><strong>Understory crops:</strong> Use bananas, taro, ginger, turmeric, cacao, or coffee where partial shade and moisture are available.</li>'
       ])
     : (currentLanguage === 'es' ? [
@@ -2106,6 +2671,15 @@ function loadSite(siteId) {
         alert(t('incompleteSite'));
         return;
       }
+      if (!plan.locationData && siteData.location) {
+        plan.locationData = { ...siteData.location };
+      } else if (plan.locationData && siteData.location) {
+        plan.locationData = {
+          ...siteData.location,
+          ...plan.locationData
+        };
+      }
+      normalizeLocationConfidenceForDisplay(plan);
       generatedPlan = plan;
       currentSavedSite = {
         siteId: siteData.siteId || siteId,
@@ -2120,6 +2694,7 @@ function loadSite(siteId) {
       activeGuildEditIndex = null;
 
       // Hide all form sections, show results
+      restoreLoadedSiteForm(plan);
       document.getElementById('step1').classList.add('hidden');
       document.getElementById('step2').classList.add('hidden');
       document.getElementById('results').classList.remove('hidden');

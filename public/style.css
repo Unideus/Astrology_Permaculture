@@ -368,6 +368,164 @@ select:-webkit-autofill:focus {
   gap: 20px;
 }
 
+.address-lookup {
+  position: relative;
+  margin-top: 6px;
+}
+
+.address-lookup input {
+  margin-bottom: 0;
+}
+
+.address-status {
+  display: inline-block;
+  margin-top: 7px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.address-status.verified {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+}
+
+.address-status.unverified {
+  background: var(--note-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--text);
+}
+
+.address-status.approximate {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--text);
+}
+
+.address-warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--warning-border);
+  border-radius: 6px;
+  background: var(--warning-bg);
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.address-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% - 1px);
+  left: 0;
+  right: 0;
+  margin-top: 0;
+  border: 1px solid var(--border);
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+  background: var(--card-bg);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.address-suggestions-actions {
+  display: flex;
+  justify-content: flex-start;
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bg);
+}
+
+.address-suggestion {
+  width: 100%;
+  display: block;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.address-suggestion:last-child {
+  border-bottom: 0;
+}
+
+.address-suggestion:hover,
+.address-suggestion:focus {
+  background: var(--info-bg);
+  outline: none;
+}
+
+.address-suggestion.top-suggestion {
+  border-left: 4px solid var(--info-border);
+}
+
+.address-suggestion:active,
+.address-suggestion.selected {
+  background: var(--info-bg);
+}
+
+.address-suggestion span,
+.address-suggestion small {
+  display: block;
+}
+
+.address-suggestion small {
+  color: var(--text-light);
+}
+
+.manual-coordinate-prompt {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.manual-coordinate-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.manual-coordinate-link:hover,
+.manual-coordinate-link:focus {
+  color: var(--primary-dark);
+}
+
+.advanced-coordinates {
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-bg);
+}
+
+.advanced-coordinates summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.advanced-coordinates .form-group {
+  margin: 12px 0 0;
+}
+
 @media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
@@ -571,6 +729,16 @@ select:-webkit-autofill:focus {
   border-radius: 4px;
   margin-top: 15px;
   font-size: 0.95rem;
+}
+
+.geocode-warning {
+  background: var(--warning-bg);
+  border-color: var(--danger-border);
+  color: var(--text);
+}
+
+.coordinate-fix-btn {
+  margin-top: 10px;
 }
 
 .educational-note {
