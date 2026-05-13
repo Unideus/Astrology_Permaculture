@@ -40,6 +40,7 @@
           <div class="form-group">
             <label for="address" data-i18n="propertyAddress">Property Address *</label>
             <small data-i18n="addressLookupHelp">For best results, select a verified address from the suggestions. Manual coordinates override address lookup.</small>
+            <div id="addressProviderNotice" class="address-provider-notice hidden" data-i18n="mapboxUnavailableNotice">Verified address search is not configured. Suggestions may be approximate; enter exact coordinates for property-level SunCalc and shade planning.</div>
             <div class="address-lookup">
               <input type="text" id="address" placeholder="123 Main St, City, State ZIP" data-i18n-placeholder="addressPlaceholder" required>
               <div id="addressSuggestions" class="address-suggestions hidden"></div>

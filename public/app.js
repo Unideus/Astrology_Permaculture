@@ -40,6 +40,7 @@ const I18N = {
     longitudePlaceholder: 'Longitude',
     manualCoordinatesHelp: 'Optional but recommended when address lookup is approximate. Manual coordinates override geocoding and are used for climate, SunCalc, and PDF output.',
     addressLookupHelp: 'Select a verified address from the suggestions for accurate SunCalc and shade planning.',
+    mapboxUnavailableNotice: 'Verified address search is not configured. Suggestions may be approximate; enter exact coordinates for property-level SunCalc and shade planning.',
     selectedAddressLabel: 'Selected address',
     verifiedAddressState: 'Address verified',
     unverifiedAddressState: 'Address not verified',
@@ -47,6 +48,7 @@ const I18N = {
     noAddressSuggestions: 'No verified address suggestions found.',
     addressSuggestError: 'Address suggestions unavailable.',
     useTopSuggestion: 'Use top suggestion',
+    useApproximateSuggestion: 'Use approximate location',
     approximateSuggestionWarning: 'This match is approximate. It can be used for rough climate planning, but not accurate SunCalc or shade planning.',
     useApproximateAnyway: 'Use approximate location anyway',
     manualCoordinatePrompt: "Can't find your address? Enter coordinates manually.",
@@ -300,6 +302,7 @@ const I18N = {
     longitudePlaceholder: 'Longitud',
     manualCoordinatesHelp: 'Opcional pero recomendado cuando la búsqueda de dirección es aproximada. Las coordenadas manuales reemplazan la geocodificación y se usan para clima, SunCalc y PDF.',
     addressLookupHelp: 'Selecciona una dirección verificada de las sugerencias para una planificación precisa de SunCalc y sombra.',
+    mapboxUnavailableNotice: 'La búsqueda de direcciones verificadas no está configurada. Las sugerencias pueden ser aproximadas; ingresa coordenadas exactas para SunCalc y planificación de sombra a nivel de propiedad.',
     selectedAddressLabel: 'Dirección seleccionada',
     verifiedAddressState: 'Dirección verificada',
     unverifiedAddressState: 'Dirección no verificada',
@@ -307,6 +310,7 @@ const I18N = {
     noAddressSuggestions: 'No se encontraron sugerencias de dirección verificadas.',
     addressSuggestError: 'Las sugerencias de dirección no están disponibles.',
     useTopSuggestion: 'Usar la primera sugerencia',
+    useApproximateSuggestion: 'Usar ubicación aproximada',
     approximateSuggestionWarning: 'Esta coincidencia es aproximada. Puede usarse para planificación climática general, pero no para SunCalc ni planificación de sombra precisa.',
     useApproximateAnyway: 'Usar ubicación aproximada de todos modos',
     manualCoordinatePrompt: '¿No encuentras tu dirección? Ingresa coordenadas manualmente.',
@@ -667,6 +671,13 @@ async function loadAddressProviderConfig() {
   } catch (error) {
     addressProviderConfig = { mapboxAvailable: false };
   }
+  updateAddressProviderNotice();
+}
+
+function updateAddressProviderNotice() {
+  const notice = document.getElementById('addressProviderNotice');
+  if (!notice) return;
+  notice.classList.toggle('hidden', Boolean(addressProviderConfig.mapboxAvailable));
 }
 
 function setupAddressAutocomplete() {
@@ -821,12 +832,13 @@ function renderAddressSuggestions(suggestions = []) {
     return;
   }
 
+  const topSuggestionIsPropertyLevel = isPropertyLevelSuggestion(suggestions[0]);
   container.innerHTML = `
     <div class="address-suggestions-actions">
-      <button class="btn btn-secondary btn-small" type="button" id="useTopAddressSuggestion">${escapeHtml(t('useTopSuggestion'))}</button>
+      <button class="btn btn-secondary btn-small" type="button" id="useTopAddressSuggestion">${escapeHtml(topSuggestionIsPropertyLevel ? t('useTopSuggestion') : t('useApproximateSuggestion'))}</button>
     </div>
     ${suggestions.map((suggestion, index) => `
-    <button class="address-suggestion ${index === 0 ? 'top-suggestion' : ''}" type="button" data-address-suggestion-index="${index}">
+    <button class="address-suggestion ${index === 0 ? 'top-suggestion' : ''} ${isPropertyLevelSuggestion(suggestion) ? 'verified-suggestion' : 'approximate-suggestion'}" type="button" data-address-suggestion-index="${index}">
       <span>${escapeHtml(suggestion.label || suggestion.placeName || suggestion.address || '')}</span>
       <small>${escapeHtml([suggestion.provider, suggestion.accuracy, suggestion.featureType].filter(Boolean).join(' · '))}</small>
     </button>
