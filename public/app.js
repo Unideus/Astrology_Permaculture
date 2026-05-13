@@ -23,11 +23,15 @@ const I18N = {
     languageLabel: 'Language',
     translationNote: 'Spanish is a first-pass prototype translation. Plant names, registry tags, and some generated notes may remain in English.',
     prototypeLabel: 'Prototype / Early Access',
-    prototypeNotice: 'Plant recommendations and saved guild edits are active. Soil test interpretation and true PDF export are coming soon.',
+    prototypeNotice: 'Current status: plant recommendations, saved sites, guild edits, planting timeline, and Complete PDF downloads are active. Soil test interpretation is still coming soon.',
     savedSitesButton: '📂 My Saved Sites',
     darkMode: '🌙 Dark mode',
     lightMode: '☀️ Light mode',
     step1Title: 'Step 1: Location & Sun Sign',
+    addressSectionTitle: 'Address',
+    sunSignsSectionTitle: 'Sun Sign(s)',
+    scaleSectionTitle: 'Scale',
+    desiredPlantsSectionTitle: 'Desired Plants',
     propertyAddress: 'Property Address *',
     addressPlaceholder: '123 Main St, City, State ZIP',
     addressHelp: 'Used to determine hardiness zone, climate, and frost dates',
@@ -279,11 +283,15 @@ const I18N = {
     languageLabel: 'Idioma',
     translationNote: 'El español es una traducción inicial de prototipo. Los nombres de plantas, etiquetas del registro y algunas notas generadas pueden permanecer en inglés.',
     prototypeLabel: 'Prototipo / Acceso temprano',
-    prototypeNotice: 'Las recomendaciones de plantas y la edición de gremios guardados están activas. La interpretación de análisis de suelo y la exportación real a PDF llegarán pronto.',
+    prototypeNotice: 'Estado actual: las recomendaciones de plantas, los sitios guardados, la edición de gremios, la línea de tiempo de siembra y las descargas del PDF completo están activas. La interpretación de análisis de suelo aún llegará pronto.',
     savedSitesButton: '📂 Mis sitios guardados',
     darkMode: '🌙 Modo oscuro',
     lightMode: '☀️ Modo claro',
     step1Title: 'Paso 1: Ubicación y signo solar',
+    addressSectionTitle: 'Dirección',
+    sunSignsSectionTitle: 'Signo(s) solar(es)',
+    scaleSectionTitle: 'Escala',
+    desiredPlantsSectionTitle: 'Plantas deseadas',
     propertyAddress: 'Dirección del terreno *',
     addressPlaceholder: '123 Main St, ciudad, estado, código postal',
     addressHelp: 'Se usa para determinar zona de rusticidad, clima y fechas de heladas',
@@ -591,11 +599,31 @@ function applyTheme(theme) {
   document.body.classList.toggle('dark-mode', isDark);
   document.body.classList.toggle('theme-dark', isDark);
   document.body.classList.toggle('theme-light', !isDark);
+  updatePlantingTimelineButtonImages(isDark);
+  updatePdfDownloadButtonImages(isDark);
 
   const toggle = document.getElementById('themeToggle');
   if (toggle) {
     toggle.textContent = isDark ? t('lightMode') : t('darkMode');
   }
+}
+
+function updatePlantingTimelineButtonImages(isDark) {
+  const src = isDark
+    ? '/Open%20in%20Timeline%20button.png'
+    : '/light%20mode%20timeline%20button.png';
+
+  document.querySelectorAll('.planting-timeline-image-btn img').forEach(img => {
+    img.src = src;
+  });
+}
+
+function updatePdfDownloadButtonImages(isDark) {
+  const src = isDark ? '/PDF%20dark.png' : '/PDF%20light.png';
+
+  document.querySelectorAll('.pdf-download-image-btn img').forEach(img => {
+    img.src = src;
+  });
 }
 
 function toggleTheme() {
@@ -2246,6 +2274,10 @@ function updateSaveControls() {
     {
       saveChangesBtn: document.getElementById('bottomSaveChangesBtn'),
       saveAsNewBtn: document.getElementById('bottomSaveAsNewBtn')
+    },
+    {
+      saveChangesBtn: document.getElementById('footerSaveChangesBtn'),
+      saveAsNewBtn: document.getElementById('footerSaveAsNewBtn')
     }
   ].forEach(({ saveChangesBtn, saveAsNewBtn }) => {
     if (saveChangesBtn) {
@@ -2429,7 +2461,9 @@ function setPdfDownloadState(isDownloading) {
     const button = document.getElementById(id);
     if (!button) return;
     button.disabled = isDownloading;
-    button.textContent = isDownloading ? t('downloadingPdf') : t('downloadCompletePdf');
+    button.classList.toggle('is-loading', isDownloading);
+    button.setAttribute('aria-label', isDownloading ? t('downloadingPdf') : t('downloadCompletePdf'));
+    button.title = isDownloading ? t('downloadingPdf') : t('downloadCompletePdf');
   });
 }
 
