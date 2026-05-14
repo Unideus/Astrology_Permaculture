@@ -1,0 +1,282 @@
+[
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "comfrey",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "comfrey",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "comfrey",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "comfrey",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "nettle",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "nettle",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "nettle",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "nettle",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "dandelion",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "dandelion",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "dandelion",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "dandelion",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "dandelion",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "yarrow_",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "yarrow_",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "yarrow_",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as secondary top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "horsetail",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "horsetail",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "horsetail",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "oat_straw",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "oat_straw",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "oat_straw",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as top dynamic accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "oat_straw",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "white_clover_",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping; verify before direct registry use.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "white_clover_",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as secondary top dynamic accumulator in draft mapping; verify before direct registry use.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "sunflower",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "spinach",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "kale",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as brassica accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "broccoli",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as brassica accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "cauliflower",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as brassica accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "collard_greens",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as brassica accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "bok_choy",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as brassica accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Sodium Chloride",
+    "plant_id": "celery",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Sodium Chloride",
+    "plant_id": "swiss_chard",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  },
+  {
+    "salt": "Sodium Chloride",
+    "plant_id": "beet_greens",
+    "relationship_type": "accumulator",
+    "confidence": "draft",
+    "notes": "Listed as accumulator in draft mapping.",
+    "source_label": "user_supplied_tissue_salt_mapping_v1"
+  }
+]

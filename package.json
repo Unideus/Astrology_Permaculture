@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "test": "node app.js",
     "audit:coverage": "node scripts/audit_registry_coverage.js",
-    "validate:salts": "node scripts/validate_salt_mappings.js"
+    "validate:salts": "node scripts/validate_salt_mappings.js",
+    "validate:relationships": "node scripts/validate_tissue_salt_relationships.js"
   },
   "keywords": [
     "permaculture",
