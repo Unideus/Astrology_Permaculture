@@ -2129,7 +2129,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "edible_seed",
+        "drought_tolerance",
+        "quick_yield"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "arid"
@@ -2318,7 +2322,7 @@
         10
       ],
       "koppen": [],
-      "is_perennial": false,
+      "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
     },
@@ -2358,7 +2362,11 @@
       "growth_habit": "perennial"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "nut_production",
+        "drought_tolerance",
+        "pollinator_forage"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "arid"
@@ -2599,7 +2607,11 @@
       "growth_habit": "annual_summer"
     },
     "permaculture_role": {
-      "functions": [],
+      "functions": [
+        "nitrogen_fixation",
+        "edible_seed",
+        "soil_building"
+      ],
       "guild_compat": []
     },
     "climate_affinity": "arid"
@@ -3073,7 +3085,9 @@
       "functions": [
         "biomass",
         "carbohydrate_production",
-        "windbreak_understory"
+        "windbreak_understory",
+        "root_crop",
+        "edible_root"
       ],
       "guild_compat": []
     },
@@ -3085,7 +3099,7 @@
     "botanical_name": "Corylus americana",
     "taxonomy": {
       "type": "nut_shrub",
-      "layer": "herbaceous"
+      "layer": "shrub"
     },
     "bio_logic": {
       "salts": [],
@@ -3195,7 +3209,7 @@
     "botanical_name": "Trifolium repens",
     "taxonomy": {
       "type": "ground_cover",
-      "layer": "herbaceous"
+      "layer": "ground_cover"
     },
     "bio_logic": {
       "salts": [],
