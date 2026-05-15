@@ -1015,21 +1015,22 @@ function ensureAddressReadyForPlanning() {
     return true;
   }
 
+  // Auto-accept the top suggestion regardless of precision level.
+  // Approximate coordinates still give accurate enough climate zones.
   const topSuggestion = addressSuggestionsCache[0];
   if (topSuggestion) {
-    if (isPropertyLevelSuggestion(topSuggestion)) {
-      selectAddressSuggestion(topSuggestion);
-      return true;
-    }
-    showApproximateAddressWarning(topSuggestion);
-    updateAddressStatus();
-    return false;
+    selectAddressSuggestion(topSuggestion);
+    return true;
   }
 
+  // No suggestions - let the user proceed with address-only geocoding.
   if (addressProviderConfig.mapboxAvailable) {
     clearAddressWarning();
-    alert(t('selectVerifiedAddressRequired'));
-    return false;
+    if (!fallbackGeocodeAllowed && !confirm(t('fallbackAddressConfirm'))) {
+      return false;
+    }
+    fallbackGeocodeAllowed = true;
+    return true;
   }
 
   if (!fallbackGeocodeAllowed && !confirm(t('fallbackAddressConfirm'))) {
