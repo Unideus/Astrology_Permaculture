@@ -9,7 +9,8 @@
     "test": "node app.js",
     "audit:coverage": "node scripts/audit_registry_coverage.js",
     "validate:salts": "node scripts/validate_salt_mappings.js",
-    "validate:relationships": "node scripts/validate_tissue_salt_relationships.js"
+    "validate:relationships": "node scripts/validate_tissue_salt_relationships.js",
+    "report:relationships": "node scripts/report_tissue_salt_promotion_candidates.js"
   },
   "keywords": [
     "permaculture",
