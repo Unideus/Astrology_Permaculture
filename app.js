@@ -704,6 +704,17 @@ class PermacultureApp {
   }
 
   // Generate complete plan
+  getGuildCountForScale(scale) {
+    const counts = {
+      'balcony': 1,
+      'backyard': 2,
+      'homestead': 3,
+      'farm': 5,
+      'community': 7,
+    };
+    return counts[scale] || 3;
+  }
+
   generatePlan(userData, climateData = null) {
     const {
       address,
@@ -729,7 +740,8 @@ class PermacultureApp {
     
     // Generate 3-year plan — now uses registry queries with climate + salt context
     const plan = this.generateThreeYearPlan(scale, climateData, uniqueSalts, soilTest);
-    const guild = this.generate3Guilds(uniqueSalts, climateData, desiredPlants);
+    const guildCount = this.getGuildCountForScale(scale);
+    const guild = this.generateGuildsForScale(uniqueSalts, climateData, desiredPlants, guildCount);
     this.syncThreeYearPlanWithGuildCanopies(plan, guild, scale, climateData);
     
     return {
@@ -754,8 +766,8 @@ class PermacultureApp {
     };
   }
 
-  // ── 3-GUILD GENERATOR (HOMESTEAD) ──────────────────────────────────────────
-  // Generates 3 unique guilds based on userDesiredPlants using anchor registry.
+  // ── SCALE-AWARE GUILD GENERATOR ──────────────────────────────────────────
+  // Generates N unique guilds based on scale and userDesiredPlants using anchor registry.
   // Each guild has its own Layer 1 anchor and 7-layer composition.
   syncThreeYearPlanWithGuildCanopies(plan, guild, scale, climateData = null) {
     if (!plan?.year0?.tasks || !Array.isArray(guild)) return;
@@ -1131,7 +1143,17 @@ class PermacultureApp {
     );
   }
 
-  generate3Guilds(uniqueSalts, climateData, desiredPlants = []) {
+  generateGuildsForScale(uniqueSalts, climateData, desiredPlants = [], numGuilds = 3) {
+    // Backward compat alias
+    return this._generateGuildsImpl(uniqueSalts, climateData, desiredPlants, numGuilds);
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  generate3Guilds(uniqueSalts, climateData, desiredPlants = [], numGuilds = 3) {
+    return this._generateGuildsImpl(uniqueSalts, climateData, desiredPlants, numGuilds);
+  }
+
+  _generateGuildsImpl(uniqueSalts, climateData, desiredPlants = [], numGuilds = 3) {
     const siteZone = climateData?.hardinessZone?.match(/^(\d+)/)?.[1] || 9;
     const siteKoppen = climateData?.koppenCode || 'Csb';
     const ar = new AnchorRegistry();
@@ -1166,18 +1188,18 @@ class PermacultureApp {
       parseInt(siteZone),
       siteKoppen,
       new Set(anchorIds),
-      Math.max(0, 3 - anchorIds.length),
+      Math.max(0, numGuilds - anchorIds.length),
       climateData
     );
     for (const suggestedId of suggestedAnchorIds) {
-      if (anchorIds.length >= 3) break;
+      if (anchorIds.length >= numGuilds) break;
       if (!anchorIds.includes(suggestedId)) anchorIds.push(suggestedId);
     }
 
     // Final fallback only when registry coverage cannot provide enough fit anchors.
     const defaultAnchors = ['apple_', 'pear_', 'apricot'];
     for (const da of defaultAnchors) {
-      if (anchorIds.length >= 3) break;
+      if (anchorIds.length >= numGuilds) break;
       if (!anchorIds.includes(da)) anchorIds.push(da);
     }
     const selectedAnchorIds = new Set(anchorIds);
@@ -1191,7 +1213,7 @@ class PermacultureApp {
     
     const usedByLayer = new Map();
 
-    // Generate 3 guilds
+    // Generate guilds based on scale
     const guilds = selectedAnchors.map((anchor, idx) => {
       const layers = {};
       const saltKeys = uniqueSalts.map(s => s.cell_salt.toLowerCase().replace(/ /g, '_'));
