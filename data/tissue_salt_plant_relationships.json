@@ -1,282 +1,1722 @@
 [
   {
-    "salt": "Calcium Fluoride",
+    "salt": "Potassium Phosphate",
     "plant_id": "comfrey",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
-    "salt": "Calcium Phosphate",
-    "plant_id": "comfrey",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Chloride",
-    "plant_id": "comfrey",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Magnesium Phosphate",
-    "plant_id": "comfrey",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Iron Phosphate",
+    "salt": "Potassium Phosphate",
     "plant_id": "nettle",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Sulphate",
-    "plant_id": "nettle",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Magnesium Phosphate",
-    "plant_id": "nettle",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Silica",
     "plant_id": "nettle",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Calcium Phosphate",
-    "plant_id": "dandelion",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Chloride",
-    "plant_id": "dandelion",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Potassium Phosphate",
     "plant_id": "dandelion",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Sulphate",
-    "plant_id": "dandelion",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Magnesium Phosphate",
-    "plant_id": "dandelion",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Calcium Phosphate",
-    "plant_id": "yarrow_",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Potassium Phosphate",
-    "plant_id": "yarrow_",
+    "plant_id": "spinach",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Silica",
-    "plant_id": "yarrow_",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as secondary top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Silica",
-    "plant_id": "horsetail",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Sodium Sulphate",
-    "plant_id": "horsetail",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Calcium Fluoride",
-    "plant_id": "horsetail",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Silica",
-    "plant_id": "oat_straw",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Phosphate",
-    "plant_id": "oat_straw",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Magnesium Phosphate",
-    "plant_id": "oat_straw",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as top dynamic accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Calcium Fluoride",
-    "plant_id": "oat_straw",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Calcium Phosphate",
-    "plant_id": "white_clover_",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator or top dynamic accumulator in draft mapping; verify before direct registry use.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Chloride",
-    "plant_id": "white_clover_",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as secondary top dynamic accumulator in draft mapping; verify before direct registry use.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
-  },
-  {
-    "salt": "Potassium Sulphate",
-    "plant_id": "sunflower",
-    "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Iron Phosphate",
     "plant_id": "spinach",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "kale",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Calcium Sulphate",
     "plant_id": "kale",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as brassica accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
-    "salt": "Calcium Sulphate",
-    "plant_id": "broccoli",
+    "salt": "Potassium Phosphate",
+    "plant_id": "sunflower",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as brassica accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
-    "salt": "Calcium Sulphate",
-    "plant_id": "cauliflower",
+    "salt": "Potassium Phosphate",
+    "plant_id": "pumpkin",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as brassica accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
-    "salt": "Calcium Sulphate",
-    "plant_id": "collard_greens",
+    "salt": "Iron Phosphate",
+    "plant_id": "pumpkin",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as brassica accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
-    "salt": "Calcium Sulphate",
-    "plant_id": "bok_choy",
+    "salt": "Potassium Phosphate",
+    "plant_id": "avocado",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as brassica accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "watercress",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "mustard_greens",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "radish",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "radish",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "horseradish",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "horseradish",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "onion",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "garlic",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "parsley",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "celery",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "celery",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Sodium Chloride",
     "plant_id": "celery",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "cucumber",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "cucumber",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "lettuce",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Chloride",
+    "plant_id": "lettuce",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "zucchini",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "watermelon",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "asparagus",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "rhubarb",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "turnip",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "cabbage",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "brussels_sprouts",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "apricot",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "peach",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "sour_cherry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "oats",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "oats",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "barley",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "rye",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "quinoa",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "quinoa",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "quinoa",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "amaranth",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "amaranth",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "fig",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "fig",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "mulberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "blackberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "chamomile",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "lemon_balm",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "catnip",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "valerian",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "passionflower",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "maypop_passionflower",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "cashew",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "lemon",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "lime",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "grapefruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "orange",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "sauerkraut_cabbage",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "kimchi_cabbage",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "broccoli",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "cauliflower",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "collard_greens",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "bok_choy",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Sulphate",
+    "plant_id": "sesame",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "sesame",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "oat_straw",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "horsetail",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "bell_pepper",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "green_beans",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "strawberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "almond",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "navy_beans",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Chloride",
+    "plant_id": "tomato",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Sodium Chloride",
     "plant_id": "swiss_chard",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "swiss_chard",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   },
   {
     "salt": "Sodium Chloride",
+    "plant_id": "beet",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
     "plant_id": "beet_greens",
     "relationship_type": "accumulator",
-    "confidence": "draft",
-    "notes": "Listed as accumulator in draft mapping.",
-    "source_label": "user_supplied_tissue_salt_mapping_v1"
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "lentils",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "beans",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "black_walnut_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "american_chestnut_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "pecan_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "american_persimmon_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "apple_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "pear_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "autumn_olive_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "autumn_olive_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "black_currant_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "red_raspberry_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "fox_grape_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "yarrow_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "yarrow_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "jerusalem_artichoke_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "american_hazelnut_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "american_hazelnut_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "french_sorrel_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "french_sorrel_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "chives_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "white_clover_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "sea_buckthorn_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "sea_buckthorn_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "goumi_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "goumi_",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "loquat",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "pineapple_guava",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "japanese_persimmon",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "moringa",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "moringa",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "rabbiteye_blueberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "rabbiteye_blueberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "roselle",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "pigeon_pea",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "pigeon_pea",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "rosemary",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "lavender",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "lavender",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "sage",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "pomegranate",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "grape",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "hardy_kiwi",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "hardy_kiwi",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "black_raspberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "saskatoon_serviceberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "honeyberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "aronia",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "cornelian_cherry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "gooseberry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "miracle_berry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "asian_pear",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "jujube",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "jujube",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "beach_plum",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Fluoride",
+    "plant_id": "che_fruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "breadfruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "breadfruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Chloride",
+    "plant_id": "coconut",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "coconut",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "mango",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "jackfruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "jackfruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "macadamia",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "macadamia",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "ice_cream_bean",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "tropical_almond",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "papaya",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "banana",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "banana",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "plantain",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "plantain",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "guava",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "guava",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "surinam_cherry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "starfruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "cacao",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "cacao",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "coffee",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "coffee",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "pineapple",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "pineapple",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Phosphate",
+    "plant_id": "acerola",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "chaya",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "chaya",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "lemongrass",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "lemongrass",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "turmeric",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "ginger",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "taro",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "taro",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Sodium Sulphate",
+    "plant_id": "sweet_potato",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "sweet_potato",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "cassava",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "cassava",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "ube_yam",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "ube_yam",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "arrowroot",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "arrowroot",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "peanut",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "peanut",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "perennial_peanut",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "perennial_peanut",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "passionfruit",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "chayote",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "malabar_spinach",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "malabar_spinach",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "winged_bean",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "winged_bean",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "cranberry_hibiscus",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "katuk",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "katuk",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "okinawan_spinach",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "brazilian_spinach",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "gotu_kola",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "gotu_kola",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "seminole_pumpkin",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "seminole_pumpkin",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "culantro",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "thai_basil",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Sulphate",
+    "plant_id": "society_garlic",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Calcium Phosphate",
+    "plant_id": "sunshine_mimosa",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "nanking_cherry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "american_plum",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "chokecherry",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Chloride",
+    "plant_id": "crabapple",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "hops",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "hops",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "schisandra",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Silica",
+    "plant_id": "schisandra",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Iron Phosphate",
+    "plant_id": "groundnut_apios",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Potassium Phosphate",
+    "plant_id": "groundnut_apios",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
+  },
+  {
+    "salt": "Magnesium Phosphate",
+    "plant_id": "vanilla",
+    "relationship_type": "accumulator",
+    "confidence": "validated",
+    "notes": "Cell salt affinity based on botanical mapping",
+    "source_label": "master_registry_v2"
   }
 ]

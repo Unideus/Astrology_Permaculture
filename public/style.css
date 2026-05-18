@@ -2598,3 +2598,60 @@ body.dark-mode .moon-card {
     color: #555555 !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PAYMENT SUCCESS PAGE
+   ═══════════════════════════════════════════════════════════════ */
+.payment-success-content {
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.payment-success-card {
+  background: var(--card-bg, #1a1a2e);
+  border: 1px solid var(--border-color, #333);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.payment-success-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.payment-success-card h2 {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary, #fff);
+}
+
+.payment-success-card p {
+  color: var(--text-secondary, #aaa);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.payment-success-card .btn-large {
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+}
+
+.payment-success-note {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-top: 1rem;
+}
+
+.payment-success-downloaded {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color, #333);
+}
+
+.payment-success-downloaded p {
+  font-size: 1rem;
+  color: #4ade80;
+}

@@ -48,6 +48,39 @@ function loadLocalEnv() {
   });
 }
 
+// ═══════════════════════════════════════════════════════════════
+// STRIPE PAYMENT INTEGRATION
+// ═══════════════════════════════════════════════════════════════
+const crypto = require('crypto');
+let stripe = null;
+const stripeKey = process.env.STRIPE_SECRET_KEY || '';
+if (stripeKey) {
+  try {
+    stripe = require('stripe')(stripeKey);
+    console.log('Stripe initialized');
+  } catch(e) {
+    console.warn('Stripe package not available — payments disabled');
+  }
+}
+
+// Temp plans directory for Stripe fulfillment
+const TEMP_PLANS_DIR = path.join(__dirname, 'temp_plans');
+if (!fsSync.existsSync(TEMP_PLANS_DIR)) {
+  fsSync.mkdirSync(TEMP_PLANS_DIR, { recursive: true });
+}
+// Clean old temp plans (>1 hour)
+try {
+  const now = Date.now();
+  fsSync.readdirSync(TEMP_PLANS_DIR).forEach(f => {
+    const fp = path.join(TEMP_PLANS_DIR, f);
+    const stat = fsSync.statSync(fp);
+    if (now - stat.mtimeMs > 3600000) fsSync.unlinkSync(fp);
+  });
+} catch(e) { /* ignore */ }
+
+const PRICE_CENTS = process.env.PRICE_CENTS ? parseInt(process.env.PRICE_CENTS, 10) : 1999;
+const SUCCESS_URL = process.env.SUCCESS_URL || 'https://permaculture.zodi-yugaskyclock.com';
+
 function ollamaHeaders(extraHeaders = {}) {
   const headers = { ...extraHeaders };
   if (OLLAMA_API_KEY) {
@@ -1939,6 +1972,132 @@ function doyToDate(doy) {
   }
   return `${monthNames[month]} ${day}`;
 }
+
+
+// ═══════════════════════════════════════════════════════════════
+// STRIPE CHECKOUT ROUTES
+// ═══════════════════════════════════════════════════════════════
+
+app.post('/api/create-checkout-session', async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({ error: 'Payment system not configured' });
+    }
+
+    const { plan } = req.body || {};
+    if (!plan || typeof plan !== 'object') {
+      return res.status(400).json({ error: 'Plan data required' });
+    }
+
+    const planToken = crypto.randomUUID();
+    const planPath = path.join(TEMP_PLANS_DIR, `${planToken}.json`);
+    await fs.writeFile(planPath, JSON.stringify(plan, null, 2));
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: [{
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Zodi-Yuga Permaculture Design Plan',
+            description: 'Complete personalized PDF plan based on your location, sun sign, and site conditions.',
+          },
+          unit_amount: PRICE_CENTS,
+        },
+        quantity: 1,
+      }],
+      metadata: {
+        plan_token: planToken,
+      },
+      success_url: `${SUCCESS_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan_token=${planToken}`,
+      cancel_url: `${SUCCESS_URL}/`,
+    });
+
+    res.json({ url: session.url, sessionId: session.id, planToken });
+  } catch (error) {
+    console.error('Stripe session error:', error);
+    res.status(500).json({ error: 'Failed to create checkout session' });
+  }
+});
+
+app.post('/api/confirm-download', async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({ error: 'Payment system not configured' });
+    }
+
+    const { session_id, plan_token } = req.body || {};
+    if (!session_id || !plan_token) {
+      return res.status(400).json({ error: 'Missing session_id or plan_token' });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    if (session.payment_status !== 'paid') {
+      return res.status(402).json({ error: 'Payment not completed' });
+    }
+
+    if (session.metadata?.plan_token !== plan_token) {
+      return res.status(403).json({ error: 'Invalid plan token' });
+    }
+
+    const planPath = path.join(TEMP_PLANS_DIR, `${plan_token}.json`);
+    if (!fsSync.existsSync(planPath)) {
+      return res.status(404).json({ error: 'Plan not found (may have expired)' });
+    }
+
+    const planData = JSON.parse(await fs.readFile(planPath, 'utf-8'));
+    const pdfBuffer = await generatePlanPdf(planData);
+
+    fsSync.unlink(planPath, () => {});
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="zodi-yuga-food-forest-plan.pdf"');
+    res.setHeader('Content-Length', pdfBuffer.length);
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Confirm download error:', error);
+    res.status(500).json({ error: 'Failed to process download' });
+  }
+});
+
+app.get('/api/check-payment/:sessionId', async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({ error: 'Payment system not configured' });
+    }
+    const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+    res.json({
+      payment_status: session.payment_status,
+      plan_token: session.metadata?.plan_token || null,
+    });
+  } catch (error) {
+    res.status(404).json({ error: 'Session not found' });
+  }
+});
+
+app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  if (!stripe) return res.status(503).json({ error: 'Not configured' });
+
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
+
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message);
+    return res.status(400).send('Webhook Error: ' + err.message);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    console.log('Payment completed for session', session.id, 'plan:', session.metadata?.plan_token);
+  }
+
+  res.json({ received: true });
+});
 
 // Serve index.html for all other routes
 app.get('*', (req, res) => {

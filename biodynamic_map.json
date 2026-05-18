@@ -102,133 +102,265 @@
   "mineral_to_plants": {
     "potassium_phosphate": {
       "plants": [
+        "american_hazelnut_",
+        "american_persimmon_",
+        "autumn_olive_",
+        "avocado",
+        "banana",
+        "black_walnut_",
+        "breadfruit",
+        "cassava",
+        "coconut",
         "comfrey",
-        "nettle",
         "dandelion",
-        "spinach",
+        "french_sorrel_",
+        "gotu_kola",
+        "goumi_",
+        "groundnut_apios",
+        "guava",
+        "honeyberry",
+        "jackfruit",
+        "japanese_persimmon",
+        "jerusalem_artichoke_",
         "kale",
-        "sunflower",
+        "mango",
+        "moringa",
+        "nettle",
+        "papaya",
+        "plantain",
         "pumpkin",
-        "avocado"
+        "sea_buckthorn_",
+        "seminole_pumpkin",
+        "spinach",
+        "sunflower",
+        "ube_yam",
+        "yarrow_"
       ]
     },
     "potassium_sulphate": {
       "plants": [
-        "watercress",
-        "mustard_greens",
-        "radish",
-        "horseradish",
-        "onion",
+        "celery",
+        "chayote",
+        "chives_",
+        "culantro",
+        "fox_grape_",
         "garlic",
+        "grape",
+        "hardy_kiwi",
+        "horseradish",
+        "lavender",
+        "lemongrass",
+        "mustard_greens",
+        "onion",
         "parsley",
-        "celery"
+        "radish",
+        "rosemary",
+        "sage",
+        "society_garlic",
+        "thai_basil",
+        "watercress"
       ]
     },
     "sodium_sulphate": {
       "plants": [
+        "asparagus",
         "celery",
         "cucumber",
         "lettuce",
-        "zucchini",
+        "rhubarb",
+        "sweet_potato",
         "watermelon",
-        "asparagus",
-        "rhubarb"
+        "zucchini"
       ]
     },
     "potassium_chloride": {
       "plants": [
-        "horseradish",
-        "radish",
-        "turnip",
-        "cabbage",
-        "brussels_sprouts",
+        "american_plum",
+        "apple_",
         "apricot",
+        "asian_pear",
+        "beach_plum",
+        "black_currant_",
+        "brussels_sprouts",
+        "cabbage",
+        "chokecherry",
+        "cornelian_cherry",
+        "crabapple",
+        "gooseberry",
+        "horseradish",
+        "jujube",
+        "loquat",
+        "nanking_cherry",
         "peach",
-        "sour_cherry"
+        "pear_",
+        "radish",
+        "sour_cherry",
+        "turnip"
       ]
     },
     "calcium_fluoride": {
       "plants": [
-        "oats",
-        "barley",
-        "rye",
-        "quinoa",
         "amaranth",
+        "barley",
+        "black_raspberry",
+        "blackberry",
+        "che_fruit",
         "fig",
         "mulberry",
-        "blackberry"
+        "oats",
+        "quinoa",
+        "red_raspberry_",
+        "rye",
+        "saskatoon_serviceberry"
       ]
     },
     "magnesium_phosphate": {
       "plants": [
-        "chamomile",
-        "lemon_balm",
+        "cacao",
+        "cashew",
         "catnip",
-        "valerian",
+        "chamomile",
+        "coffee",
+        "ginger",
+        "hops",
+        "lemon_balm",
+        "maypop_passionflower",
         "passionflower",
-        "cashew"
+        "passionfruit",
+        "schisandra",
+        "turmeric",
+        "valerian",
+        "vanilla"
       ]
     },
     "sodium_phosphate": {
       "plants": [
+        "acerola",
+        "grapefruit",
+        "kimchi_cabbage",
         "lemon",
         "lime",
-        "grapefruit",
+        "miracle_berry",
         "orange",
         "sauerkraut_cabbage",
-        "kimchi_cabbage"
+        "starfruit"
       ]
     },
     "calcium_sulphate": {
       "plants": [
+        "bok_choy",
         "broccoli",
         "cauliflower",
-        "kale",
         "collard_greens",
-        "bok_choy",
+        "kale",
         "sesame"
       ]
     },
     "silica": {
       "plants": [
-        "oats",
-        "oat_straw",
-        "horsetail",
-        "nettle",
-        "cucumber",
+        "arrowroot",
+        "banana",
         "bell_pepper",
+        "cucumber",
+        "gotu_kola",
         "green_beans",
-        "strawberry"
+        "guava",
+        "hardy_kiwi",
+        "hops",
+        "horsetail",
+        "jujube",
+        "lavender",
+        "lemongrass",
+        "macadamia",
+        "malabar_spinach",
+        "nettle",
+        "oat_straw",
+        "oats",
+        "pineapple",
+        "pineapple_guava",
+        "plantain",
+        "rabbiteye_blueberry",
+        "schisandra",
+        "strawberry",
+        "taro",
+        "ube_yam",
+        "yarrow_"
       ]
     },
     "calcium_phosphate": {
       "plants": [
-        "sesame",
         "almond",
-        "fig",
         "amaranth",
+        "american_chestnut_",
+        "american_hazelnut_",
+        "arrowroot",
+        "autumn_olive_",
+        "breadfruit",
+        "cassava",
+        "chaya",
+        "fig",
+        "goumi_",
+        "ice_cream_bean",
+        "jackfruit",
+        "katuk",
+        "macadamia",
+        "moringa",
+        "navy_beans",
+        "peanut",
+        "pecan_",
+        "perennial_peanut",
+        "pigeon_pea",
         "quinoa",
-        "navy_beans"
+        "sea_buckthorn_",
+        "sesame",
+        "sunshine_mimosa",
+        "taro",
+        "tropical_almond",
+        "white_clover_",
+        "winged_bean"
       ]
     },
     "sodium_chloride": {
       "plants": [
+        "beet",
         "celery",
-        "tomato",
+        "coconut",
         "lettuce",
         "swiss_chard",
-        "beet"
+        "tomato"
       ]
     },
     "iron_phosphate": {
       "plants": [
-        "spinach",
-        "swiss_chard",
-        "beet_greens",
-        "lentils",
+        "aronia",
         "beans",
+        "beet_greens",
+        "brazilian_spinach",
+        "cacao",
+        "chaya",
+        "coffee",
+        "cranberry_hibiscus",
+        "french_sorrel_",
+        "groundnut_apios",
+        "katuk",
+        "lentils",
+        "malabar_spinach",
+        "okinawan_spinach",
+        "peanut",
+        "perennial_peanut",
+        "pigeon_pea",
+        "pineapple",
+        "pomegranate",
+        "pumpkin",
         "quinoa",
-        "pumpkin"
+        "rabbiteye_blueberry",
+        "roselle",
+        "seminole_pumpkin",
+        "spinach",
+        "surinam_cherry",
+        "sweet_potato",
+        "swiss_chard",
+        "winged_bean"
       ]
     }
   },

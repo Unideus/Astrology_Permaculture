@@ -677,6 +677,9 @@ document.addEventListener('DOMContentLoaded', () => {
       applyTheme(getPreferredTheme());
     }
   });
+
+  // Check for payment success redirect
+  handlePaymentSuccess();
 });
 
 const ZODIAC_SIGNS = {
@@ -2635,35 +2638,28 @@ async function downloadPlan() {
   setPdfDownloadState(true);
 
   try {
-    const response = await fetch('/api/generated-plan/export/pdf', {
+    // Create Stripe checkout session
+    const sessionRes = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ plan: generatedPlan })
     });
 
-    if (!response.ok) {
-      let message = 'Unable to generate PDF';
+    if (!sessionRes.ok) {
+      let message = 'Payment system unavailable';
       try {
-        const errorData = await response.json();
-        message = errorData.error || message;
-      } catch (parseError) {
-        // Keep the generic message if the server did not return JSON.
-      }
+        const err = await sessionRes.json();
+        message = err.error || message;
+      } catch(e) {}
       throw new Error(message);
     }
 
-    const pdfBlob = await response.blob();
-    const downloadUrl = URL.createObjectURL(pdfBlob);
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = 'zodi-yuga-food-forest-plan.pdf';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(downloadUrl);
+    const { url } = await sessionRes.json();
+    // Save plan_token in sessionStorage so we can find it after redirect
+    // Redirect to Stripe Checkout
+    window.location.href = url;
   } catch (error) {
     alert(t('pdfExportFailed') + error.message);
-  } finally {
     setPdfDownloadState(false);
   }
 }
@@ -3433,4 +3429,106 @@ function renderSevenLayerGuild(guild) {
   });
 
   document.getElementById('sevenLayerGuild').innerHTML = htmlParts.join('\n');
+}
+
+
+
+// ═══════════════════════════════════════════════════════════════
+// PAYMENT SUCCESS HANDLER
+// ═══════════════════════════════════════════════════════════════
+
+function handlePaymentSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  const planToken = params.get('plan_token');
+
+  if (!sessionId || !planToken) return;
+
+  const container = document.getElementById('paymentSuccess') || document.getElementById('results');
+  if (!container) return;
+
+  // Hide the main app sections, show success message
+  document.getElementById('step1')?.classList.add('hidden');
+  document.getElementById('step2')?.classList.add('hidden');
+  document.getElementById('results')?.classList.remove('hidden');
+
+  // Create or show payment success UI
+  let successDiv = document.getElementById('paymentSuccessContent');
+  if (!successDiv) {
+    successDiv = document.createElement('div');
+    successDiv.id = 'paymentSuccessContent';
+    successDiv.className = 'payment-success-content';
+    container.appendChild(successDiv);
+  }
+
+  successDiv.innerHTML = `
+    <div class="payment-success-card">
+      <div class="payment-success-icon">✅</div>
+      <h2>Payment Successful!</h2>
+      <p>Your Zodi-Yuga Permaculture Design Plan is ready.</p>
+      <button id="downloadPaidPdfBtn" class="btn btn-primary btn-large" onclick="downloadPaidPdf()">
+        📥 Download Your Plan Now
+      </button>
+      <p class="payment-success-note">Your download will start automatically in a moment...</p>
+    </div>
+  `;
+
+  // Auto-download after a brief delay
+  window._paidSessionId = sessionId;
+  window._paidPlanToken = planToken;
+  setTimeout(downloadPaidPdf, 2000);
+}
+
+async function downloadPaidPdf() {
+  const btn = document.getElementById('downloadPaidPdfBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Downloading...';
+  }
+
+  try {
+    const response = await fetch('/api/confirm-download', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: window._paidSessionId,
+        plan_token: window._paidPlanToken
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      alert('Download failed: ' + (err.error || 'Unknown error'));
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '📥 Try Again';
+      }
+      return;
+    }
+
+    const pdfBlob = await response.blob();
+    const downloadUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'zodi-yuga-food-forest-plan.pdf';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+
+    // Update success message
+    document.querySelector('.payment-success-card').innerHTML += `
+      <div class="payment-success-downloaded">
+        <p>✅ Downloaded successfully! Check your downloads folder.</p>
+        <p><a href="/">Generate another plan →</a></p>
+      </div>
+    `;
+    if (btn) btn.remove();
+  } catch (error) {
+    alert('Download failed: ' + error.message);
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '📥 Try Again';
+    }
+  }
 }

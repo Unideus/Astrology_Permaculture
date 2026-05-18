@@ -21,7 +21,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -65,7 +72,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -108,7 +124,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -152,7 +177,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -192,7 +226,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -234,7 +277,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -276,7 +328,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -360,7 +421,15 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -402,7 +471,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -444,7 +522,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -484,7 +571,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -523,7 +617,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -561,7 +662,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -602,7 +710,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -645,7 +762,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -686,7 +812,16 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -729,7 +864,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -769,7 +913,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -810,7 +963,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -848,7 +1010,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -886,7 +1055,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -928,7 +1104,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -971,7 +1156,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1012,7 +1206,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1048,7 +1251,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -1084,7 +1293,13 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -1118,7 +1333,14 @@
         5,
         6
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -1159,7 +1381,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1196,7 +1425,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1234,7 +1470,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1274,7 +1517,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1314,7 +1566,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1352,7 +1613,15 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1390,7 +1659,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1428,7 +1703,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1467,7 +1749,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1547,7 +1836,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1583,7 +1879,14 @@
         6,
         7
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1619,7 +1922,15 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1643,7 +1954,9 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -1654,7 +1967,15 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1689,7 +2010,11 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -1887,7 +2212,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1929,7 +2263,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -1968,7 +2311,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2009,7 +2361,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2049,7 +2410,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "biennial"
@@ -2087,7 +2457,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "biennial"
@@ -2123,7 +2502,13 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2162,7 +2547,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2201,7 +2593,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2241,7 +2642,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2281,7 +2691,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2321,7 +2740,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2356,7 +2784,12 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -2396,7 +2829,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2437,7 +2879,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2480,7 +2931,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2521,7 +2981,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "biennial"
@@ -2563,7 +3032,16 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "biennial"
@@ -2601,7 +3079,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2641,7 +3126,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual_summer"
@@ -2665,7 +3159,9 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2677,7 +3173,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -2701,18 +3204,28 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
       "zones": [
+        3,
         4,
         5,
         6,
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Dfa",
+        "Dfc",
+        "Cfa",
+        "Cfb",
+        "Dfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -2736,7 +3249,9 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2747,7 +3262,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -2771,11 +3292,14 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
       "zones": [
+        3,
         4,
         5,
         6,
@@ -2783,7 +3307,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Dfa",
+        "Dfc",
+        "Cfa",
+        "Cfb",
+        "Dfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2807,7 +3338,9 @@
       "layer": "sub_canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2819,7 +3352,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -2843,7 +3383,9 @@
       "layer": "sub_canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2854,7 +3396,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -2878,7 +3427,10 @@
       "layer": "sub_canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2890,7 +3442,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2914,7 +3473,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2925,7 +3486,14 @@
         6,
         7
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2952,7 +3520,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Fluoride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2964,7 +3534,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -2988,7 +3565,9 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -2999,7 +3578,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3025,7 +3611,10 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3038,7 +3627,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3063,7 +3659,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3076,7 +3674,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3102,7 +3707,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3114,7 +3722,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -3138,7 +3753,10 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3151,7 +3769,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3175,7 +3800,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3188,7 +3815,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3212,7 +3846,9 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3226,7 +3862,16 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3251,7 +3896,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3263,7 +3911,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3290,7 +3945,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3302,7 +3960,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3327,7 +3992,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3336,7 +4003,14 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -3360,7 +4034,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3369,7 +4045,14 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_shrub_tree"
@@ -3393,7 +4076,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3403,7 +4088,14 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "deciduous_tree"
@@ -3427,7 +4119,10 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3436,7 +4131,12 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "fast_growing_tree"
@@ -3462,7 +4162,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3472,7 +4175,14 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "deciduous_shrub"
@@ -3496,7 +4206,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3505,7 +4217,12 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "warm_season_shrub"
@@ -3531,7 +4248,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3540,7 +4260,12 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "short_lived_shrub"
@@ -3566,7 +4291,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3575,7 +4302,14 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3600,7 +4334,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3611,7 +4348,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3635,7 +4378,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3646,7 +4391,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3671,7 +4422,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3681,7 +4434,14 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "BSh",
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3706,7 +4466,9 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3717,7 +4479,15 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3740,7 +4510,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3752,7 +4525,14 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3777,7 +4557,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Fluoride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3788,7 +4570,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3813,7 +4602,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Fluoride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3826,7 +4617,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3852,7 +4650,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3865,7 +4665,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3891,7 +4698,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3903,7 +4712,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3928,7 +4744,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3939,7 +4757,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -3964,7 +4789,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -3976,7 +4803,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -4001,7 +4835,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Sodium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4009,7 +4845,11 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_shrub"
@@ -4035,7 +4875,9 @@
       "layer": "sub_canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4046,7 +4888,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": "200-800",
       "growth_habit": "perennial"
@@ -4070,7 +4918,10 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4081,7 +4932,15 @@
         9,
         10
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Dfa",
+        "Af",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -4106,7 +4965,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4118,7 +4979,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -4145,7 +5013,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Fluoride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4155,7 +5025,13 @@
         8,
         9
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial"
@@ -4180,7 +5056,10 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate",
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4190,7 +5069,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4215,7 +5098,10 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Sodium Chloride",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4225,7 +5111,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "palm"
@@ -4251,7 +5141,9 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4261,7 +5153,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4286,7 +5182,10 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate",
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4296,7 +5195,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4321,7 +5224,10 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4330,7 +5236,12 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4355,7 +5266,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4365,7 +5278,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4392,7 +5309,9 @@
       "layer": "canopy"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4402,7 +5321,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "deciduous_tropical_tree"
@@ -4428,7 +5351,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4438,7 +5363,12 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "short_lived_perennial"
@@ -4463,7 +5393,10 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4474,7 +5407,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "clumping_perennial"
@@ -4500,7 +5438,10 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4511,7 +5452,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "clumping_perennial"
@@ -4537,7 +5483,10 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4547,7 +5496,12 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4572,7 +5526,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4581,7 +5537,12 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_shrub"
@@ -4606,7 +5567,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Sodium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4616,7 +5579,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_tree"
@@ -4639,7 +5606,10 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate",
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4648,7 +5618,11 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "understory_evergreen"
@@ -4672,7 +5646,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4680,7 +5657,11 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_shrub"
@@ -4705,7 +5686,10 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4714,7 +5698,11 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "rosette_perennial"
@@ -4740,7 +5728,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Sodium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4751,7 +5741,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "evergreen_shrub"
@@ -4775,7 +5770,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4786,7 +5784,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_shrub"
@@ -4813,7 +5816,10 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4824,7 +5830,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "clumping_grass"
@@ -4851,7 +5862,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4863,7 +5876,13 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "rhizomatous_perennial"
@@ -4889,7 +5908,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4900,7 +5921,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "rhizomatous_perennial"
@@ -4926,7 +5952,10 @@
       "layer": "root"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4937,7 +5966,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "corm_perennial"
@@ -4963,7 +5997,10 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Sodium Sulphate",
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -4974,7 +6011,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "sprawling_vine"
@@ -5000,7 +6042,10 @@
       "layer": "root"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5011,7 +6056,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_shrub"
@@ -5036,7 +6086,10 @@
       "layer": "root"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5047,7 +6100,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "twining_vine"
@@ -5071,7 +6129,10 @@
       "layer": "root"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5082,7 +6143,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "rhizomatous_perennial"
@@ -5106,7 +6172,10 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5117,7 +6186,13 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "annual"
@@ -5141,7 +6216,10 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5151,7 +6229,13 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "spreading_perennial"
@@ -5177,7 +6261,9 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5188,7 +6274,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "climbing_vine"
@@ -5213,7 +6304,9 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5224,7 +6317,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "climbing_vine"
@@ -5249,7 +6347,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5260,7 +6361,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "twining_vine"
@@ -5285,7 +6391,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5295,7 +6404,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "climbing_vine"
@@ -5322,7 +6435,9 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5333,7 +6448,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_shrub"
@@ -5358,7 +6478,10 @@
       "layer": "shrub"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate",
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5368,7 +6491,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_shrub"
@@ -5394,7 +6521,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5405,7 +6534,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "spreading_perennial"
@@ -5430,7 +6564,9 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5441,7 +6577,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "spreading_perennial"
@@ -5466,7 +6607,10 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5478,7 +6622,13 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "creeping_perennial"
@@ -5503,7 +6653,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Phosphate",
+        "Iron Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5515,7 +6668,13 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "sprawling_annual_vine"
@@ -5540,7 +6699,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5551,7 +6712,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "short_lived_perennial"
@@ -5576,7 +6742,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5587,7 +6755,12 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfb",
+        "Cfa",
+        "Af",
+        "Am"
+      ],
       "is_perennial": false,
       "chill_hours_required": null,
       "growth_habit": "warm_season_herb"
@@ -5612,7 +6785,9 @@
       "layer": "herbaceous"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Sulphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5623,7 +6798,13 @@
         10,
         11
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "clumping_perennial"
@@ -5647,7 +6828,9 @@
       "layer": "ground_cover"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Calcium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5658,7 +6841,13 @@
         11,
         12
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Am",
+        "Af",
+        "Cfb",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "creeping_perennial"
@@ -5683,7 +6872,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5695,7 +6886,14 @@
         6,
         7
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "multi_stem_shrub"
@@ -5721,7 +6919,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5733,7 +6933,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "small_tree"
@@ -5759,7 +6966,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5771,7 +6980,14 @@
         6,
         7
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "small_tree"
@@ -5797,7 +7013,9 @@
       "layer": "low_tree"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Potassium Chloride"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5809,7 +7027,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "small_tree"
@@ -5835,7 +7060,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Silica",
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5847,7 +7075,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_vine"
@@ -5872,7 +7107,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate",
+        "Silica"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5882,7 +7120,14 @@
         6,
         7
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_vine"
@@ -5908,7 +7153,10 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Iron Phosphate",
+        "Potassium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5920,7 +7168,14 @@
         7,
         8
       ],
-      "koppen": [],
+      "koppen": [
+        "Cfa",
+        "Dfa",
+        "Dfb",
+        "Cfb",
+        "Dfc",
+        "Csb"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "perennial_vine"
@@ -5946,7 +7201,9 @@
       "layer": "vine"
     },
     "bio_logic": {
-      "salts": [],
+      "salts": [
+        "Magnesium Phosphate"
+      ],
       "primary_benefit": ""
     },
     "climate_profile": {
@@ -5955,7 +7212,11 @@
         12,
         13
       ],
-      "koppen": [],
+      "koppen": [
+        "Aw",
+        "Af",
+        "Am"
+      ],
       "is_perennial": true,
       "chill_hours_required": null,
       "growth_habit": "climbing_orchid"
