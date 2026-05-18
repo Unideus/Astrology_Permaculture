@@ -667,6 +667,9 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAddressProviderConfig();
   setupAddressAutocomplete();
   setupZodiacSelects();
+  updatePricingDisplay();
+
+  document.getElementById('scale')?.addEventListener('change', updatePricingDisplay);
   const appVersionLabel = document.getElementById('appVersionLabel');
   if (appVersionLabel) {
     appVersionLabel.textContent = APP_VERSION;
@@ -2638,28 +2641,40 @@ async function downloadPlan() {
   setPdfDownloadState(true);
 
   try {
-    // Create Stripe checkout session
-    const sessionRes = await fetch('/api/create-checkout-session', {
+    // TEMPORARY: Direct PDF download (Stripe payment disabled until pricing finalized)
+    const scale = document.getElementById('scale')?.value || 'backyard';
+    const price = getPriceForScale(scale);
+    console.log('ℹ️ Scale:', scale, '| Price:', price.label);
+    const response = await fetch('/api/generated-plan/export/pdf', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ plan: generatedPlan })
     });
 
-    if (!sessionRes.ok) {
-      let message = 'Payment system unavailable';
+    if (!response.ok) {
+      let message = 'Unable to generate PDF';
       try {
-        const err = await sessionRes.json();
-        message = err.error || message;
-      } catch(e) {}
+        const errorData = await response.json();
+        message = errorData.error || message;
+      } catch (parseError) {}
       throw new Error(message);
     }
 
-    const { url } = await sessionRes.json();
-    // Save plan_token in sessionStorage so we can find it after redirect
-    // Redirect to Stripe Checkout
-    window.location.href = url;
+    const pdfBlob = await response.blob();
+    const downloadUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'zodi-yuga-food-forest-plan.pdf';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+
+    // Add a note in the console that payment was bypassed
+    console.log('ℹ️ PDF downloaded. Stripe payment disabled — re-enable when pricing is finalized.');
   } catch (error) {
     alert(t('pdfExportFailed') + error.message);
+  } finally {
     setPdfDownloadState(false);
   }
 }

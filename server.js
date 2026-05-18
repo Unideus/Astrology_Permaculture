@@ -1984,14 +1984,20 @@ app.post('/api/create-checkout-session', async (req, res) => {
       return res.status(503).json({ error: 'Payment system not configured' });
     }
 
-    const { plan } = req.body || {};
+    const { plan, price_cents } = req.body || {};
     if (!plan || typeof plan !== 'object') {
       return res.status(400).json({ error: 'Plan data required' });
     }
 
+    // Use provided price or fall back to env default
+    const amount = parseInt(price_cents, 10) || PRICE_CENTS;
+
     const planToken = crypto.randomUUID();
     const planPath = path.join(TEMP_PLANS_DIR, `${planToken}.json`);
     await fs.writeFile(planPath, JSON.stringify(plan, null, 2));
+
+    const scaleLabel = plan.scale || 'custom';
+    const productName = `Zodi-Yuga Permaculture Design Plan (${scaleLabel})`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -2000,10 +2006,10 @@ app.post('/api/create-checkout-session', async (req, res) => {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'Zodi-Yuga Permaculture Design Plan',
+            name: productName,
             description: 'Complete personalized PDF plan based on your location, sun sign, and site conditions.',
           },
-          unit_amount: PRICE_CENTS,
+          unit_amount: amount,
         },
         quantity: 1,
       }],

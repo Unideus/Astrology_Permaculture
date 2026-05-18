@@ -136,6 +136,10 @@
         <div class="btn-group">
           <button class="btn" onclick="goToStep1()" data-i18n="back">← Back</button>
           <button class="btn btn-primary" onclick="generatePlan()" data-i18n="generatePlan">🌱 Generate Plan</button>
+          <div class="price-badge">
+            <span class="price-label" data-i18n="priceLabel">Price:</span>
+            <span class="price-display" data-i18n="priceDisplay">$14.99</span>
+          </div>
         </div>
       </section>
 
@@ -154,12 +158,16 @@
             <button id="openPlantingScaleBtn" class="planting-timeline-image-btn" type="button" onclick="openPlantingScale()" aria-label="Open Planting Timeline" title="Open Planting Timeline">
               <img src="/Open%20in%20Timeline%20button.png" alt="Open Planting Timeline">
             </button>
+            <div class="pdf-download-wrapper">
             <button id="downloadPdfTopBtn" class="pdf-download-image-btn" type="button" onclick="downloadPlan()" aria-label="Download Complete PDF Plan" title="Download Complete PDF Plan">
               <img src="/PDF%20dark.png" alt="Download Complete PDF Plan">
             </button>
+            <div class="price-badge">
+              <span class="price-label" data-i18n="priceLabel">Price:</span>
+              <span class="price-display" data-i18n="priceDisplay">$14.99</span>
+            </div>
           </div>
         </div>
-
         <div class="result-card">
           <h3 data-i18n="siteInfoTitle">📍 Site Information</h3>
           <div id="siteInfo"></div>
@@ -242,9 +250,14 @@
           <button id="footerOpenPlantingScaleBtn" class="planting-timeline-image-btn footer-planting-timeline-btn" type="button" onclick="openPlantingScale()" aria-label="Open Planting Timeline" title="Open Planting Timeline">
             <img src="/Open%20in%20Timeline%20button.png" alt="Open Planting Timeline">
           </button>
+          <div class="pdf-download-wrapper">
           <button id="downloadPdfBottomBtn" class="pdf-download-image-btn footer-pdf-download-btn" type="button" onclick="downloadPlan()" aria-label="Download Complete PDF Plan" title="Download Complete PDF Plan">
             <img src="/PDF%20dark.png" alt="Download Complete PDF Plan">
           </button>
+          <div class="price-badge">
+            <span class="price-label" data-i18n="priceLabel">Price:</span>
+            <span class="price-display" data-i18n="priceDisplay">$14.99</span>
+          </div>
         </div>
         <p class="coming-soon-note" data-i18n="pdfExportNote">Generates a printable Complete Food Forest Plan PDF from the current plan.</p>
       </section>
@@ -293,6 +306,10 @@
         <div class="btn-group">
           <button class="btn" type="button" onclick="closeGuildEditModal()" data-i18n="cancel">Cancel</button>
           <button class="btn btn-primary" type="button" onclick="applyGuildLayerEdit()" data-i18n="apply">Apply</button>
+          <div class="price-badge">
+            <span class="price-label" data-i18n="priceLabel">Price:</span>
+            <span class="price-display" data-i18n="priceDisplay">$14.99</span>
+          </div>
         </div>
       </div>
     </div>
